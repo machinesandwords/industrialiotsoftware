@@ -1,14 +1,14 @@
 /**
- * config.js — Site identity for industrialiotsoftware.com
+ * config.js — Site identity for otcybersecuritysoftware.com
  * Loaded first on every page. Sets CSS variables and site metadata.
  * To create a new site: copy this file, update values, done.
  */
 
 window.SITE_CONFIG = {
-  name:     "Industrial IoT Software",
-  nameHtml: "Industrial IoT <span>Software</span>",
-  domain:   "industrialiotsoftware.com",
-  tagline:  "an independent guide for IIoT practitioners",
+  name:     "OT Cybersecurity Software",
+  nameHtml: "OT Cybersecurity <span>Software</span>",
+  domain:   "otcybersecuritysoftware.com",
+  tagline:  "an independent guide for OT practitioners",
   accent:   "#0A7E6A",
   accentDim:"#087558",
   accentPale:"#e6f4f1"
