@@ -17,6 +17,7 @@
       <div class="nav-section-label">Landscape</div>
       <a href="/landscape/" class="nav-item depth-0">Market overview</a>
       <a href="/landscape/vendors/" class="nav-item depth-1">├ Vendor index</a>
+      <a href="/tools/vendor-comparison/" class="nav-item depth-1">├ Vendor comparison</a>
       <a href="/landscape/market-direction/" class="nav-item depth-1">├ Market direction</a>
       <a href="/landscape/protocols/" class="nav-item depth-1">└ Protocol reference</a>
     </div>
@@ -26,8 +27,8 @@
     <div class="nav-section">
       <div class="nav-section-label">Tools</div>
       <a href="/tools/" class="nav-item depth-0">All tools</a>
-      <a href="/tools/vendor-comparison/" class="nav-item depth-1">├ Vendor comparison</a>
-      <a href="/tools/fit-finder/" class="nav-item depth-1">└ Fit finder</a>
+      <a href="/tools/roi-calculator/" class="nav-item depth-1">└ IIoT ROI calculator</a>
+      <a href="/tools/evaluation-checklist/" class="nav-item depth-1">└ Platform evaluation checklist</a>
       <a href="/tools/" class="nav-item depth-1">└ more</a>
         </div>
 

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IIoT Protocol Reference | Industrial IoT Software</title>
+  <meta name="description" content="Field reference for the six protocols that move data between PLCs, sensors, historians, and cloud systems: Modbus TCP, Modbus RTU, OPC-UA, MQTT, Sparkplug B, EtherNet/IP, and PROFINET." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="/config.js" defer></script>
+  <script src="/nav.js" defer></script>
+</head>
+<body>
+
+  <div class="topbar">
+    <a href="/" class="topbar-brand">Industrial IoT Software</a>
+    <div class="topbar-divider"></div>
+    <span class="topbar-tagline">Independent buyer's guide</span>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar-nav"></aside>
+
+    <main class="main">
+      <div class="content">
+
+        <nav class="breadcrumb">
+          <a href="/landscape/">Landscape</a>
+          <span class="breadcrumb-sep">/</span>
+          Protocol Reference
+        </nav>
+
+        <span class="page-label">Reference</span>
+        <h1>IIoT Protocol Reference</h1>
+
+        <p class="lead">Six protocols move the overwhelming majority of data between PLCs, sensors, historians, and cloud systems in industrial environments. Each carries different assumptions about network architecture, latency tolerance, security posture, and operational overhead. Choosing the wrong one for a layer creates integration debt that compounds with every vendor added downstream.</p>
+
+        <div class="section-intro">
+          <p>Protocols covered: <strong>Modbus TCP &middot; Modbus RTU &middot; OPC-UA &middot; MQTT &middot; Sparkplug B &middot; EtherNet/IP &middot; PROFINET</strong></p>
+        </div>
+
+        <!-- ─── Modbus TCP ─────────────────────────────────────── -->
+        <h2 id="modbus-tcp">Modbus TCP</h2>
+
+        <div class="tags">
+          <span class="tag">Poll-based</span>
+          <span class="tag">Ethernet</span>
+          <span class="tag">Brownfield</span>
+        </div>
+
+        <h3>Typical use case</h3>
+        <p>Reading coil and register data from PLCs, drives, meters, and legacy field devices over Ethernet. The dominant protocol for IT/OT data extraction in brownfield environments because virtually every device with an Ethernet port implements it. Found at the device-to-SCADA and device-to-historian boundary in most existing installations.</p>
+
+        <h3>Poll vs. subscription model</h3>
+        <p>Strictly poll-based. The master initiates every transaction; the slave responds. There is no mechanism for a device to push data on change. Your historian or data collection layer sets the scan rate, and that rate applies uniformly whether the value changed or not. High-frequency polling of large register maps across many devices creates predictable, measurable network load — which is both the advantage and the constraint.</p>
+
+        <h3>Overhead characteristics</h3>
+        <p>Low per-transaction overhead on a quiet network. The Modbus TCP ADU adds a 6-byte MBAP header to the standard Modbus PDU, keeping frame sizes small. The cost is in scan rate arithmetic: 100 devices polled at 1-second intervals with 10ms round-trip each consumes 1 second of serial time per cycle with zero margin. Bandwidth consumption scales linearly with register count and poll frequency. Request-response pairs are synchronous — one outstanding transaction per connection unless you parallelize connections.</p>
+
+        <h3>Security considerations</h3>
+        <p>No authentication. No encryption. No authorization model. Any device on the network segment can issue Modbus TCP write commands to any listening slave. In practice, security relies entirely on network segmentation — VLANs, firewall rules, and unidirectional gateways at the DMZ boundary. If your OT network is flat, Modbus TCP exposure is unlimited. Compensating controls reduce risk but do not close the fundamental gap.</p>
+
+        <div class="pros-cons">
+          <div class="pros">
+            <div class="pros-label">When to use</div>
+            <ul>
+              <li>Brownfield device integration where target hardware already supports Modbus TCP</li>
+              <li>Data extraction to historians where scan rates of 1 second or slower are acceptable</li>
+              <li>Environments where simplicity of implementation matters more than bandwidth efficiency</li>
+              <li>Any situation where the alternative is a proprietary driver requiring a vendor-managed software layer</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <div class="cons-label">When to avoid</div>
+            <ul>
+              <li>Sub-100ms data collection where you need genuine event-driven updates</li>
+              <li>Environments where network security policy prohibits unauthenticated device communication</li>
+              <li>New greenfield deployments where you have control over device selection</li>
+              <li>High-device-count topologies where managing individual poll schedules becomes an operational burden</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ─── Modbus RTU ─────────────────────────────────────── -->
+        <h2 id="modbus-rtu">Modbus RTU</h2>
+
+        <div class="tags">
+          <span class="tag">Poll-based</span>
+          <span class="tag">Serial / RS-485</span>
+          <span class="tag">Legacy</span>
+        </div>
+
+        <h3>Typical use case</h3>
+        <p>Serial communication with field devices over RS-232 or RS-485. Ubiquitous in older PLCs, drives, meters, and sensors that predate Ethernet in the plant. Still encountered on RS-485 multidrop buses where a single wire pair carries traffic for 32 or more devices. The protocol most likely to be running on any device installed before 2005.</p>
+
+        <h3>Poll vs. subscription model</h3>
+        <p>Strictly poll-based, identical transaction model to Modbus TCP, with the additional constraint that the RS-485 bus is half-duplex. Only one device communicates at a time. Multidrop configurations require the master to address each slave sequentially, which serializes all transactions on the bus and sets a hard ceiling on aggregate throughput.</p>
+
+        <h3>Overhead characteristics</h3>
+        <p>Minimal frame overhead — a Modbus RTU frame is the PDU plus address byte and 2-byte CRC. The binding constraint is baud rate: a 9600-baud link maxes out around 960 bytes/second. A 32-device RS-485 bus at 9600 baud polling 10 registers per device per second is at the edge of what the medium supports. Baud rate mismatches and inter-character timing gaps are the most common source of communication errors during commissioning.</p>
+
+        <h3>Security considerations</h3>
+        <p>Physical access to the serial bus is the primary attack surface. RS-485 is inherently local — an attacker needs physical proximity or an already-compromised device on the bus. The practical security posture is better than Modbus TCP simply because the attack surface requires physical access, not just network adjacency. The risk profile changes substantially if serial-to-Ethernet converters are in use, which effectively bridge the physical security boundary.</p>
+
+        <div class="pros-cons">
+          <div class="pros">
+            <div class="pros-label">When to use</div>
+            <ul>
+              <li>Legacy device integration where RS-485 or RS-232 is the only available interface</li>
+              <li>Environments with existing RS-485 multidrop wiring where replacing infrastructure is not cost-justified</li>
+              <li>Any situation where the alternative is replacing functional field devices to gain Ethernet connectivity</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <div class="cons-label">When to avoid</div>
+            <ul>
+              <li>Any new installation where Ethernet-capable devices are available at comparable cost</li>
+              <li>Environments where data latency below 1 second matters</li>
+              <li>Topologies where the serial bus passes through serial-to-Ethernet converters exposed to broader network segments</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ─── OPC-UA ──────────────────────────────────────────── -->
+        <h2 id="opc-ua">OPC-UA</h2>
+
+        <div class="tags">
+          <span class="tag">Poll + subscription</span>
+          <span class="tag">Ethernet</span>
+          <span class="tag tag-accent">Greenfield standard</span>
+        </div>
+
+        <h3>Typical use case</h3>
+        <p>The current standard for PLC-to-SCADA and PLC-to-historian communication in modern installations. Supported natively by Siemens S7-1500, Allen-Bradley CompactLogix/ControlLogix via add-on, Beckhoff TwinCAT, B&amp;R Automation, and most PLCs released after 2015. Used at the device-to-MES and device-to-cloud boundary in Industry 4.0 architectures. The information model capability — structured, typed, hierarchical data rather than flat register maps — makes it the preferred interface for systems that need to understand what data means, not just where it lives in memory.</p>
+
+        <h3>Poll vs. subscription model</h3>
+        <p>Both. OPC-UA supports synchronous read/write analogous to Modbus polling, and Subscriptions with MonitoredItems, where the server notifies the client when a value changes or a sampling interval elapses. The Subscription model shifts scan-rate management to the server and enables deadband filtering — the server only reports changes that exceed a configured threshold, which can dramatically reduce traffic on high-frequency analog inputs that spend most of their time in steady state.</p>
+
+        <h3>Overhead characteristics</h3>
+        <p>Higher per-connection overhead than Modbus due to session establishment, security handshake, and the richer protocol stack. Initial connection time is measurably longer. Once established, Subscription-based communication is efficient — traffic volume is proportional to actual change rate, not scan rate. The information model adds schema overhead at configuration time but pays back in reduced integration work downstream: a properly modeled OPC-UA server exposes machine state semantically, not as anonymous register offsets.</p>
+
+        <h3>Security considerations</h3>
+        <p>The only industrial protocol in common use with a mature, built-in security model. Supports mutual certificate-based authentication, message signing, and encryption (128-bit or 256-bit AES). Security mode is negotiable at connection time — None, Sign, or Sign&amp;Encrypt — which means a misconfigured client can negotiate down to no security against a permissive server. Production deployments should enforce minimum security mode at the server and use certificate allowlisting. PKI management for OPC-UA certificates is the most common implementation friction.</p>
+
+        <div class="pros-cons">
+          <div class="pros">
+            <div class="pros-label">When to use</div>
+            <ul>
+              <li>Greenfield PLC integration where target hardware supports OPC-UA natively</li>
+              <li>MES and ERP integration where typed, structured data reduces transformation work</li>
+              <li>Any environment where auditability or security compliance drives architecture decisions</li>
+              <li>IIoT platform connections where the platform exposes an OPC-UA client</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <div class="cons-label">When to avoid</div>
+            <ul>
+              <li>Brownfield devices that do not support OPC-UA and where adding a gateway introduces unacceptable latency or cost</li>
+              <li>Resource-constrained embedded devices where the OPC-UA stack footprint is prohibitive</li>
+              <li>Teams without operational capacity to manage certificate lifecycles — an expired certificate will break communication silently in some client implementations</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ─── MQTT ───────────────────────────────────────────── -->
+        <h2 id="mqtt">MQTT</h2>
+
+        <div class="tags">
+          <span class="tag">Publish/subscribe</span>
+          <span class="tag">Broker-based</span>
+          <span class="tag tag-accent">Edge-to-cloud standard</span>
+        </div>
+
+        <h3>Typical use case</h3>
+        <p>Lightweight publish/subscribe messaging for constrained devices and high-latency or unreliable networks. In IIoT, most commonly used as the transport layer between edge gateways and cloud platforms, or as the backbone of a Unified Namespace architecture. MQTT brokers — Mosquitto, HiveMQ, EMQX, AWS IoT Core — sit at the center of modern event-driven IIoT data pipelines.</p>
+
+        <h3>Poll vs. subscription model</h3>
+        <p>Publish/subscribe exclusively. Publishers send messages to topics; subscribers receive messages from topics; the broker decouples the two. There is no request/response mechanism in the base protocol. This decoupling is both the architectural advantage and the operational complexity: you gain fan-out and loose coupling, but you lose the synchronous confirmation that a specific device received a specific command.</p>
+
+        <h3>Overhead characteristics</h3>
+        <p>Minimal. The fixed header is 2 bytes. Designed for 8-bit microcontrollers on 9600-baud serial links. In practice, topic string length and payload format dominate message size, not protocol overhead. The broker becomes the scaling constraint in high-device-count deployments. QoS level trades delivery guarantee for overhead: QoS 2 (exactly-once) adds a 4-message handshake per publish.</p>
+
+        <h3>Security considerations</h3>
+        <p>TLS for transport encryption and username/password or client certificate authentication are well-supported across brokers and clients. The base protocol has no built-in authorization model — topic-level ACLs are broker-specific configurations, not protocol features. A misconfigured broker with wildcard subscriptions and no authentication is a common finding in OT security assessments. Retained messages persist on the broker indefinitely; sensitive process data in retained topics is accessible to any future subscriber with topic access.</p>
+
+        <div class="pros-cons">
+          <div class="pros">
+            <div class="pros-label">When to use</div>
+            <ul>
+              <li>Edge-to-cloud transport where bandwidth efficiency or cellular link cost matters</li>
+              <li>Unified Namespace architectures where the broker is the central data bus</li>
+              <li>Event-driven pipelines where downstream consumers need to subscribe independently</li>
+              <li>Any environment where you need to fan a single data stream out to multiple consumers without modifying the source</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <div class="cons-label">When to avoid</div>
+            <ul>
+              <li>Direct PLC communication in brownfield environments where the PLC does not have an MQTT client</li>
+              <li>Situations requiring guaranteed command acknowledgment at the protocol level</li>
+              <li>Applications where you need to query current device state on demand rather than receive the last published value</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ─── Sparkplug B ────────────────────────────────────── -->
+        <h2 id="sparkplug-b">Sparkplug B over MQTT</h2>
+
+        <div class="tags">
+          <span class="tag">Publish/subscribe</span>
+          <span class="tag">Protobuf</span>
+          <span class="tag tag-accent">UNS standard</span>
+        </div>
+
+        <h3>Typical use case</h3>
+        <p>Structured, interoperable IIoT messaging on top of MQTT. Sparkplug B defines topic namespace conventions, payload encoding via Protocol Buffers, birth/death certificate semantics, and state management that raw MQTT leaves to the implementer. Adopted by Ignition via Cirrus Link modules, most major IIoT platforms, and increasingly specified in greenfield UNS architectures. The primary use case is SCADA and historian integration via MQTT where you need semantic consistency across multiple edge nodes without custom topic schema negotiation at every integration point.</p>
+
+        <h3>Poll vs. subscription model</h3>
+        <p>Publish/subscribe, inheriting MQTT's model with defined state machine semantics layered on top. Edge Nodes publish NBIRTH and DBIRTH certificates on connection, establishing the metric catalog for all downstream subscribers. Data updates carry only changed metrics by default — report-by-exception at the protocol level, not as an application convention. NCMD/DCMD messages provide a defined command channel back to edge devices, giving Sparkplug B a cleaner command model than raw MQTT.</p>
+
+        <h3>Overhead characteristics</h3>
+        <p>Protobuf encoding is compact relative to JSON — typically 3 to 10 times smaller per message depending on payload structure. Birth certificate overhead is paid once per session; subsequent data messages carry only changed metrics plus sequence numbers and timestamps. The sequence number and timestamp fields in every message enable out-of-order detection and historical reconstruction, which raw MQTT does not support natively. Primary cost relative to raw MQTT is the Protobuf dependency in every client implementation.</p>
+
+        <h3>Security considerations</h3>
+        <p>Inherits MQTT's security model — TLS, authentication, and broker ACLs apply identically. The defined topic namespace makes ACL configuration more tractable than freeform MQTT topic schemes, since topic structure is predictable and consistent. Birth/death semantics provide a reliable mechanism for detecting unexpected disconnections, which matters for security monitoring as well as operational awareness.</p>
+
+        <div class="pros-cons">
+          <div class="pros">
+            <div class="pros-label">When to use</div>
+            <ul>
+              <li>Unified Namespace architectures where multiple edge nodes need consistent, interoperable message structure</li>
+              <li>Greenfield IIoT deployments where you are choosing the edge-to-broker protocol</li>
+              <li>Platform integrations where the target platform has a native Sparkplug B consumer</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <div class="cons-label">When to avoid</div>
+            <ul>
+              <li>Environments where broker or client libraries do not support Sparkplug B natively and implementing the specification from scratch is the only path</li>
+              <li>Simple point-to-point telemetry scenarios where the structure adds overhead without delivering integration value</li>
+              <li>Teams unfamiliar with the specification under time pressure — the birth certificate state machine is the most common source of implementation errors</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ─── EtherNet/IP ────────────────────────────────────── -->
+        <h2 id="ethernet-ip">EtherNet/IP</h2>
+
+        <div class="tags">
+          <span class="tag">Poll + implicit messaging</span>
+          <span class="tag">CIP</span>
+          <span class="tag">Rockwell / ODVA</span>
+        </div>
+
+        <h3>Typical use case</h3>
+        <p>The dominant protocol for Allen-Bradley/Rockwell Automation PLC communication. ControlLogix, CompactLogix, MicroLogix, and most Rockwell drives and I/O modules communicate natively over EtherNet/IP. In Rockwell-heavy environments, EtherNet/IP is the default — it is not a choice so much as a consequence of the installed base. Also used for device-level communication with EtherNet/IP-capable sensors, drives, and I/O blocks from other ODVA member vendors.</p>
+
+        <h3>Poll vs. subscription model</h3>
+        <p>Both, with distinct mechanisms. Explicit Messaging is the request/response model — a client sends a CIP service request and receives a response. Implicit Messaging (I/O messaging) establishes cyclic connections where the PLC exchanges data at a fixed RPI without per-transaction overhead. Implicit connections behave like subscriptions with a fixed rate rather than event-driven updates. For historian and data collection use cases, Explicit Messaging reads are typical; for controller-to-controller and controller-to-I/O, Implicit Messaging is the standard pattern.</p>
+
+        <h3>Overhead characteristics</h3>
+        <p>CIP encapsulation over TCP for Explicit or UDP for Implicit adds meaningful header overhead relative to Modbus. Connection establishment for Implicit Messaging involves a Forward_Open service request before cyclic data exchange begins. The payoff is that established Implicit connections have very low per-packet overhead and predictable, deterministic timing at the RPI. Tag-based access is more maintainable than register map management over time.</p>
+
+        <h3>Security considerations</h3>
+        <p>CIP Security adds TLS transport, certificate-based authentication, and authorization policies, but adoption on the installed base is limited — it requires firmware support on both ends and is not available on older hardware. Most production EtherNet/IP deployments operate without CIP Security, relying on network segmentation. The protocol supports no authentication in its base form; any device with network access to a Rockwell PLC can issue CIP service requests.</p>
+
+        <div class="pros-cons">
+          <div class="pros">
+            <div class="pros-label">When to use</div>
+            <ul>
+              <li>Any environment with significant Allen-Bradley or Rockwell installed base</li>
+              <li>Native tag access with no driver translation layer, direct integration with Studio 5000 tag databases</li>
+              <li>ODVA-certified non-Rockwell devices where EtherNet/IP is available and you are standardizing on a single Ethernet protocol</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <div class="cons-label">When to avoid</div>
+            <ul>
+              <li>Non-Rockwell-centric environments where EtherNet/IP support on field devices is inconsistent</li>
+              <li>Cloud-direct or internet-connected architectures — CIP Security adoption is insufficient to rely on for internet-exposed endpoints</li>
+              <li>Environments where engineering team familiarity is with OPC-UA or Modbus and the additional CIP knowledge is not justified by the installed base</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- ─── PROFINET ───────────────────────────────────────── -->
+        <h2 id="profinet">PROFINET</h2>
+
+        <div class="tags">
+          <span class="tag">Cyclic RT</span>
+          <span class="tag">Layer 2</span>
+          <span class="tag">Siemens / PI</span>
+        </div>
+
+        <h3>Typical use case</h3>
+        <p>The dominant protocol for Siemens PLC and distributed I/O communication. S7-300, S7-400, S7-1200, and S7-1500 series PLCs use PROFINET as their primary Ethernet fieldbus. In Siemens-heavy environments, PROFINET is the control network; data extraction for IIoT purposes typically happens at the PLC level via OPC-UA or S7 communication rather than directly on the PROFINET bus.</p>
+
+        <h3>Poll vs. subscription model</h3>
+        <p>Neither, in the conventional sense. PROFINET uses cyclic RT communication for I/O data exchange — the controller and device exchange data at a configured cycle time over an established connection, operating at Layer 2 and bypassing IP/TCP for RT traffic. For IIoT data collection, you are almost never reading PROFINET directly — you read the PLC that aggregates PROFINET I/O data, using OPC-UA, S7 communication, or a gateway.</p>
+
+        <h3>Overhead characteristics</h3>
+        <p>RT communication bypasses the IP stack entirely, operating at Layer 2 with cycle times as low as 250 microseconds. IRT (Isochronous Real-Time) reaches 31.25 microseconds. This determinism is the point: PROFINET RT and IRT are designed for motion control and synchronized axis communication, not data collection. Treating it as a data source by tapping the network rather than reading the PLC creates topology and timing risks that rarely justify the approach.</p>
+
+        <h3>Security considerations</h3>
+        <p>PROFINET Security Class 1 introduces integrity protection for acyclic services, but RT cyclic data remains unprotected at the protocol level. The practical security model is network isolation: PROFINET networks are almost always air-gapped or firewall-separated from office and cloud networks, with data extraction happening at the PLC boundary. Injecting unauthorized devices into a PROFINET network can disrupt real-time cyclic communication — timing disruptions in RT networks propagate to controlled processes.</p>
+
+        <div class="pros-cons">
+          <div class="pros">
+            <div class="pros-label">When to use</div>
+            <ul>
+              <li>PROFINET is not chosen for IIoT data collection — it is encountered as the fieldbus underneath Siemens PLCs</li>
+              <li>Data extraction from Siemens controllers: OPC-UA on S7-1500 natively, S7 communication via PUT/GET, or a gateway that republishes over MQTT or OPC-UA</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <div class="cons-label">When to avoid</div>
+            <ul>
+              <li>Direct PROFINET tapping for IIoT data acquisition — the data is available at the PLC with proper access control; tapping the fieldbus bypasses that boundary</li>
+              <li>Any non-Siemens, non-PI-ecosystem environment selecting a fieldbus from scratch — EtherNet/IP and OPC-UA are better-supported choices for mixed-vendor environments</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout">
+          <span class="callout-label">Protocol selection in practice</span>
+          <p>Most production environments run three or four of these protocols simultaneously — Modbus TCP or EtherNet/IP at the device layer, OPC-UA at the PLC-to-SCADA boundary, and MQTT or Sparkplug B at the edge-to-cloud layer. The question is rarely which single protocol to standardize on; it is where to place the translation boundary and which integration layer owns it. Platforms that force early convergence on a single protocol create constraint that compounds as the architecture grows.</p>
+        </div>
+
+        <div class="newsletter-block">
+          <span class="page-label">Machines &amp; Words</span>
+          <p>Buyer-first coverage of industrial software — no sponsored rankings, no affiliate arrangements.</p>
+          <div class="newsletter-form">
+            <input type="email" id="nl-email" placeholder="you@company.com" />
+            <button id="nl-submit">Subscribe</button>
+          </div>
+          <p id="nl-msg" style="margin-top:8px;font-size:12px;color:var(--mid);"></p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/newsletter.js" defer></script>
+
+</body>
+</html>

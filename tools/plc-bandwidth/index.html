@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>PLC Bandwidth &amp; Polling Calculator | Industrial IoT Software</title>
+  <meta name="description" content="Calculate the network bandwidth consumed by your IIoT polling layer. Size edge gateways and validate network segments before deployment.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/tools/plc-bandwidth/">
+
+  <meta property="og:title" content="PLC Bandwidth &amp; Polling Calculator | Industrial IoT Software">
+  <meta property="og:description" content="Calculate the network bandwidth consumed by your IIoT polling layer. Size edge gateways and validate network segments before deployment.">
+  <meta property="og:url" content="https://industrialiotsoftware.com/tools/plc-bandwidth/">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+
+  <style>
+    /* ── Calculator shell ── */
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: var(--hairline);
+      background: var(--border);
+      gap: 1px;
+      margin-bottom: 1px;
+    }
+    .calc-panel {
+      background: var(--surface);
+      padding: 24px;
+    }
+    .calc-panel-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: var(--hairline);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-num {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      font-size: 10px;
+      padding: 1px 6px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Fields ── */
+    .calc-field { margin-bottom: 20px; }
+    .calc-field:last-child { margin-bottom: 0; }
+    .calc-field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+      margin-bottom: 3px;
+    }
+    .field-hint {
+      font-size: 11px;
+      color: var(--faint);
+      margin-bottom: 6px;
+      font-style: italic;
+    }
+    .calc-field input[type="number"] {
+      width: 100%;
+      background: var(--bg);
+      border: var(--hairline);
+      color: var(--charcoal);
+      font-family: 'Space Mono', monospace;
+      font-size: var(--h3);
+      font-weight: 700;
+      padding: 7px 10px;
+      outline: none;
+      border-radius: 0;
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+    .calc-field input[type="number"]::-webkit-outer-spin-button,
+    .calc-field input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .calc-field input[type="number"]:focus { border-color: var(--accent); }
+
+    .calc-field select {
+      width: 100%;
+      background: var(--bg);
+      border: var(--hairline);
+      color: var(--charcoal);
+      font-family: 'Space Mono', monospace;
+      font-size: var(--h3);
+      font-weight: 700;
+      padding: 7px 10px;
+      outline: none;
+      border-radius: 0;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6b68'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 28px;
+    }
+    .calc-field select:focus { border-color: var(--accent); }
+
+    /* Slider */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .slider-row input[type="range"] {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 2px;
+      background: var(--border);
+      outline: none;
+      cursor: pointer;
+    }
+    .slider-row input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px; height: 14px;
+      background: var(--accent);
+      border: none; cursor: pointer; border-radius: 0;
+    }
+    .slider-row input[type="range"]::-moz-range-thumb {
+      width: 14px; height: 14px;
+      background: var(--accent);
+      border: none; cursor: pointer; border-radius: 0;
+    }
+    .slider-readout {
+      font-size: var(--small);
+      font-weight: 700;
+      min-width: 52px;
+      text-align: right;
+      color: var(--charcoal);
+    }
+
+    /* ── Results ── */
+    .calc-results {
+      border: var(--hairline);
+      border-top: none;
+      background: var(--surface);
+      padding: 24px;
+      margin-bottom: 1px;
+    }
+    .results-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: var(--hairline);
+    }
+
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: var(--hairline);
+      background: var(--border);
+      gap: 1px;
+      margin-bottom: 24px;
+    }
+    .metric-cell {
+      background: var(--surface);
+      padding: 14px 16px;
+    }
+    .metric-cell-label {
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 4px;
+    }
+    .metric-cell-value {
+      font-size: var(--h2);
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+    .metric-cell-value.warn   { color: #b45309; }
+    .metric-cell-value.danger { color: #991b1b; }
+    .metric-cell-sub {
+      font-size: 11px;
+      color: var(--faint);
+      margin-top: 3px;
+    }
+
+    /* ── Utilization bar ── */
+    .util-section { margin-bottom: 24px; }
+    .util-section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 8px;
+    }
+    .util-bar-wrap {
+      border: var(--hairline);
+      background: var(--bg);
+      height: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .util-bar-fill {
+      position: absolute;
+      left: 0; top: 0; height: 100%;
+      background: var(--accent);
+      transition: width 0.35s ease, background 0.35s ease;
+    }
+    .util-bar-fill.warn   { background: #b45309; }
+    .util-bar-fill.danger { background: #991b1b; }
+    .util-bar-label {
+      position: absolute;
+      right: 8px; top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+    .util-thresholds {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--faint);
+      margin-top: 4px;
+    }
+
+    /* ── Protocol context note ── */
+    .protocol-note {
+      border: var(--hairline);
+      border-left: 3px solid var(--accent);
+      background: var(--accent-pale);
+      padding: 12px 16px;
+      margin-bottom: 24px;
+    }
+    .protocol-note-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .protocol-note p {
+      font-size: var(--small);
+      color: var(--charcoal);
+      margin: 0;
+      line-height: 1.7;
+    }
+
+    /* ── Methodology ── */
+    .methodology-note {
+      font-size: 11px;
+      color: var(--faint);
+      border-top: var(--hairline);
+      padding-top: 16px;
+      line-height: 1.75;
+    }
+    .methodology-note strong { color: var(--mid); }
+
+    /* ── Gate bar ── */
+    .gate-bar {
+      border: var(--hairline);
+      border-top: none;
+      background: var(--accent-pale);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .gate-bar-copy {
+      font-size: var(--small);
+      color: var(--mid);
+      line-height: 1.6;
+    }
+    .gate-bar-copy strong { color: var(--charcoal); }
+    .btn-export {
+      flex-shrink: 0;
+      background: var(--accent);
+      color: white;
+      border: none;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 9px 18px;
+      cursor: pointer;
+      border-radius: 0;
+      white-space: nowrap;
+    }
+    .btn-export:hover { background: var(--accent-dim); }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(42,42,40,0.65);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--surface);
+      border: var(--hairline);
+      max-width: 460px;
+      width: 90%;
+      padding: 28px;
+    }
+    .modal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .modal-top h2 { font-size: var(--h2); font-weight: 700; margin: 0; border: none; padding: 0; }
+    .modal-close {
+      background: none; border: none;
+      font-family: 'Space Mono', monospace;
+      font-size: 18px; color: var(--faint);
+      cursor: pointer; padding: 0; line-height: 1;
+    }
+    .modal-close:hover { color: var(--charcoal); }
+    .modal-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 2px 8px; margin-bottom: 14px;
+    }
+    .modal-box p {
+      font-size: var(--small);
+      color: var(--mid);
+      line-height: 1.75;
+      margin-bottom: 14px;
+    }
+    .modal-box p strong { color: var(--charcoal); }
+    .modal-form { display: flex; gap: 8px; margin-bottom: 12px; }
+    .modal-form input[type="email"] {
+      flex: 1;
+      font-family: 'Space Mono', monospace;
+      font-size: var(--small);
+      padding: 8px 10px;
+      border: var(--hairline);
+      background: var(--bg);
+      color: var(--charcoal);
+      outline: none; border-radius: 0;
+    }
+    .modal-form input[type="email"]:focus { border-color: var(--accent); }
+    .modal-form button {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 8px 14px;
+      background: var(--charcoal); color: white;
+      border: none; cursor: pointer; border-radius: 0;
+      white-space: nowrap;
+    }
+    .modal-form button:hover { background: var(--accent); }
+    .modal-confirm {
+      display: none;
+      font-size: var(--small);
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .modal-fine-print { font-size: 11px; color: var(--faint); line-height: 1.6; }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .calc-grid { grid-template-columns: 1fr; }
+      .metrics-row { grid-template-columns: 1fr 1fr; }
+      .gate-bar { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 400px) {
+      .metrics-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for industrial IoT software buyers</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/tools/">Tools</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>PLC Bandwidth Calculator</span>
+        </div>
+
+        <span class="page-label">Network Sizing Tool</span>
+        <h1>PLC Bandwidth &amp; Polling Calculator</h1>
+        <p class="lead">Estimate the network bandwidth your IIoT polling layer will consume. Use this before deploying an edge gateway to confirm the target network segment can carry the load.</p>
+
+        <!-- ── INPUTS ── -->
+        <div class="calc-grid">
+
+          <div class="calc-panel">
+            <div class="calc-panel-label">
+              <span class="panel-num">01</span> Device &amp; Tag Configuration
+            </div>
+
+            <div class="calc-field">
+              <label for="f-plcs">Number of PLCs</label>
+              <div class="field-hint">Total devices being polled by the edge gateway</div>
+              <input type="number" id="f-plcs" value="12" min="1" max="10000">
+            </div>
+
+            <div class="calc-field">
+              <label for="f-tags">Tags per PLC (average)</label>
+              <div class="field-hint">Average number of data points collected per device</div>
+              <input type="number" id="f-tags" value="150" min="1">
+            </div>
+
+            <div class="calc-field">
+              <label for="f-bytes">Bytes per Tag</label>
+              <div class="field-hint">Payload size per data point (BOOL=1, INT=2, FLOAT=4, DWORD=4)</div>
+              <div class="slider-row">
+                <input type="range" id="f-bytes" min="1" max="16" value="4" step="1">
+                <span class="slider-readout" id="r-bytes">4 B</span>
+              </div>
+            </div>
+
+            <div class="calc-field">
+              <label for="f-protocol">Collection Protocol</label>
+              <div class="field-hint">Sets framing overhead multiplier for this protocol</div>
+              <select id="f-protocol">
+                <option value="2.2">Modbus TCP (2.2x overhead)</option>
+                <option value="3.5">Modbus RTU over TCP (3.5x)</option>
+                <option value="4.0" selected>OPC-UA (4.0x overhead)</option>
+                <option value="1.4">MQTT (1.4x overhead)</option>
+                <option value="2.8">EtherNet/IP (2.8x overhead)</option>
+                <option value="3.0">PROFINET (3.0x overhead)</option>
+                <option value="1.8">Sparkplug B over MQTT (1.8x)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="calc-panel">
+            <div class="calc-panel-label">
+              <span class="panel-num">02</span> Polling &amp; Network Parameters
+            </div>
+
+            <div class="calc-field">
+              <label for="f-interval">Polling Interval (ms)</label>
+              <div class="field-hint">How frequently each tag is sampled</div>
+              <div class="slider-row">
+                <input type="range" id="f-interval" min="100" max="60000" value="1000" step="100">
+                <span class="slider-readout" id="r-interval">1000 ms</span>
+              </div>
+            </div>
+
+            <div class="calc-field">
+              <label for="f-link">Network Link Capacity</label>
+              <div class="field-hint">Available bandwidth on the target segment</div>
+              <select id="f-link">
+                <option value="0.125">1 Mbps (cellular / constrained WAN)</option>
+                <option value="1.25" selected>10 Mbps (legacy plant floor Ethernet)</option>
+                <option value="12.5">100 Mbps (modern plant floor switch)</option>
+                <option value="125">1 Gbps (backbone / fiber)</option>
+              </select>
+            </div>
+
+            <div class="calc-field">
+              <label for="f-outage">Outage Tolerance (minutes)</label>
+              <div class="field-hint">How long the edge buffer must hold data if the uplink fails</div>
+              <div class="slider-row">
+                <input type="range" id="f-outage" min="1" max="480" value="30" step="1">
+                <span class="slider-readout" id="r-outage">30 min</span>
+              </div>
+            </div>
+
+          </div>
+        </div><!-- /.calc-grid -->
+
+        <!-- ── RESULTS ── -->
+        <div class="calc-results">
+          <div class="results-label">Live Results &mdash; updates as you adjust inputs</div>
+
+          <div class="metrics-row">
+            <div class="metric-cell">
+              <div class="metric-cell-label">Raw Data Rate</div>
+              <div class="metric-cell-value" id="out-rate">0 KB/s</div>
+              <div class="metric-cell-sub">with protocol overhead</div>
+            </div>
+            <div class="metric-cell">
+              <div class="metric-cell-label">Daily Data Volume</div>
+              <div class="metric-cell-value" id="out-daily">0 MB</div>
+              <div class="metric-cell-sub">historian / storage sizing</div>
+            </div>
+            <div class="metric-cell">
+              <div class="metric-cell-label">Link Utilization</div>
+              <div class="metric-cell-value" id="out-util">0%</div>
+              <div class="metric-cell-sub" id="out-util-sub">of selected link capacity</div>
+            </div>
+            <div class="metric-cell">
+              <div class="metric-cell-label">Edge Buffer Required</div>
+              <div class="metric-cell-value" id="out-buffer">0 MB</div>
+              <div class="metric-cell-sub" id="out-buffer-sub">at selected outage tolerance</div>
+            </div>
+          </div>
+
+          <!-- Utilization bar -->
+          <div class="util-section">
+            <div class="util-section-label">Link Utilization</div>
+            <div class="util-bar-wrap">
+              <div class="util-bar-fill" id="bar-util"></div>
+              <div class="util-bar-label" id="bar-util-label">0%</div>
+            </div>
+            <div class="util-thresholds">
+              <span>0%</span>
+              <span style="color:#b45309">50% caution</span>
+              <span style="color:#991b1b">80% critical</span>
+              <span>100%</span>
+            </div>
+          </div>
+
+          <!-- Protocol context note -->
+          <div class="protocol-note" id="protocol-note">
+            <div class="protocol-note-label">Protocol Note</div>
+            <p id="protocol-note-text"></p>
+          </div>
+
+          <div class="methodology-note">
+            <strong>Methodology:</strong>
+            Raw data rate = (PLCs &times; tags per PLC &times; bytes per tag &times; protocol overhead multiplier) &divide; polling interval.
+            Daily volume = raw data rate &times; 86,400 seconds.
+            Link utilization = raw data rate &divide; link capacity (MB/s).
+            Edge buffer = raw data rate &times; outage tolerance in seconds.
+            Overhead multipliers account for protocol framing, acknowledgment packets, and connection management traffic under typical operating conditions.
+            Actual utilization will vary based on change-of-value filtering, compression, and network topology.
+          </div>
+        </div>
+
+        <!-- ── GATE BAR ── -->
+        <div class="gate-bar">
+          <div class="gate-bar-copy">
+            <strong>Network Sizing Report</strong> &mdash; A formatted PDF with your configuration, calculated outputs, and segment recommendations. Useful for presenting gateway placement decisions to IT and InfoSec.
+          </div>
+          <button class="btn-export" onclick="openModal()">Export PDF Report</button>
+        </div>
+
+      </div><!-- /.content -->
+    </main>
+  </div><!-- /.layout -->
+
+  <footer>
+    <div class="footer-inner">
+      <span class="page-label">Industrial IoT Software</span>
+      <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+    </div>
+  </footer>
+
+  <!-- ── MODAL ── -->
+  <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+    <div class="modal-box">
+      <div class="modal-top">
+        <h2>PDF Export is Coming</h2>
+        <button class="modal-close" onclick="closeModal()">&#215;</button>
+      </div>
+      <div class="modal-badge">Premium Export</div>
+      <p>The formatted network sizing report with your configuration, outputs, and segment recommendations is in final production. <strong>Leave your email and you will get access the day it launches.</strong></p>
+      <p>You will also receive the Industrial IoT Software buyer briefing: vendor analysis, evaluation frameworks, and market intelligence for operations and controls teams.</p>
+      <div class="modal-form" id="modal-form">
+        <input type="email" id="modal-email" placeholder="your@email.com">
+        <button onclick="submitEmail()">Notify Me</button>
+      </div>
+      <div class="modal-confirm" id="modal-confirm">You are on the list. We will reach out when the export goes live.</div>
+      <p class="modal-fine-print">No spam. Unsubscribe any time. Industrial IoT Software is published by Machines &amp; Words.</p>
+    </div>
+  </div>
+
+  <script>
+    var PROTOCOL_NOTES = {
+      '2.2': 'Modbus TCP uses a synchronous request-response model. Every tag requires an individual poll cycle. At high tag counts or fast polling intervals, transaction queuing becomes the limiting factor before bandwidth does. Consider batching registers into contiguous block reads where the PLC memory map allows.',
+      '3.5': 'Modbus RTU over TCP adds serial framing inside the TCP payload, increasing overhead. The synchronous model still applies. RTU devices on a serial bus shared with other traffic will see effective throughput well below the calculated figure.',
+      '4.0': 'OPC-UA supports both polling (cyclic) and subscriptions (monitored items with change-of-value filtering). If your platform uses OPC-UA subscriptions with a deadband, actual bandwidth will be significantly lower than this estimate. This calculation assumes full cyclic polling with no change filtering.',
+      '1.4': 'MQTT uses a publish-subscribe model. This estimate assumes the edge gateway is publishing every tag on every poll cycle. In practice, most MQTT-based IIoT platforms apply change-of-value filtering at the gateway before publishing, which can reduce actual bandwidth by 60-90% depending on process variability.',
+      '2.8': 'EtherNet/IP (CIP) supports both explicit messaging (polled) and implicit I/O (cyclic data). This estimate applies to explicit messaging. Implicit I/O connections maintain a fixed packet rate regardless of tag count, which can be more predictable for network planning on stable production lines.',
+      '3.0': 'PROFINET uses cyclic real-time communication with fixed cycle times. The overhead figure reflects standard RT class traffic. IRT (Isochronous Real-Time) configurations have stricter timing requirements and should be isolated from general IIoT data collection traffic on separate VLANs.',
+      '1.8': 'Sparkplug B defines a topic namespace and payload structure on top of MQTT. The lower overhead vs. OPC-UA reflects MQTT transport efficiency. Sparkplug B includes birth/death certificates and state management that add periodic overhead not captured in steady-state calculations.'
+    };
+
+    function val(id) { return parseFloat(document.getElementById(id).value) || 0; }
+
+    function fmtBytes(kb) {
+      if (kb >= 1000)   return (kb / 1000).toFixed(2) + ' MB/s';
+      if (kb >= 1)      return kb.toFixed(2) + ' KB/s';
+      return (kb * 1000).toFixed(1) + ' B/s';
+    }
+    function fmtMB(mb) {
+      if (mb >= 1000)  return (mb / 1000).toFixed(2) + ' GB';
+      if (mb >= 1)     return mb.toFixed(1) + ' MB';
+      return (mb * 1000).toFixed(0) + ' KB';
+    }
+
+    function calculate() {
+      var plcs       = val('f-plcs');
+      var tags       = val('f-tags');
+      var bytes      = val('f-bytes');
+      var interval   = val('f-interval');        // ms
+      var overhead   = parseFloat(document.getElementById('f-protocol').value);
+      var linkMBs    = parseFloat(document.getElementById('f-link').value);  // MB/s
+      var outageMins = val('f-outage');
+
+      // Raw data rate: bytes/s then convert to KB/s
+      var rawBytesPerSec = (plcs * tags * bytes * overhead) / (interval / 1000);
+      var rawKBs         = rawBytesPerSec / 1024;
+      var rawMBs         = rawBytesPerSec / (1024 * 1024);
+
+      // Daily volume in MB
+      var dailyMB = rawMBs * 86400;
+
+      // Link utilization %
+      var utilPct = (rawMBs / linkMBs) * 100;
+
+      // Edge buffer in MB
+      var bufferMB = rawMBs * (outageMins * 60);
+
+      // ── Update outputs ──
+      document.getElementById('out-rate').textContent    = fmtBytes(rawKBs);
+      document.getElementById('out-daily').textContent   = fmtMB(dailyMB);
+      document.getElementById('out-buffer').textContent  = fmtMB(bufferMB);
+      document.getElementById('out-buffer-sub').textContent = 'for ' + outageMins + ' min outage';
+
+      // Utilization with color states
+      var utilEl    = document.getElementById('out-util');
+      var utilBar   = document.getElementById('bar-util');
+      var utilLabel = document.getElementById('bar-util-label');
+      var utilStr   = utilPct.toFixed(1) + '%';
+
+      utilEl.textContent    = utilStr;
+      utilLabel.textContent = utilStr;
+
+      var utilClass = utilPct >= 80 ? 'danger' : (utilPct >= 50 ? 'warn' : '');
+      utilEl.className    = 'metric-cell-value' + (utilClass ? ' ' + utilClass : '');
+      utilBar.className   = 'util-bar-fill'      + (utilClass ? ' ' + utilClass : '');
+      utilBar.style.width = Math.min(utilPct, 100) + '%';
+
+      var subText = utilPct >= 80
+        ? 'Critical: segment will be saturated'
+        : (utilPct >= 50 ? 'Caution: consider a dedicated segment' : 'of selected link capacity');
+      document.getElementById('out-util-sub').textContent = subText;
+
+      // Protocol note
+      var protoKey  = document.getElementById('f-protocol').value;
+      document.getElementById('protocol-note-text').textContent = PROTOCOL_NOTES[protoKey] || '';
+    }
+
+    // Sliders
+    document.getElementById('f-bytes').addEventListener('input', function() {
+      document.getElementById('r-bytes').textContent = this.value + ' B';
+      calculate();
+    });
+    document.getElementById('f-interval').addEventListener('input', function() {
+      var v = parseInt(this.value);
+      document.getElementById('r-interval').textContent = v >= 1000 ? (v/1000) + ' s' : v + ' ms';
+      calculate();
+    });
+    document.getElementById('f-outage').addEventListener('input', function() {
+      var v = parseInt(this.value);
+      document.getElementById('r-outage').textContent = v >= 60 ? (v/60).toFixed(1) + ' hr' : v + ' min';
+      calculate();
+    });
+
+    // Number inputs + selects
+    ['f-plcs','f-tags'].forEach(function(id) {
+      document.getElementById(id).addEventListener('input', calculate);
+    });
+    ['f-protocol','f-link'].forEach(function(id) {
+      document.getElementById(id).addEventListener('change', calculate);
+    });
+
+    // Modal
+    function openModal()  { document.getElementById('modal-overlay').classList.add('open'); }
+    function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+    function handleOverlayClick(e) {
+      if (e.target === document.getElementById('modal-overlay')) closeModal();
+    }
+    function submitEmail() {
+      var email = document.getElementById('modal-email').value.trim();
+      if (!email || !email.includes('@')) {
+        document.getElementById('modal-email').focus();
+        return;
+      }
+      fetch('https://newsletter.industrialiotsoftware.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          group_id: '189191445053179034'
+        })
+      })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.success) {
+            msgEl.textContent = 'You\u2019re subscribed. Check your inbox for a confirmation.';
+          } else {
+            msgEl.textContent = 'Something went wrong. Please try again.';
+          }
+        })
+        .catch(function() {
+          msgEl.textContent = 'Could not connect. Please try again.';
+        });
+
+      document.getElementById('modal-form').style.display   = 'none';
+      document.getElementById('modal-confirm').style.display = 'block';
+    }
+
+    calculate();
+  </script>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>

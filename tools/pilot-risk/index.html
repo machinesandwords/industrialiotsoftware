@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>IIoT Pilot Risk Stress Tester | Industrial IoT Software</title>
+  <meta name="description" content="Assess the risk profile of your IIoT pilot before kickoff. Seven dimensions. Specific failure mode analysis. The conversation to have with your steering committee before the vendor arrives.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/tools/pilot-risk/">
+
+  <meta property="og:title" content="IIoT Pilot Risk Stress Tester | Industrial IoT Software">
+  <meta property="og:description" content="Assess the risk profile of your IIoT pilot before kickoff. Seven dimensions. Specific failure mode analysis.">
+  <meta property="og:url" content="https://industrialiotsoftware.com/tools/pilot-risk/">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+
+  <style>
+    /* ── Risk rating colors ── */
+    :root {
+      --risk-low:      #0A7E6A;
+      --risk-low-pale: #e6f4f1;
+      --risk-mod:      #b45309;
+      --risk-mod-pale: #fef3c7;
+      --risk-high:     #991b1b;
+      --risk-high-pale:#fee2e2;
+      --risk-crit:     #1a1a1a;
+      --risk-crit-pale:#f5f5f4;
+    }
+
+    /* ── Summary bar ── */
+    .risk-summary {
+      border: var(--hairline);
+      background: var(--charcoal);
+      padding: 20px 24px;
+      margin-bottom: 1px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .risk-rating-block { flex-shrink: 0; }
+    .risk-rating-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 4px;
+    }
+    .risk-rating-value {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--accent);
+    }
+    .risk-rating-value.mod  { color: #f59e0b; }
+    .risk-rating-value.high { color: #f87171; }
+    .risk-rating-value.crit { color: #fca5a5; }
+
+    .risk-summary-copy {
+      font-size: var(--small);
+      color: #9b9b98;
+      line-height: 1.7;
+      flex: 1;
+    }
+    .risk-summary-copy strong { color: white; }
+
+    .risk-progress {
+      flex-shrink: 0;
+      text-align: right;
+    }
+    .risk-progress-label {
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 4px;
+    }
+    .risk-progress-val {
+      font-size: var(--h2);
+      font-weight: 700;
+      color: white;
+    }
+    .risk-progress-denom {
+      font-size: 11px;
+      color: var(--faint);
+    }
+
+    /* ── Dimension block ── */
+    .dimension-block {
+      border: var(--hairline);
+      border-bottom: none;
+    }
+    .dimension-block:last-of-type {
+      border-bottom: var(--hairline);
+      margin-bottom: 24px;
+    }
+    .dimension-header {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      background: var(--bg);
+      border-bottom: var(--hairline);
+      cursor: pointer;
+      user-select: none;
+    }
+    .dimension-header:hover { background: var(--accent-pale); }
+    .dimension-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+    }
+    .dim-risk-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border: 1px solid;
+    }
+    .dim-risk-badge.unanswered { border-color: var(--border); color: var(--faint); }
+    .dim-risk-badge.low  { border-color: var(--risk-low);  color: var(--risk-low);  background: var(--risk-low-pale); }
+    .dim-risk-badge.mod  { border-color: var(--risk-mod);  color: var(--risk-mod);  background: var(--risk-mod-pale); }
+    .dim-risk-badge.high { border-color: var(--risk-high); color: var(--risk-high); background: var(--risk-high-pale); }
+    .dim-risk-badge.crit { border-color: #4b1c1c; color: var(--risk-high); background: var(--risk-high-pale); }
+
+    .dimension-toggle {
+      font-size: 14px; color: var(--faint);
+      width: 16px; text-align: center;
+      transition: transform 0.2s;
+    }
+    .dimension-block.collapsed .dimension-toggle { transform: rotate(-90deg); }
+    .dimension-block.collapsed .dimension-body   { display: none; }
+
+    /* ── Question ── */
+    .question-block {
+      padding: 16px 16px 0;
+      border-bottom: var(--hairline);
+      padding-bottom: 16px;
+    }
+    .question-block:last-child { border-bottom: none; }
+    .question-text {
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .answer-options {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .answer-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 12px;
+      border: var(--hairline);
+      background: var(--bg);
+      cursor: pointer;
+      transition: background 0.1s, border-color 0.1s;
+    }
+    .answer-option:hover { border-color: var(--accent); background: var(--accent-pale); }
+    .answer-option.selected-low  { border-color: var(--risk-low);  background: var(--risk-low-pale); }
+    .answer-option.selected-mod  { border-color: var(--risk-mod);  background: var(--risk-mod-pale); }
+    .answer-option.selected-high { border-color: var(--risk-high); background: var(--risk-high-pale); }
+    .answer-option.selected-crit { border-color: var(--risk-high); background: var(--risk-high-pale); }
+
+    .answer-radio {
+      width: 14px; height: 14px;
+      border: var(--hairline);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 2px;
+      background: var(--surface);
+      position: relative;
+    }
+    .answer-option.selected-low  .answer-radio,
+    .answer-option.selected-mod  .answer-radio,
+    .answer-option.selected-high .answer-radio,
+    .answer-option.selected-crit .answer-radio {
+      border-color: currentColor;
+    }
+    .answer-option.selected-low  .answer-radio::after,
+    .answer-option.selected-mod  .answer-radio::after,
+    .answer-option.selected-high .answer-radio::after,
+    .answer-option.selected-crit .answer-radio::after {
+      content: '';
+      position: absolute;
+      inset: 3px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .answer-text {
+      font-size: var(--small);
+      color: var(--charcoal);
+      line-height: 1.5;
+      flex: 1;
+    }
+    .answer-risk-tag {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+    .answer-risk-tag.low  { color: var(--risk-low); }
+    .answer-risk-tag.mod  { color: var(--risk-mod); }
+    .answer-risk-tag.high { color: var(--risk-high); }
+    .answer-risk-tag.crit { color: var(--risk-high); }
+
+    /* ── Implication copy ── */
+    .implication-block {
+      margin: 0 16px 16px;
+      border-left: 3px solid var(--border);
+      padding: 10px 14px;
+      background: var(--surface);
+      display: none;
+    }
+    .implication-block.visible { display: block; }
+    .implication-block.mod  { border-left-color: var(--risk-mod); }
+    .implication-block.high { border-left-color: var(--risk-high); }
+    .implication-block.crit { border-left-color: var(--risk-high); }
+    .implication-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .implication-block.mod  .implication-label { color: var(--risk-mod); }
+    .implication-block.high .implication-label { color: var(--risk-high); }
+    .implication-block.crit .implication-label { color: var(--risk-high); }
+    .implication-text {
+      font-size: 11px;
+      color: var(--charcoal);
+      line-height: 1.75;
+    }
+
+    /* ── Gate bar ── */
+    .gate-bar {
+      border: var(--hairline);
+      background: var(--accent-pale);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .gate-bar-copy { font-size: var(--small); color: var(--mid); line-height: 1.6; }
+    .gate-bar-copy strong { color: var(--charcoal); }
+    .btn-export {
+      flex-shrink: 0; background: var(--accent); color: white; border: none;
+      font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 9px 18px; cursor: pointer; border-radius: 0; white-space: nowrap;
+    }
+    .btn-export:hover { background: var(--accent-dim); }
+
+    /* ── Modal ── */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(42,42,40,0.65); z-index: 200; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal-box { background: var(--surface); border: var(--hairline); max-width: 460px; width: 90%; padding: 28px; }
+    .modal-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+    .modal-top h2 { font-size: var(--h2); font-weight: 700; margin: 0; border: none; padding: 0; }
+    .modal-close { background: none; border: none; font-family: 'Space Mono', monospace; font-size: 18px; color: var(--faint); cursor: pointer; padding: 0; line-height: 1; }
+    .modal-close:hover { color: var(--charcoal); }
+    .modal-badge { display: inline-block; background: var(--accent); color: white; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; margin-bottom: 14px; }
+    .modal-box p { font-size: var(--small); color: var(--mid); line-height: 1.75; margin-bottom: 14px; }
+    .modal-box p strong { color: var(--charcoal); }
+    .modal-form { display: flex; gap: 8px; margin-bottom: 12px; }
+    .modal-form input[type="email"] { flex: 1; font-family: 'Space Mono', monospace; font-size: var(--small); padding: 8px 10px; border: var(--hairline); background: var(--bg); color: var(--charcoal); outline: none; border-radius: 0; }
+    .modal-form input[type="email"]:focus { border-color: var(--accent); }
+    .modal-form button { font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 14px; background: var(--charcoal); color: white; border: none; cursor: pointer; border-radius: 0; white-space: nowrap; }
+    .modal-form button:hover { background: var(--accent); }
+    .modal-confirm { display: none; font-size: var(--small); color: var(--accent); font-weight: 700; margin-bottom: 12px; }
+    .modal-fine-print { font-size: 11px; color: var(--faint); line-height: 1.6; }
+
+    @media (max-width: 600px) {
+      .risk-summary { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .gate-bar { flex-direction: column; align-items: flex-start; }
+      .answer-option { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for industrial IoT software buyers</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/tools/">Tools</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Pilot Risk Tester</span>
+        </div>
+
+        <span class="page-label">Pilot Planning Tool</span>
+        <h1>IIoT Pilot Risk Stress Tester</h1>
+        <p class="lead">Answer the questions below about your pilot as currently scoped. The tool scores the risk profile across seven dimensions that account for most IIoT pilot failures. Use the results before kickoff to surface blockers while there is still time to address them.</p>
+
+        <div class="callout" style="margin-bottom:24px;">
+          <span class="callout-label">How this works</span>
+          <p>Each question describes a specific pilot configuration factor. Select the answer that most accurately reflects your situation as it stands today, not as you intend it to be. The risk rating reflects current state, not planned state.</p>
+        </div>
+
+        <!-- Risk summary -->
+        <div class="risk-summary" id="risk-summary">
+          <div class="risk-rating-block">
+            <div class="risk-rating-label">Overall Risk</div>
+            <div class="risk-rating-value" id="overall-rating">--</div>
+          </div>
+          <div class="risk-summary-copy" id="summary-copy">
+            Answer the questions below to generate your pilot risk assessment.
+          </div>
+          <div class="risk-progress">
+            <div class="risk-progress-label">Answered</div>
+            <div>
+              <span class="risk-progress-val" id="answered-count">0</span>
+              <span class="risk-progress-denom" id="answered-denom">/ 0</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="dimensions-container"></div>
+
+        <div class="gate-bar">
+          <div class="gate-bar-copy">
+            <strong>PDF Risk Report</strong> &mdash; A formatted assessment with your full responses, dimension scores, implication notes, and a prioritized list of actions to take before pilot kickoff. The document to bring to your steering committee.
+          </div>
+          <button class="btn-export" onclick="openModal()">Export PDF Report</button>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="page-label">Industrial IoT Software</span>
+      <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+    </div>
+  </footer>
+
+  <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+    <div class="modal-box">
+      <div class="modal-top">
+        <h2>PDF Export is Coming</h2>
+        <button class="modal-close" onclick="closeModal()">&#215;</button>
+      </div>
+      <div class="modal-badge">Premium Export</div>
+      <p>The formatted pilot risk report is in final production. <strong>Leave your email and you will get access the day it launches.</strong></p>
+      <p>You will also receive monthly buyer briefings, vendor analyses, evaluation frameworks, and market intelligence for operations and controls teams.</p>
+      <div class="modal-form" id="modal-form">
+        <input type="email" id="modal-email" placeholder="your@email.com">
+        <button onclick="submitEmail()">Notify Me</button>
+      </div>
+      <div class="modal-confirm" id="modal-confirm">You are on the list. We will reach out when the export goes live.</div>
+      <p class="modal-fine-print">No spam. Unsubscribe any time. Industrial IoT Software is published by Machines &amp; Words.</p>
+    </div>
+  </div>
+
+  <script>
+    // Risk levels: 0=low, 1=mod, 2=high, 3=crit
+    // Each question has options with a risk value and implication copy triggered at mod+
+
+    var DIMENSIONS = [
+      {
+        id: 'scope',
+        title: 'Scope Definition',
+        questions: [
+          {
+            text: 'How is the pilot scope documented?',
+            options: [
+              { text: 'Written scope document with explicit in/out-of-scope list, signed off by all stakeholders', risk: 0 },
+              { text: 'Informal agreement among the core team, not formally documented', risk: 1,
+                impl: 'Undocumented scope is open to reinterpretation. When the steering committee sees the dashboard and asks for three more machines, the team has no written authority to decline. Scope creep is the leading cause of pilot timeline overrun.' },
+              { text: 'High-level objectives defined but no scope boundary agreed', risk: 2,
+                impl: 'Without a scope boundary, the pilot will expand to fill the available time and attention. Define an explicit list of what is not in scope before the vendor arrives. The exclusion list is as important as the inclusion list.' },
+              { text: 'No formal scope defined yet', risk: 3,
+                impl: 'Starting a pilot without defined scope means starting without agreed success criteria, without a baseline to measure against, and without authority to hold the boundary when additions are requested. This is the configuration most likely to produce an inconclusive result.' }
+            ]
+          },
+          {
+            text: 'Is there a fixed end date for the pilot with agreed scale-out criteria?',
+            options: [
+              { text: 'Yes, end date fixed and scale-out criteria documented before pilot starts', risk: 0 },
+              { text: 'End date set but scale-out criteria not yet defined', risk: 1,
+                impl: 'Without defined scale-out criteria, the pilot ends without a clear decision framework. The steering committee will defer the scale-out decision, and post-pilot inertia sets in. Define what has to be true at the end for the program to proceed.' },
+              { text: 'Neither end date nor scale-out criteria confirmed', risk: 2,
+                impl: 'An open-ended pilot with no agreed decision point almost never produces a go/no-go decision. It produces continued evaluation. Fix the end date and the decision criteria before kickoff, not after the results are in.' }
+            ]
+          },
+          {
+            text: 'How many assets are in scope for the pilot?',
+            options: [
+              { text: '1-3 assets, deliberately chosen to test the hardest connectivity case', risk: 0 },
+              { text: '4-10 assets across at least two protocol types', risk: 1,
+                impl: 'This is a workable scope if the protocol diversity is deliberate. Confirm that at least one asset represents a connectivity challenge that will exist at full scale.' },
+              { text: 'More than 10 assets, or scope not yet finalized', risk: 2,
+                impl: 'Pilots with more than 10 assets rarely maintain focus on the primary metric. Each additional asset adds configuration time, stakeholder coordination, and potential failure points. Cut scope to the minimum that proves scalability, not the maximum that looks impressive.' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'stakeholders',
+        title: 'Stakeholder Coverage',
+        questions: [
+          {
+            text: 'Which stakeholders have committed time to the pilot?',
+            options: [
+              { text: 'Operations owner, controls engineer, IT architect, and InfoSec all committed', risk: 0 },
+              { text: 'Operations and controls committed; IT and InfoSec not yet engaged', risk: 2,
+                impl: 'IT and InfoSec missing at scoping is the most common source of mid-pilot stoppage. InfoSec discovering an uncertified device on the OT network after configuration has started is a project restart. Engage both before the gateway is specified, not after it is deployed.' },
+              { text: 'Controls engineer committed; others not yet formally engaged', risk: 3,
+                impl: 'A pilot run solely by the controls team will hit an InfoSec wall at network configuration and an operations wall when behavior change is required. Without the operations owner, there is no agreed primary metric and no authority to change workflows based on the data.' },
+              { text: 'Vendor professional services team is leading; internal stakeholders are observers', risk: 3,
+                impl: 'Vendor-led pilots produce vendor-controlled results. The internal team learns nothing about operating the platform and has no basis for evaluating whether outcomes are reproducible. The vendor controls scoping, configuration, and success criteria. Run the pilot with internal staff supported by the vendor, not the reverse.' }
+            ]
+          },
+          {
+            text: 'Has the operations owner defined a single primary metric the pilot is designed to move?',
+            options: [
+              { text: 'Yes, one metric agreed and baselined before pilot starts', risk: 0 },
+              { text: 'Two or three metrics identified but not ranked', risk: 1,
+                impl: 'A pilot with multiple metrics has divided attention and no clear success criterion. When results are mixed, there is no agreed basis for a decision. Force-rank the metrics and treat only the top one as the success criterion.' },
+              { text: 'General objectives defined but no specific measurable metric', risk: 2,
+                impl: 'Without a measurable baseline, you cannot demonstrate ROI and you cannot make a credible case for scaling. The steering committee will ask for more time rather than approve phase two. Baseline the metric before any hardware is installed.' },
+              { text: 'No metric defined yet', risk: 3,
+                impl: 'This pilot has no agreed definition of success. It will produce data, but not a decision. Before any other scoping happens, the operations owner needs to name the one number the pilot is designed to move.' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'network',
+        title: 'Network & Security Readiness',
+        questions: [
+          {
+            text: 'Where in the network architecture is the edge gateway planned to sit?',
+            options: [
+              { text: 'Level 3.5 DMZ, outbound-only, with InfoSec firewall rules agreed', risk: 0 },
+              { text: 'Level 3.5 DMZ planned but firewall rules not yet approved by InfoSec', risk: 1,
+                impl: 'Gateway deployment without InfoSec firewall approval is a common stoppage point. Get written sign-off on the outbound port requirements (8883 for MQTT, 443 for HTTPS) before the gateway is shipped to site.' },
+              { text: 'On the corporate LAN or IT network, not the OT DMZ', risk: 2,
+                impl: 'A gateway on the corporate LAN does not test the architecture that will apply at scale. When the enterprise rollout starts, the IT/OT segmentation requirements will force a redesign. Test from the correct network position in the pilot.' },
+              { text: 'Network placement not yet determined', risk: 3,
+                impl: 'Deploying a gateway without a defined network position means discovering the segmentation requirements mid-pilot. This is the configuration that produces emergency security reviews and project pauses.' }
+            ]
+          },
+          {
+            text: 'Has the cybersecurity / InfoSec team reviewed and approved the gateway and connectivity approach?',
+            options: [
+              { text: 'Yes, InfoSec has reviewed and approved the specific gateway model and configuration', risk: 0 },
+              { text: 'InfoSec is aware of the pilot but has not reviewed the specific configuration', risk: 1,
+                impl: 'Awareness is not approval. InfoSec needs to review the gateway model, the outbound connectivity ports, the hardening configuration, and the data classification of the tags being transmitted. Schedule a formal review before deployment.' },
+              { text: 'InfoSec has not been engaged yet', risk: 3,
+                impl: 'InfoSec discovering an uncertified device transmitting data on a non-standard port is the scenario that produces mandatory decommissioning and security reviews. This is entirely preventable. Their requirements must be incorporated into the pilot architecture from day one.' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'protocol',
+        title: 'Protocol & Device Complexity',
+        questions: [
+          {
+            text: 'How many distinct PLC brands or protocol types are in scope for the pilot?',
+            options: [
+              { text: 'Two or more, deliberately chosen to test protocol heterogeneity', risk: 0 },
+              { text: 'One PLC brand / protocol, chosen for ease of connectivity', risk: 1,
+                impl: 'A pilot that proves connectivity to one PLC brand does not prove the platform can connect to the rest of your fleet. If your facility has multiple brands, include at least two in the pilot scope. Deliberately include the hardest case, not the easiest one.' },
+              { text: 'All assets are the same brand and protocol', risk: 2,
+                impl: 'Homogeneous pilots produce optimistic results that do not survive contact with the full facility. The scale-out problem is almost always protocol heterogeneity and semantic normalization, not connectivity to a single device type.' }
+            ]
+          },
+          {
+            text: 'Does the pilot include a test of semantic normalization across device types?',
+            options: [
+              { text: 'Yes, the pilot requires mapping tags from multiple devices into a common namespace', risk: 0 },
+              { text: 'Tag normalization is planned but not formally in scope for the pilot', risk: 1,
+                impl: 'Semantic normalization that is planned but not tested will be discovered as missing at scale. The pilot must prove the platform can map different tag naming conventions from different devices into the same UNS path before the data leaves the factory floor.' },
+              { text: 'Each device is treated independently with no normalization requirement', risk: 2,
+                impl: 'Without semantic normalization, your analytics layer will receive fragmented data from the same physical measurement under different tag names. This is the most common reason IIoT analytics initiatives fail to deliver on their promises after successful connectivity.' },
+              { text: 'Not applicable or not yet considered', risk: 2,
+                impl: 'Semantic normalization is the hardest scaling problem in IIoT data architecture. If it has not been considered for the pilot, it will be discovered as a gap when the team tries to run cross-asset analytics at scale.' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'vendor-dep',
+        title: 'Vendor Dependency',
+        questions: [
+          {
+            text: 'Who is configuring and operating the edge gateway and platform during the pilot?',
+            options: [
+              { text: 'Internal controls engineer, supported by vendor documentation and remote assistance', risk: 0 },
+              { text: 'Joint team: internal engineer leads with vendor engineer on-site for configuration', risk: 1,
+                impl: 'Joint configuration works if the internal engineer is the decision-maker and the vendor engineer is the support resource. Reverse this and the pilot becomes vendor-led. Ensure internal staff can explain every configuration decision made during the pilot.' },
+              { text: 'Vendor professional services team configures and operates; internal team observes', risk: 3,
+                impl: 'A vendor-operated pilot transfers knowledge to the vendor, not the customer. When the professional services team leaves, the internal team cannot operate, troubleshoot, or extend the platform. The pilot result is not reproducible without the vendor. This is the configuration that produces enterprise contracts for ongoing PS work the buyer did not intend to purchase.' }
+            ]
+          },
+          {
+            text: 'Has the vendor provided committed commercial terms for the enterprise-scale deployment?',
+            options: [
+              { text: 'Yes, enterprise pricing confirmed at target tag volume before pilot starts', risk: 0 },
+              { text: 'Pilot pricing confirmed; enterprise pricing to be negotiated after pilot results', risk: 1,
+                impl: 'Enterprise pricing negotiated after a successful pilot is negotiated from a weak position. The vendor knows you have invested in the platform and your team is aligned on the result. Get enterprise pricing committed before the pilot starts, or include a pricing commitment as a pilot exit criterion.' },
+              { text: 'No commercial terms discussed beyond the pilot', risk: 2,
+                impl: 'Many IIoT pilots succeed at 20 tags and become commercially unscalable at 50,000 tags under consumption pricing. The enterprise commercial model must be understood before the pilot ends, not after scale-out has been approved.' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'scaleout',
+        title: 'Scale-Out Viability',
+        questions: [
+          {
+            text: 'Was the pilot scope designed to prove scalability, or to prove the technology works?',
+            options: [
+              { text: 'Designed to prove scalability: tests the hardest connectivity, network, and normalization cases', risk: 0 },
+              { text: 'Designed to demonstrate capability: uses the best-case machine and cleanest data source', risk: 2,
+                impl: 'Best-case pilots produce best-case results. The conditions that made the pilot succeed -- one cooperative machine, one protocol, one available engineer -- do not exist at scale. The steering committee will approve phase two based on results that cannot be reproduced across the facility.' },
+              { text: 'Not yet clear how the pilot was scoped', risk: 3,
+                impl: 'A pilot without a deliberate scoping philosophy is almost always a best-case pilot by default. Revisit the scope with the question: does this test the problems we will actually face when we deploy to 200 assets?' }
+            ]
+          },
+          {
+            text: 'Does the pilot include at least one workflow change driven by IIoT data?',
+            options: [
+              { text: 'Yes, at least one operations team is required to change a workflow based on pilot data', risk: 0 },
+              { text: 'Data collection is in scope; workflow change is out of scope for the pilot', risk: 1,
+                impl: 'Data collection without behavior change does not produce ROI. It produces a dashboard. The pilot must test whether operations teams will change their workflows based on IIoT data, because that is the thing that determines whether the program delivers value.' },
+              { text: 'No workflow change planned; pilot is focused on data collection and visualization', risk: 2,
+                impl: 'The technology risk in IIoT is low. The organizational change risk is high. A pilot that only tests the technology and not the organizational response has not tested the thing most likely to prevent the program from delivering its stated outcomes.' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'commercial',
+        title: 'Commercial Structure',
+        questions: [
+          {
+            text: 'Is the edge management model for a multi-site deployment understood?',
+            options: [
+              { text: 'Yes, centralized edge orchestration capability verified for the target fleet size', risk: 0 },
+              { text: 'Edge management reviewed at pilot scale but not verified for enterprise scale', risk: 1,
+                impl: 'One gateway is manageable manually. Five hundred gateways across twelve factories is not. If the platform does not include a centralized edge orchestration layer for updates, patches, and driver changes, you are buying a maintenance burden that grows with every site added.' },
+              { text: 'Edge management not yet evaluated', risk: 2,
+                impl: 'Edge management is consistently underweighted in IIoT platform evaluations and consistently overweighted in post-deployment operating cost. Evaluate it in the pilot, not after the enterprise rollout has started.' }
+            ]
+          },
+          {
+            text: 'Is there a documented data portability and exit process if you change platforms?',
+            options: [
+              { text: 'Yes, data export format and process documented and contractually committed', risk: 0 },
+              { text: 'Data portability discussed but not documented or contractually committed', risk: 1,
+                impl: 'Undocumented data portability means vendor-controlled data portability. Get the export format, the process, and the timeline committed in writing before signing the enterprise agreement.' },
+              { text: 'Data portability not yet discussed', risk: 2,
+                impl: 'Three years of historian data in a proprietary format controlled by a single vendor is a significant switching cost. Most buyers only consider this after they want to switch. Raise it before signing the enterprise contract, when your leverage is highest.' }
+            ]
+          }
+        ]
+      }
+    ];
+
+    // answers[dimId][qIdx] = option index or null
+    var answers = {};
+    var totalQuestions = 0;
+    DIMENSIONS.forEach(function(dim) {
+      answers[dim.id] = dim.questions.map(function() { return null; });
+      totalQuestions += dim.questions.length;
+    });
+
+    document.getElementById('answered-denom').textContent = '/ ' + totalQuestions;
+
+    function riskClass(r) {
+      return r === 0 ? 'low' : r === 1 ? 'mod' : r === 2 ? 'high' : 'crit';
+    }
+    function riskLabel(r) {
+      return r === 0 ? 'Low' : r === 1 ? 'Moderate' : r === 2 ? 'High' : 'Critical';
+    }
+
+    function selectAnswer(dimId, qIdx, optIdx) {
+      answers[dimId][qIdx] = optIdx;
+      renderQuestion(dimId, qIdx);
+      updateDimension(dimId);
+      updateOverall();
+    }
+
+    function renderQuestion(dimId, qIdx) {
+      var dim  = DIMENSIONS.find(function(d){ return d.id === dimId; });
+      var q    = dim.questions[qIdx];
+      var sel  = answers[dimId][qIdx];
+
+      q.options.forEach(function(opt, i) {
+        var el = document.getElementById('opt-' + dimId + '-' + qIdx + '-' + i);
+        if (!el) return;
+        var rc = riskClass(opt.risk);
+        el.className = 'answer-option' + (sel === i ? ' selected-' + rc : '');
+      });
+
+      // Implication
+      var implEl = document.getElementById('impl-' + dimId + '-' + qIdx);
+      if (implEl) {
+        if (sel !== null && q.options[sel].impl) {
+          var r = q.options[sel].risk;
+          var rc = riskClass(r);
+          implEl.className = 'implication-block visible ' + rc;
+          implEl.innerHTML =
+            '<div class="implication-label">' + riskLabel(r) + ' Risk</div>' +
+            '<div class="implication-text">' + esc(q.options[sel].impl) + '</div>';
+        } else {
+          implEl.className = 'implication-block';
+          implEl.innerHTML = '';
+        }
+      }
+    }
+
+    function dimRisk(dimId) {
+      var dim = DIMENSIONS.find(function(d){ return d.id===dimId; });
+      var ans = answers[dimId];
+      var answered = ans.filter(function(a){ return a !== null; });
+      if (!answered.length) return null;
+      var maxRisk = 0;
+      ans.forEach(function(a, i){
+        if (a !== null) maxRisk = Math.max(maxRisk, dim.questions[i].options[a].risk);
+      });
+      return maxRisk;
+    }
+
+    function updateDimension(dimId) {
+      var r  = dimRisk(dimId);
+      var badge = document.getElementById('badge-' + dimId);
+      if (!badge) return;
+      if (r === null) {
+        badge.className = 'dim-risk-badge unanswered';
+        badge.textContent = 'Unanswered';
+      } else {
+        var rc = riskClass(r);
+        badge.className = 'dim-risk-badge ' + rc;
+        badge.textContent = riskLabel(r);
+      }
+    }
+
+    function updateOverall() {
+      var answeredCount = 0;
+      var riskScores = [];
+
+      DIMENSIONS.forEach(function(dim){
+        dim.questions.forEach(function(q, i){
+          if (answers[dim.id][i] !== null) {
+            answeredCount++;
+            riskScores.push(dim.questions[i].options[answers[dim.id][i]].risk);
+          }
+        });
+      });
+
+      document.getElementById('answered-count').textContent = answeredCount;
+
+      if (!answeredCount) {
+        document.getElementById('overall-rating').textContent = '--';
+        document.getElementById('overall-rating').className = 'risk-rating-value';
+        document.getElementById('summary-copy').innerHTML = 'Answer the questions below to generate your pilot risk assessment.';
+        return;
+      }
+
+      // Overall = highest dimension risk, weighted toward frequency
+      var dimRisks = DIMENSIONS.map(function(d){ return dimRisk(d.id); }).filter(function(r){ return r!==null; });
+      var maxRisk = Math.max.apply(null, dimRisks);
+      var critCount = dimRisks.filter(function(r){ return r===3; }).length;
+      var highCount = dimRisks.filter(function(r){ return r>=2; }).length;
+
+      var overall = maxRisk;
+      // Escalate if multiple high dimensions
+      if (highCount >= 3 && overall < 3) overall = 3;
+
+      var rc = riskClass(overall);
+      var ratingEl = document.getElementById('overall-rating');
+      ratingEl.textContent = riskLabel(overall).toUpperCase();
+      ratingEl.className = 'risk-rating-value ' + (rc === 'low' ? '' : rc);
+
+      var copyMap = {
+        low:  '<strong>This pilot is well-structured.</strong> The high-risk dimensions are covered. Focus on holding scope discipline through the pilot period and confirming enterprise commercial terms before results are presented.',
+        mod:  '<strong>Moderate risk across one or more dimensions.</strong> The flagged issues are addressable before kickoff. Expand the sections below to see the specific implication for each risk factor.',
+        high: '<strong>High risk configuration.</strong> One or more dimensions have conditions that commonly produce pilot stalls, inconclusive results, or failed scale-out. Address the flagged items before the pilot starts.',
+        crit: '<strong>Critical risk.</strong> The current configuration has multiple conditions that consistently produce failed IIoT pilots. These are not edge cases. Address the Critical and High items before committing to a pilot start date.'
+      };
+      document.getElementById('summary-copy').innerHTML = copyMap[rc];
+    }
+
+    function buildDimensions() {
+      var container = document.getElementById('dimensions-container');
+      container.innerHTML = DIMENSIONS.map(function(dim){
+        var questions = dim.questions.map(function(q, qIdx){
+          var options = q.options.map(function(opt, i){
+            var rc = riskClass(opt.risk);
+            return '<div class="answer-option" id="opt-'+dim.id+'-'+qIdx+'-'+i+'" '+
+              'onclick="selectAnswer(\''+dim.id+'\','+qIdx+','+i+')">'+
+              '<div class="answer-radio"></div>'+
+              '<div class="answer-text">'+esc(opt.text)+'</div>'+
+              '<div class="answer-risk-tag '+rc+'">'+riskLabel(opt.risk)+'</div>'+
+            '</div>';
+          }).join('');
+
+          return '<div class="question-block">'+
+            '<div class="question-text">'+esc(q.text)+'</div>'+
+            '<div class="answer-options">'+options+'</div>'+
+            '</div>'+
+            '<div class="implication-block" id="impl-'+dim.id+'-'+qIdx+'"></div>';
+        }).join('');
+
+        return '<div class="dimension-block" id="dim-'+dim.id+'">'+
+          '<div class="dimension-header" onclick="toggleDim(\''+dim.id+'\')">'+
+            '<span class="dimension-title">'+esc(dim.title)+'</span>'+
+            '<span class="dim-risk-badge unanswered" id="badge-'+dim.id+'">Unanswered</span>'+
+            '<span class="dimension-toggle">&#9660;</span>'+
+          '</div>'+
+          '<div class="dimension-body">'+questions+'</div>'+
+        '</div>';
+      }).join('');
+    }
+
+    function toggleDim(id) {
+      var el = document.getElementById('dim-' + id);
+      if (el) el.classList.toggle('collapsed');
+    }
+
+    function esc(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function openModal()  { document.getElementById('modal-overlay').classList.add('open'); }
+    function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+    function handleOverlayClick(e) { if(e.target===document.getElementById('modal-overlay'))closeModal(); }
+    function submitEmail() {
+      var email = document.getElementById('modal-email').value.trim();
+      if(!email||!email.includes('@')){ document.getElementById('modal-email').focus(); return; }
+
+      fetch('https://newsletter.industrialiotsoftware.com', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    email: email,
+    group_id: '189191445053179034'
+  })
+})
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.success) {
+      msgEl.textContent = 'You\u2019re subscribed. Check your inbox for a confirmation.';
+    } else {
+      msgEl.textContent = 'Something went wrong. Please try again.';
+    }
+  })
+  .catch(function() {
+    msgEl.textContent = 'Could not connect. Please try again.';
+  });
+  
+      document.getElementById('modal-form').style.display   = 'none';
+      document.getElementById('modal-confirm').style.display = 'block';
+    }
+
+    buildDimensions();
+    updateOverall();
+  </script>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>

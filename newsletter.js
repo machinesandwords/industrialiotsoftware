@@ -1,57 +1,90 @@
 /**
- * newsletter.js — Shared newsletter signup handler
- * Wires up #nl-email / #nl-submit / #nl-msg on any page that includes this script.
- * Replace WORKER_URL with the deployed Cloudflare Worker URL for this site.
+ * newsletter-iiot Worker
+ * Proxies newsletter signups and tool email captures to MailerLite API v2
+ * Accepts optional group_id in request body to route to specific groups
+ *
+ * Groups:
+ *   Newsletter / all tools:  189191445053179034 (default — set NEWSLETTER_GROUP_ID env var)
  */
 
-(function () {
-  var WORKER_URL = '<!-- WORKER_URL: https://newsletter-SITENAME.ACCOUNT.workers.dev -->';
+const MAILERLITE_API = 'https://api.mailerlite.com/api/v2';
 
-  var emailInput = document.getElementById('nl-email');
-  var submitBtn  = document.getElementById('nl-submit');
-  var msgEl      = document.getElementById('nl-msg');
-
-  if (!emailInput || !submitBtn) return;
-
-  function attempt() {
-    var email = emailInput.value.trim();
-
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      msgEl.textContent = 'Please enter a valid email address.';
-      return;
+export default {
+  async fetch(request, env) {
+    // CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
+      });
     }
 
-    submitBtn.disabled    = true;
-    submitBtn.textContent = 'Sending\u2026';
-    msgEl.textContent     = '';
-
-    fetch(WORKER_URL, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ email: email }),
-    })
-      .then(function (r) { return r.json(); })
-      .then(function (data) {
-        if (data.success) {
-          msgEl.textContent     = 'You\u2019re subscribed. Check your inbox for a confirmation.';
-          emailInput.value      = '';
-          submitBtn.disabled    = false;
-          submitBtn.textContent = 'Subscribe';
-        } else {
-          msgEl.textContent     = 'Something went wrong. Please try again.';
-          submitBtn.disabled    = false;
-          submitBtn.textContent = 'Subscribe';
-        }
-      })
-      .catch(function () {
-        msgEl.textContent     = 'Could not connect. Please try again.';
-        submitBtn.disabled    = false;
-        submitBtn.textContent = 'Subscribe';
+    if (request.method !== 'POST') {
+      return new Response(JSON.stringify({ success: false, error: 'Method not allowed' }), {
+        status: 405,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
       });
-  }
+    }
 
-  submitBtn.addEventListener('click', attempt);
-  emailInput.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') attempt();
-  });
-})();
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return new Response(JSON.stringify({ success: false, error: 'Invalid JSON' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      });
+    }
+
+    const email    = (body.email || '').trim().toLowerCase();
+    const group_id = body.group_id || env.NEWSLETTER_GROUP_ID;
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return new Response(JSON.stringify({ success: false, error: 'Invalid email address' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      });
+    }
+
+    if (!group_id) {
+      return new Response(JSON.stringify({ success: false, error: 'No group configured' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      });
+    }
+
+    try {
+      const mlRes = await fetch(`${MAILERLITE_API}/groups/${group_id}/subscribers`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-MailerLite-ApiKey': env.MAILERLITE_API_KEY,
+        },
+        body: JSON.stringify({ email, resubscribe: true }),
+      });
+
+      if (!mlRes.ok) {
+        const err = await mlRes.text();
+        console.error('MailerLite error:', mlRes.status, err);
+        return new Response(JSON.stringify({ success: false, error: 'Subscription failed' }), {
+          status: 502,
+          headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+        });
+      }
+
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      });
+
+    } catch (err) {
+      console.error('Worker error:', err);
+      return new Response(JSON.stringify({ success: false, error: 'Internal error' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      });
+    }
+  },
+};

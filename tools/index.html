@@ -1,142 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
-
-  <title><!-- Tools index title (50-60 chars) | SITE NAME --></title>
-  <meta name="description" content="<!-- Meta description 140-160 chars -->">
-  <link rel="canonical" href="https://<!-- DOMAIN -->/tools/">
-
-  <meta property="og:title" content="<!-- OG title -->">
-  <meta property="og:description" content="<!-- OG description -->">
-  <meta property="og:url" content="https://<!-- DOMAIN -->/tools/">
-  <meta property="og:type" content="website">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://<!-- DOMAIN -->" },
-      { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://<!-- DOMAIN -->/tools/" }
-    ]
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "name": "<!-- List name -->",
-    "description": "<!-- List description -->",
-    "url": "https://<!-- DOMAIN -->/tools/",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "url": "https://<!-- DOMAIN -->/tools/<!-- TOOL-SLUG -->/", "name": "<!-- Tool name -->" }
-    ]
-  }
-  </script>
-
-  <style>:root{--accent:#000000;--accent-dim:#000000;--accent-pale:#f5f5f5}</style>
-  <link rel="stylesheet" href="/styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tools | Industrial IoT Software</title>
+  <meta name="description" content="Free calculators, builders, and checklists for IIoT procurement and deployment decisions. Built for controls engineers, operations leaders, and digital transformation teams." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
   <script src="/config.js" defer></script>
-
-  <style>
-    .tool-list { list-style: none; padding: 0; margin-bottom: 32px; }
-    .tool-list li { border-bottom: var(--hairline); }
-    .tool-list li:last-child { border-bottom: none; }
-    .tool-list a {
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      padding: 14px 0;
-      color: var(--charcoal);
-      text-decoration: none;
-    }
-    .tool-list a:hover .tool-list-name { color: var(--accent); }
-    .tool-list-body { flex: 1; }
-    .tool-list-name { font-size: var(--small); font-weight: 700; margin-bottom: 2px; }
-    .tool-list-desc { font-size: 12px; color: var(--mid); line-height: 1.5; }
-    .tool-list-tag {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--faint);
-      margin-bottom: 4px;
-      display: block;
-    }
-    .tool-list-arrow { color: var(--border); font-size: 11px; padding-top: 2px; flex-shrink: 0; }
-    .tool-list a:hover .tool-list-arrow { color: var(--accent); }
-  </style>
+  <script src="/nav.js" defer></script>
 </head>
 <body>
 
-  <header class="topbar">
-    <div class="topbar-brand"><!-- SITE NAME HTML --></div>
+  <div class="topbar">
+    <a href="/" class="topbar-brand">Industrial IoT Software</a>
     <div class="topbar-divider"></div>
-    <div class="topbar-tagline"><!-- SITE TAGLINE --></div>
-    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
-  </header>
+    <span class="topbar-tagline">Independent buyer's guide</span>
+  </div>
 
   <div class="layout">
-    <nav class="sidebar" aria-label="Site navigation">
-      <div id="sidebar-nav"></div>
-    </nav>
+    <aside class="sidebar" id="sidebar-nav"></aside>
 
     <main class="main">
       <div class="content">
 
-        <div class="breadcrumb">
-          <a href="/">Home</a>
-          <span class="breadcrumb-sep">/</span>
-          <span>Tools</span>
+        <span class="page-label">Tools</span>
+        <h1>Tools</h1>
+
+        <p class="lead">Five free tools covering the decisions that come up before, during, and after an IIoT platform evaluation. No registration required — the email capture at the end of each tool is optional.</p>
+
+        <!-- ROI Calculator -->
+        <h2 id="roi-calculator" style="margin-top:32px;">ROI / Business Case Calculator</h2>
+        <div class="tags">
+          <span class="tag tag-accent">Operational Buyer</span>
         </div>
+        <p>Translate IIoT platform costs into operational outcomes — reduced downtime, labor reallocation, scrap reduction — structured for a capital approval conversation. Outputs a summary you can drop into a board deck or CFO briefing without modification.</p>
+        <p><a href="/tools/roi-calculator/">Open calculator &rarr;</a></p>
 
-        <span class="page-label">Free Tools</span>
-        <h1><!-- Tools H1 --></h1>
+        <hr />
 
-        <p class="lead"><!-- Lead: what kind of decisions the tools help with, and any access requirements (email, signup). --></p>
+        <!-- PLC Bandwidth Calculator -->
+        <h2 id="plc-bandwidth">PLC Bandwidth &amp; Polling Calculator</h2>
+        <div class="tags">
+          <span class="tag">Implementation Buyer</span>
+        </div>
+        <p>Size your data collection load before you deploy. Enter device count, register depth, and scan rates to see whether your network and PLC CPU budget can support the collection architecture you have in mind. Catches bandwidth ceiling problems before they surface during commissioning.</p>
+        <p><a href="/tools/plc-bandwidth/">Open calculator &rarr;</a></p>
 
-        <ul class="tool-list">
-          <li>
-            <a href="/tools/<!-- TOOL-SLUG -->/">
-              <div class="tool-list-body">
-                <span class="tool-list-tag"><!-- Category: Evaluation / Compliance / Architecture / Operations --></span>
-                <div class="tool-list-name"><!-- CONTENT: Tool name --></div>
-                <div class="tool-list-desc"><!-- CONTENT: Tool description — what it does, what output it produces. --></div>
-              </div>
-              <span class="tool-list-arrow">&rsaquo;</span>
-            </a>
-          </li>
-          <!-- Repeat <li> for each tool -->
-        </ul>
+        <hr />
+
+        <!-- UNS Builder -->
+        <h2 id="uns-builder">UNS Topic Hierarchy Builder</h2>
+        <div class="tags">
+          <span class="tag">Visionary Buyer</span>
+        </div>
+        <p>Draft a Unified Namespace topic structure for your plant topology. Covers enterprise, site, area, line, cell, and device layers with export for broker configuration and team review. Produces a structured output you can bring into vendor conversations as a requirements artifact.</p>
+        <p><a href="/tools/uns-builder/">Open builder &rarr;</a></p>
+
+        <hr />
+
+        <!-- Evaluation Checklist -->
+        <h2 id="evaluation-checklist">IIoT Platform Evaluation Checklist</h2>
+        <div class="tags">
+          <span class="tag">Implementation Buyer</span>
+        </div>
+        <p>A structured checklist covering connectivity, integration, data modeling, security, and vendor support — scored and weighted so you can compare platforms against your actual requirements, not a generic feature matrix. Built around the criteria that separate deployable platforms from demo-ready ones.</p>
+        <p><a href="/tools/evaluation-checklist/">Open checklist &rarr;</a></p>
+
+        <hr />
+
+        <!-- Pilot Risk Stress Tester -->
+        <h2 id="pilot-risk">Pilot Risk Stress Tester</h2>
+        <div class="tags">
+          <span class="tag tag-accent">Operational Buyer</span>
+        </div>
+        <p>Walk through the variables most likely to derail an IIoT pilot — network readiness, OT team bandwidth, integration complexity, change management exposure — and get a risk profile before you commit scope and resources. Surfaces the assumptions that kill pilots six months in.</p>
+        <p><a href="/tools/pilot-risk/">Open stress tester &rarr;</a></p>
+
+        <div class="callout" style="margin-top:48px;">
+          <span class="callout-label">About these tools</span>
+          <p>All calculations are client-side. No data leaves your browser unless you choose to submit your email at the end of a tool. Outputs are designed to drop into procurement documents, capital requests, or internal technical reviews without modification.</p>
+        </div>
 
         <div class="newsletter-block">
-          <span class="page-label">Stay current</span>
-          <p><!-- Newsletter pitch. --></p>
+          <span class="page-label">Machines &amp; Words</span>
+          <p>Buyer-first coverage of industrial software — no sponsored rankings, no affiliate arrangements.</p>
           <div class="newsletter-form">
-            <input type="email" id="nl-email" placeholder="your@email.com" autocomplete="email">
-            <button id="nl-submit" type="button">Subscribe</button>
+            <input type="email" id="nl-email" placeholder="you@company.com" />
+            <button id="nl-submit">Subscribe</button>
           </div>
-          <div id="nl-msg" style="font-size:11px; color:var(--mid); margin-top:8px; min-height:16px;"></div>
-        </div>
-
-        <div class="page-footer">
-          <span class="page-label"><!-- SITE NAME --></span>
-          <p>An independent publication. Built by <a href="<!-- PUBLISHER URL -->"><!-- PUBLISHER NAME --></a>.</p>
+          <p id="nl-msg" style="margin-top:8px;font-size:12px;color:var(--mid);"></p>
         </div>
 
       </div>
     </main>
   </div>
 
-  <script src="/nav.js"></script>
-  <script src="/newsletter.js"></script>
+  <script src="/newsletter.js" defer></script>
+
 </body>
 </html>
