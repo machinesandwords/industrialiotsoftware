@@ -6,11 +6,11 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
 
-  <title>Why This Site Exists — Independent Guide | Industrial IoT Software</title>
+  <title>No Switzerland — Independent Guide | Industrial IoT Software</title>
   <meta name="description" content="Most IIoT software content is produced by vendors with something to sell. This site exists to give operations and engineering leaders independent information to make better decisions.">
   <link rel="canonical" href="https://industrialiotsoftware.com/why/">
 
-  <meta property="og:title" content="Why This Site Exists — Independent Guide | Industrial IoT Software">
+  <meta property="og:title" content="No Switzerland — Independent Guide | Industrial IoT Software">
   <meta property="og:description" content="Most IIoT software content is produced by vendors with something to sell. This site exists to give operations and engineering leaders independent information to make better decisions.">
   <meta property="og:url" content="https://industrialiotsoftware.com/why/">
   <meta property="og:type" content="article">
@@ -41,7 +41,7 @@
       <div class="content">
 
         <span class="page-label">About this site</span>
-        <h1>Why This Site Exists</h1>
+        <h1>No Switzerland</h1>
 
         <p class="lead">Most IIoT software content is produced by the people selling IIoT software, or by the cloud providers and automation giants whose revenue depends on which architecture you choose. The operations leader trying to build a credible shortlist for a $300K platform deployment has no neutral ground to stand on. This site is an attempt to fix that.</p>
 
@@ -53,23 +53,23 @@
 
         <h2>The picture, by the numbers</h2>
 
-        <div class="card-grid">
+        <div class="stat-grid">
 
           <div class="card">
             <div class="card-label">Pilot failure</div>
-            <div class="card-value" style="font-size:28px;font-weight:700;color:var(--accent);margin:4px 0;">~60%</div>
+            <div class="stat-value">~60%</div>
             <div class="card-sub">IoT initiatives that stall at the proof-of-concept stage. Most fail not because the technology does not work, but because it cannot scale across heterogeneous legacy environments.</div>
           </div>
 
           <div class="card">
             <div class="card-label">Annual downtime cost</div>
-            <div class="card-value" style="font-size:28px;font-weight:700;color:var(--accent);margin:4px 0;">$1.4T</div>
+            <div class="stat-value">$1.4T</div>
             <div class="card-sub">Cost of unplanned downtime to the world's 500 largest manufacturers — equal to 11% of total revenues, up from $864 billion five years earlier.</div>
           </div>
 
           <div class="card">
             <div class="card-label">Per-hour cost</div>
-            <div class="card-value" style="font-size:28px;font-weight:700;color:var(--accent);margin:4px 0;">$260K</div>
+            <div class="stat-value">$260K</div>
             <div class="card-sub">Average cost per hour of unplanned downtime across manufacturing sectors. In automotive, the figure reaches $2.3 million per hour.</div>
           </div>
 
@@ -102,12 +102,33 @@
   <script src="/newsletter.js"></script>
 
   <style>
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: var(--hairline);
+      margin: 24px 0;
+    }
+    .stat-grid .card {
+      background: var(--surface);
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+      margin: 4px 0 8px;
+      line-height: 1.1;
+    }
     .why-citations {
       font-size: 11px;
       color: var(--faint);
       margin-top: 48px;
       padding-top: 16px;
       border-top: var(--hairline);
+    }
+    @media (max-width: 640px) {
+      .stat-grid { grid-template-columns: 1fr; }
     }
   </style>
 

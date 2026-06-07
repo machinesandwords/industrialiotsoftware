@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>Kepware vs. Ignition: Industrial Connectivity Comparison | Industrial IoT Software</title>
+  <meta name="description" content="Kepware vs. Ignition: dedicated OPC server vs. full industrial application platform. Independent head-to-head for controls engineers evaluating connectivity infrastructure.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/comparisons/kepware-vs-ignition/">
+  <meta property="og:title" content="Kepware vs. Ignition: Industrial Connectivity Comparison | Industrial IoT Software">
+  <meta property="og:description" content="Kepware vs. Ignition: dedicated OPC server vs. full industrial application platform.">
+  <meta property="og:url" content="https://industrialiotsoftware.com/comparisons/kepware-vs-ignition/">
+  <meta property="og:type" content="article">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+  <style>
+    .compare-table td:first-child{width:200px;font-weight:700;font-size:11px;color:var(--mid);letter-spacing:0.02em;}
+    .compare-table .section-divider td{background:var(--bg);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--faint);padding:10px 12px 6px;border-bottom:var(--hairline);}
+    .compare-table .win-a td:nth-child(2){color:var(--accent);font-weight:700;}
+    .compare-table .win-b td:nth-child(3){color:var(--accent);font-weight:700;}
+    .wins-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:var(--hairline);margin-bottom:32px;}
+    .wins-col{background:var(--surface);padding:20px 24px;}
+    .wins-col-label{font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);margin:0 0 12px;display:block;}
+    .wins-col ul{list-style:none;padding:0;margin:0;}
+    .wins-col li{font-size:var(--small);padding:7px 0;border-bottom:var(--hairline);display:flex;gap:10px;align-items:flex-start;line-height:1.5;color:var(--mid);}
+    .wins-col li:last-child{border-bottom:none;}
+    .wins-col li::before{content:'+';color:var(--accent);font-weight:700;flex-shrink:0;}
+    @media(max-width:640px){.wins-grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for industrial IoT software buyers</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation"><div id="sidebar-nav"></div></nav>
+    <main class="main">
+      <div class="content">
+        <div class="breadcrumb"><a href="/">Home</a><span class="breadcrumb-sep">/</span><a href="/comparisons/">Comparisons</a><span class="breadcrumb-sep">/</span><span>Kepware vs. Ignition</span></div>
+        <span class="page-label">Connectivity Middleware &mdash; Head-to-Head</span>
+        <h1>Kepware vs. Ignition</h1>
+        <p class="lead">Kepware and Ignition are the two most commonly co-evaluated platforms by controls engineers, but they are solving different problems. Kepware is a dedicated protocol translation and OPC server. Ignition is a full industrial application platform that handles SCADA, HMI, MES, and IIoT — with connectivity as one of its layers. Choosing between them depends on whether you need a focused connectivity tool or a platform that can anchor a broader operational architecture.</p>
+
+        <div class="table-wrap">
+          <table class="compare-table">
+            <thead><tr><th style="width:200px;">Criteria</th><th>Kepware (PTC)</th><th>Ignition (Inductive Automation)</th></tr></thead>
+            <tbody>
+              <tr class="section-divider"><td colspan="3">Platform</td></tr>
+              <tr><td>Primary function</td><td>Protocol translation and OPC server</td><td>Industrial application platform — SCADA, HMI, MES, IIoT, connectivity</td></tr>
+              <tr><td>Platform scope</td><td>Connectivity only</td><td>Full operational platform; connectivity is one module</td></tr>
+              <tr><td>Deployment model</td><td>Windows server (KEPServerEX); Linux (Kepware Edge, in rollout)</td><td>On-premise server; edge via Ignition Edge; cloud-deployable</td></tr>
+              <tr class="win-b"><td>Licensing model</td><td>Per-driver channel or suite; costs scale with driver count</td><td>Flat-rate unlimited — unlimited tags, clients, and users on one server license</td></tr>
+              <tr class="section-divider"><td colspan="3">Protocol support</td></tr>
+              <tr class="win-a"><td>Driver library</td><td>150+ native drivers; deepest legacy coverage in the market</td><td>Built-in OPC-UA connects to most modern PLCs; legacy via third-party drivers or Kepware as a data source</td></tr>
+              <tr class="win-a"><td>Legacy PLC depth</td><td>Best-in-class — DH+, DH-485, DF1, S5, all major legacy protocols</td><td>Good for current-generation hardware; legacy coverage depends on third-party modules</td></tr>
+              <tr><td>OPC standards</td><td>OPC-DA, OPC-UA client and server</td><td>Built-in OPC-UA server; OPC-DA via legacy module</td></tr>
+              <tr class="win-b"><td>MQTT / Sparkplug B</td><td>Via third-party MQTT client plug-in</td><td>Native via Cirrus Link MQTT Transmission module; Sparkplug B support; Custom Namespace for UNS alignment</td></tr>
+              <tr class="section-divider"><td colspan="3">Application capabilities</td></tr>
+              <tr><td>SCADA / HMI</td><td>None — connectivity only</td><td>Full SCADA and HMI development environment</td></tr>
+              <tr><td>MES / OEE</td><td>None</td><td>Built-in OEE calculation, production tracking, recipe management</td></tr>
+              <tr class="win-b"><td>Reporting</td><td>None</td><td>Built-in reporting engine with database-driven dynamic reports</td></tr>
+              <tr class="win-b"><td>Edge deployment</td><td>Kepware Edge (Linux, in rollout)</td><td>Ignition Edge — polling and store-and-forward at the edge; limited tag count</td></tr>
+              <tr class="section-divider"><td colspan="3">Architecture fit</td></tr>
+              <tr><td>UNS architecture</td><td>Requires Cirrus Link or equivalent MQTT broker for UNS</td><td>Native UNS backbone via Cirrus Link MQTT Transmission; widely used in Sparkplug B deployments</td></tr>
+              <tr class="win-a"><td>OPC-based architecture</td><td>Best choice — purpose-built OPC server with broadest client compatibility</td><td>Strong OPC-UA server; less focused than Kepware for pure OPC integration scenarios</td></tr>
+              <tr class="win-b"><td>System integrator ecosystem</td><td>Broad; most SIs have Kepware experience</td><td>Large certified integrator network; Ignition Exchange marketplace for community modules</td></tr>
+              <tr class="section-divider"><td colspan="3">Procurement</td></tr>
+              <tr><td>Pricing</td><td>$$</td><td>$$</td></tr>
+              <tr><td>Watch</td><td>Kepware Edge Linux rollout ongoing — verify GA status before committing to Linux deployments</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:12px;color:var(--faint);margin-top:-20px;margin-bottom:40px;">Protocol coverage sourced from vendor documentation. Verify driver availability for your specific device models before purchase.</p>
+
+        <div class="wins-grid">
+          <div class="wins-col">
+            <span class="wins-col-label">Kepware wins when</span>
+            <ul>
+              <li>Your environment has significant legacy hardware — DH+, DH-485, older Siemens — where driver field history is the deciding factor</li>
+              <li>Your architecture is OPC-DA or OPC-UA based and you need the broadest client compatibility</li>
+              <li>You need a focused connectivity tool without platform overhead</li>
+              <li>Your existing SCADA and HMI are already handled by another platform</li>
+              <li>You want to minimize the footprint of the connectivity layer</li>
+            </ul>
+          </div>
+          <div class="wins-col">
+            <span class="wins-col-label">Ignition wins when</span>
+            <ul>
+              <li>You are building or replacing a SCADA, HMI, or MES system and want connectivity bundled</li>
+              <li>You are building a UNS architecture with Sparkplug B and want native MQTT Transmission support</li>
+              <li>The flat-rate unlimited licensing model delivers better economics at scale than per-driver pricing</li>
+              <li>You need reporting, OEE calculation, or production tracking alongside connectivity</li>
+              <li>You are modernizing multiple systems simultaneously and want a single platform vendor</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="verdict">
+          <span class="verdict-label">The real decision</span>
+          <p>These two platforms are often used together — Kepware handling legacy protocol translation and feeding Ignition as an OPC-UA client. If you are evaluating them as alternatives rather than complements, the question is scope. Kepware is the right answer if connectivity is a bounded, well-defined problem. Ignition is the right answer if you are building an operational architecture and connectivity is one piece of a larger modernization.</p>
+          <p style="margin-top:12px;">Licensing economics often drive the decision at scale. Kepware's per-driver model can compound significantly across a large tag count. Ignition's flat-rate model becomes increasingly attractive as the deployment grows. Run the TCO comparison against your actual tag count and site footprint before shortlisting either.</p>
+        </div>
+
+        <p style="font-size:var(--small);margin-top:32px;">Related: <a href="/comparisons/kepware-vs-litmus/">Kepware vs. Litmus</a> &nbsp;&middot;&nbsp; <a href="/comparisons/ignition-vs-litmus/">Ignition vs. Litmus</a> &nbsp;&middot;&nbsp; <a href="/landscape/vendors/#connectivity">Full connectivity vendor index</a></p>
+      </div>
+    </main>
+  </div>
+  <footer><div class="footer-inner"><span class="page-label">Industrial IoT Software</span><p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p></div></footer>
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+</body>
+</html>

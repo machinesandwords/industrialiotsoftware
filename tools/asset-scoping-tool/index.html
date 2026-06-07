@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <!--
+    TEMPLATE: Asset / Item Scoping Decision Tool
+    ─────────────────────────────────────────────
+    This page implements a multi-step classification wizard. The UI pattern and JS
+    step navigation are fully reusable. What must be rebuilt per site:
+      - Framework names and flag emojis (Step 1 selector)
+      - Step labels (step-indicator pips)
+      - Questions and answer options (Step 2+)
+      - Classification logic (getResult() function)
+      - Result labels and descriptions
+      - Print block field labels
+    Search for all <!-- CONTENT --> comments and replace them.
+  -->
+
+  <title><!-- Tool title (50-60 chars) | SITE NAME --></title>
+  <meta name="description" content="<!-- Meta description 140-160 chars -->">
+  <link rel="canonical" href="https://<!-- DOMAIN -->/tools/asset-scoping-tool/">
+
+  <meta property="og:title" content="<!-- OG title -->">
+  <meta property="og:description" content="<!-- OG description -->">
+  <meta property="og:url" content="https://<!-- DOMAIN -->/tools/asset-scoping-tool/">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://<!-- DOMAIN -->" },
+      { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://<!-- DOMAIN -->/tools/" },
+      { "@type": "ListItem", "position": 3, "name": "<!-- Tool name -->", "item": "https://<!-- DOMAIN -->/tools/asset-scoping-tool/" }
+    ]
+  }
+  </script>
+
+  <style>:root{--accent:#000000;--accent-dim:#000000;--accent-pale:#f5f5f5}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+
+  <style>
+    .tool-shell {
+      background: var(--surface);
+      border: var(--hairline);
+      border-top: 3px solid var(--accent);
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .step-indicator {
+      display: flex; align-items: center; gap: 0; margin-bottom: 28px;
+      border: var(--hairline); background: var(--bg); overflow: hidden;
+    }
+    .step-pip {
+      flex: 1; padding: 8px 12px; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint);
+      border-right: var(--hairline); text-align: center; white-space: nowrap;
+    }
+    .step-pip:last-child { border-right: none; }
+    .step-pip.active { background: var(--accent); color: #fff; }
+    .step-pip.done { color: var(--mid); background: var(--surface); }
+    .field-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--mid); margin-bottom: 8px; display: block;
+    }
+    .field-input {
+      width: 100%; font-family: 'Space Mono', monospace; font-size: var(--small);
+      padding: 10px 12px; border: var(--hairline); background: var(--bg);
+      color: var(--charcoal); outline: none; margin-bottom: 4px;
+    }
+    .field-input:focus { border-color: var(--accent); }
+    .field-hint { font-size: 11px; color: var(--faint); margin-bottom: 20px; font-style: italic; }
+    /* Framework selector (Step 1) */
+    .fw-selector {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px; background: var(--border); border: var(--hairline); margin-bottom: 20px;
+    }
+    .fw-option {
+      background: var(--bg); padding: 14px 12px; text-align: center;
+      cursor: pointer; border: none; font-family: 'Space Mono', monospace;
+    }
+    .fw-option:hover { background: var(--surface); }
+    .fw-option.selected { background: var(--surface); }
+    .fw-option.selected .fw-option-label { color: var(--accent); }
+    .fw-option-flag { font-size: 22px; display: block; margin-bottom: 6px; opacity: 0.5; }
+    .fw-option.selected .fw-option-flag { opacity: 1; }
+    .fw-option-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--mid); display: block;
+    }
+    /* Question blocks (Step 2+) */
+    .question-block { margin-bottom: 24px; }
+    .question-text { font-size: var(--small); font-weight: 700; color: var(--charcoal); margin-bottom: 14px; line-height: 1.6; }
+    .question-context {
+      font-size: 11px; color: var(--mid); margin-bottom: 14px;
+      border-left: 2px solid var(--border); padding-left: 10px;
+      font-style: italic; line-height: 1.6;
+    }
+    .answer-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; background: var(--border); border: var(--hairline);
+    }
+    .answer-btn {
+      background: var(--bg); border: none; font-family: 'Space Mono', monospace;
+      font-size: var(--small); font-weight: 700; color: var(--mid);
+      padding: 12px 16px; cursor: pointer; text-align: left;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .answer-btn:hover { background: var(--surface); color: var(--charcoal); }
+    .answer-btn.selected { background: var(--accent); color: #fff; }
+    .answer-btn .answer-icon { font-size: 14px; flex-shrink: 0; }
+    .tool-section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--accent); padding: 10px 0 8px; border-top: var(--hairline);
+      margin: 20px 0 16px; display: flex; align-items: center; gap: 8px;
+    }
+    /* Navigation buttons */
+    .tool-nav { display: flex; gap: 8px; margin-top: 24px; padding-top: 20px; border-top: var(--hairline); }
+    .btn-primary {
+      font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase; padding: 9px 20px;
+      background: var(--accent); color: #fff; border: none; cursor: pointer;
+    }
+    .btn-primary:hover { background: var(--accent-dim); }
+    .btn-primary:disabled { opacity: 0.4; cursor: default; }
+    .btn-secondary {
+      font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase; padding: 9px 20px;
+      background: none; color: var(--mid); border: var(--hairline); cursor: pointer;
+    }
+    .btn-secondary:hover { border-color: var(--charcoal); color: var(--charcoal); }
+    /* Result block */
+    .result-classification {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 4px 12px; border: 2px solid var(--accent); color: var(--accent);
+    }
+    .result-classification.high { border-color: #a03020; color: #a03020; }
+    .result-classification.medium { border-color: #b45309; color: #b45309; }
+    .result-classification.low { border-color: #2e7d32; color: #2e7d32; }
+    .result-classification.in-scope { border-color: var(--accent); color: var(--accent); }
+    .result-classification.out-of-scope { border-color: var(--mid); color: var(--mid); }
+    .print-block { border: var(--hairline); background: var(--surface); padding: 24px; margin-top: 20px; }
+    .print-block-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--charcoal);
+      flex-wrap: wrap; gap: 8px;
+    }
+    .print-block-title { font-size: var(--small); font-weight: 700; color: var(--charcoal); }
+    .print-block-meta { font-size: 11px; color: var(--mid); }
+    .print-row {
+      display: grid; grid-template-columns: 180px 1fr; gap: 8px 16px;
+      font-size: var(--small); padding: 8px 0; border-bottom: var(--hairline); align-items: baseline;
+    }
+    .print-row:last-child { border-bottom: none; }
+    .print-row-label { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--mid); }
+    .print-row-value { color: var(--charcoal); line-height: 1.6; }
+    .print-actions { display: flex; gap: 8px; margin-top: 16px; }
+    .restart-link {
+      font-size: 11px; color: var(--mid); cursor: pointer; text-decoration: underline;
+      background: none; border: none; font-family: 'Space Mono', monospace;
+      padding: 0; margin-top: 8px; display: inline-block;
+    }
+    .restart-link:hover { color: var(--accent); }
+    @media print {
+      * { visibility: hidden; }
+      #print-output, #print-output * { visibility: visible; }
+      #print-output { position: fixed; top: 0; left: 0; width: 100%; border: none !important; padding: 24px !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand"><!-- SITE NAME HTML --></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline"><!-- SITE TAGLINE --></div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/tools/">Tools</a>
+          <span class="breadcrumb-sep">/</span>
+          <span><!-- Tool short name --></span>
+        </div>
+
+        <span class="page-label">Tool</span>
+        <h1><!-- Tool H1 --></h1>
+
+        <p class="lead"><!-- Lead: describe what decision the tool helps make and what output it produces. --></p>
+
+        <!-- ──────────────────────────────────────────────────── TOOL SHELL ── -->
+        <div class="tool-shell">
+
+          <!-- Step indicator: update pip labels to match the steps below -->
+          <div class="step-indicator">
+            <div class="step-pip active" id="pip-0"><!-- CONTENT: Step 1 label --></div>
+            <div class="step-pip" id="pip-1"><!-- CONTENT: Step 2 label --></div>
+            <div class="step-pip" id="pip-2"><!-- CONTENT: Step 3 label (if needed) --></div>
+          </div>
+
+          <!-- ────────────── STEP 0: Item/asset info ────────────── -->
+          <div id="step-0">
+            <label class="field-label"><!-- CONTENT: Item identifier label (e.g. Asset name) --></label>
+            <input class="field-input" type="text" id="asset-name" placeholder="<!-- CONTENT: Placeholder -->">
+            <div class="field-hint"><!-- CONTENT: Hint text --></div>
+
+            <label class="field-label"><!-- CONTENT: Secondary identifier label --></label>
+            <input class="field-input" type="text" id="asset-function" placeholder="<!-- CONTENT: Placeholder -->">
+            <div class="field-hint"><!-- CONTENT: Hint text --></div>
+
+            <!-- Framework selector: update labels and flags for this market's frameworks -->
+            <label class="field-label"><!-- CONTENT: Framework selection label --></label>
+            <div class="fw-selector">
+              <button class="fw-option" data-fw="<!-- fw-1 -->" onclick="selectFw(this)">
+                <span class="fw-option-flag"><!-- emoji or icon --></span>
+                <span class="fw-option-label"><!-- CONTENT: Framework 1 --></span>
+              </button>
+              <button class="fw-option" data-fw="<!-- fw-2 -->" onclick="selectFw(this)">
+                <span class="fw-option-flag"><!-- emoji or icon --></span>
+                <span class="fw-option-label"><!-- CONTENT: Framework 2 --></span>
+              </button>
+              <button class="fw-option" data-fw="both" onclick="selectFw(this)">
+                <span class="fw-option-flag">🔗</span>
+                <span class="fw-option-label">Both</span>
+              </button>
+            </div>
+
+            <div class="tool-nav">
+              <button class="btn-primary" onclick="goStep(1)" id="btn-to-step1">Next &rarr;</button>
+            </div>
+          </div>
+
+          <!-- ────────────── STEP 1: Classification questions ────────────── -->
+          <div id="step-1" style="display:none;">
+            <!-- Question 1 -->
+            <div class="question-block">
+              <div class="question-text"><!-- CONTENT: Question 1 text --></div>
+              <div class="question-context"><!-- CONTENT: Question 1 context/definition --></div>
+              <div class="answer-row">
+                <button class="answer-btn" data-q="q1" data-val="yes" onclick="setAnswer(this)">
+                  <span class="answer-icon">✓</span> Yes
+                </button>
+                <button class="answer-btn" data-q="q1" data-val="no" onclick="setAnswer(this)">
+                  <span class="answer-icon">✕</span> No
+                </button>
+              </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question-block">
+              <div class="question-text"><!-- CONTENT: Question 2 text --></div>
+              <div class="question-context"><!-- CONTENT: Question 2 context --></div>
+              <div class="answer-row">
+                <button class="answer-btn" data-q="q2" data-val="yes" onclick="setAnswer(this)">
+                  <span class="answer-icon">✓</span> Yes
+                </button>
+                <button class="answer-btn" data-q="q2" data-val="no" onclick="setAnswer(this)">
+                  <span class="answer-icon">✕</span> No
+                </button>
+              </div>
+            </div>
+
+            <!-- Add more question-block divs as needed -->
+
+            <div class="tool-nav">
+              <button class="btn-secondary" onclick="goStep(0)">&larr; Back</button>
+              <button class="btn-primary" onclick="showResult()" id="btn-show-result">Show result &rarr;</button>
+            </div>
+          </div>
+
+          <!-- ────────────── STEP 2: Result ────────────── -->
+          <div id="step-2" style="display:none;">
+            <div class="result-shell">
+              <div class="result-header">
+                <div>
+                  <span class="page-label"><!-- CONTENT: Result section label --></span>
+                  <div id="result-classification-badge"></div>
+                </div>
+                <button class="restart-link" onclick="restart()">Start over</button>
+              </div>
+
+              <div id="result-summary" style="font-size:13px; color:var(--mid); line-height:1.6; margin-bottom:24px;"></div>
+
+              <!-- Printable output block -->
+              <div class="print-block" id="print-output">
+                <div class="print-block-header">
+                  <span class="print-block-title"><!-- CONTENT: Print output title --></span>
+                  <span class="print-block-meta" id="print-date"></span>
+                </div>
+                <div class="print-row">
+                  <span class="print-row-label"><!-- CONTENT: Row label (e.g. Item name) --></span>
+                  <span class="print-row-value" id="print-name"></span>
+                </div>
+                <div class="print-row">
+                  <span class="print-row-label"><!-- CONTENT: Row label (e.g. Function) --></span>
+                  <span class="print-row-value" id="print-function"></span>
+                </div>
+                <div class="print-row">
+                  <span class="print-row-label">Framework</span>
+                  <span class="print-row-value" id="print-fw"></span>
+                </div>
+                <div class="print-row">
+                  <span class="print-row-label">Classification</span>
+                  <span class="print-row-value" id="print-classification"></span>
+                </div>
+                <div class="print-row">
+                  <span class="print-row-label"><!-- CONTENT: Criteria applied label --></span>
+                  <span class="print-row-value" id="print-criteria"></span>
+                </div>
+                <div class="print-row">
+                  <span class="print-row-label"><!-- CONTENT: Next steps label --></span>
+                  <span class="print-row-value" id="print-next"></span>
+                </div>
+              </div>
+
+              <div class="print-actions">
+                <button class="btn-primary" onclick="window.print()">Print / Save PDF</button>
+                <button class="btn-secondary" onclick="restart()">Classify another</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- end .tool-shell -->
+
+        <!-- Below-tool editorial context -->
+        <h2><!-- CONTENT: Heading: how to use this tool / methodology --></h2>
+        <p><!-- CONTENT: Explain the classification methodology and how the output should be used. --></p>
+
+        <p><!-- CONTENT: Link to related guide or reference. --></p>
+
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="page-label"><!-- SITE NAME --></span>
+      <p>An independent publication. Built by <a href="<!-- PUBLISHER URL -->"><!-- PUBLISHER NAME --></a>.</p>
+    </div>
+  </footer>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+  <script>
+    /*
+     * ── State ──────────────────────────────────────────────────────────────────
+     * Update 'frameworks' object with the correct framework names for this site.
+     * Update 'answers' keys to match the question data-q values above.
+     * Update getResult() with the correct classification logic for this market.
+     */
+
+    var selectedFw = null;
+    var answers = { q1: null, q2: null /* add q3, q4... as needed */ };
+
+    var frameworks = {
+      '<!-- fw-1 -->': '<!-- CONTENT: Framework 1 full name -->',
+      '<!-- fw-2 -->': '<!-- CONTENT: Framework 2 full name -->',
+      'both': '<!-- CONTENT: Framework 1 --> + <!-- CONTENT: Framework 2 -->'
+    };
+
+    function selectFw(btn) {
+      document.querySelectorAll('.fw-option').forEach(function(b) { b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      selectedFw = btn.getAttribute('data-fw');
+    }
+
+    function setAnswer(btn) {
+      var q = btn.getAttribute('data-q');
+      var val = btn.getAttribute('data-val');
+      document.querySelectorAll('[data-q="' + q + '"]').forEach(function(b) { b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      answers[q] = val;
+    }
+
+    function goStep(n) {
+      [0, 1, 2].forEach(function(i) {
+        document.getElementById('step-' + i).style.display = i === n ? '' : 'none';
+      });
+      ['pip-0', 'pip-1', 'pip-2'].forEach(function(id, i) {
+        var pip = document.getElementById(id);
+        if (!pip) return;
+        pip.classList.remove('active', 'done');
+        if (i < n) pip.classList.add('done');
+        else if (i === n) pip.classList.add('active');
+      });
+
+      if (n === 1 && !selectedFw) {
+        alert('Please select a framework to continue.');
+        goStep(0);
+        return;
+      }
+    }
+
+    function showResult() {
+      var unanswered = Object.keys(answers).filter(function(k) { return answers[k] === null; });
+      if (unanswered.length) {
+        alert('Please answer all questions before viewing your result.');
+        return;
+      }
+
+      var result = getResult();
+
+      // Classification badge
+      var badge = document.getElementById('result-classification-badge');
+      badge.innerHTML = '<span class="result-classification ' + result.cssClass + '">' + result.label + '</span>';
+
+      // Summary
+      document.getElementById('result-summary').textContent = result.summary;
+
+      // Print fields
+      document.getElementById('print-name').textContent = document.getElementById('asset-name').value || '(not provided)';
+      document.getElementById('print-function').textContent = document.getElementById('asset-function').value || '(not provided)';
+      document.getElementById('print-fw').textContent = frameworks[selectedFw] || selectedFw;
+      document.getElementById('print-classification').textContent = result.label;
+      document.getElementById('print-criteria').textContent = result.criteria;
+      document.getElementById('print-next').textContent = result.next;
+      document.getElementById('print-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      goStep(2);
+    }
+
+    function getResult() {
+      /*
+       * ── CLASSIFICATION LOGIC ─────────────────────────────────────────────────
+       * Replace this logic with the actual classification rules for this site's
+       * market and frameworks. Use answers.q1, answers.q2, etc. and selectedFw.
+       *
+       * Return an object:
+       *   { label, cssClass, summary, criteria, next }
+       *
+       * cssClass options: 'high', 'medium', 'low', 'in-scope', 'out-of-scope'
+       *
+       * Example structure:
+       *
+       * if (selectedFw === 'fw-1' || selectedFw === 'both') {
+       *   if (answers.q1 === 'yes' && answers.q2 === 'yes') {
+       *     return {
+       *       label: 'In Scope — High Impact',
+       *       cssClass: 'in-scope high',
+       *       summary: '...',
+       *       criteria: '...',
+       *       next: '...'
+       *     };
+       *   }
+       * }
+       */
+
+      // Default fallback — replace with actual logic
+      return {
+        label: '<!-- CONTENT: Result label -->',
+        cssClass: 'in-scope',
+        summary: '<!-- CONTENT: Summary of what this classification means. -->',
+        criteria: '<!-- CONTENT: Which criteria were applied to reach this classification. -->',
+        next: '<!-- CONTENT: Recommended next steps. -->'
+      };
+    }
+
+    function restart() {
+      selectedFw = null;
+      Object.keys(answers).forEach(function(k) { answers[k] = null; });
+      document.querySelectorAll('.fw-option').forEach(function(b) { b.classList.remove('selected'); });
+      document.querySelectorAll('.answer-btn').forEach(function(b) { b.classList.remove('selected'); });
+      document.getElementById('asset-name').value = '';
+      document.getElementById('asset-function').value = '';
+      goStep(0);
+    }
+  </script>
+
+</body>
+</html>

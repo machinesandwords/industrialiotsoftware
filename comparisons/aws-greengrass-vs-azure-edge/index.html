@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>AWS IoT Greengrass vs. Azure IoT Edge: Edge Runtime Comparison | Industrial IoT Software</title>
+  <meta name="description" content="AWS IoT Greengrass vs. Azure IoT Edge: two hyperscaler edge runtimes optimized for cloud data ingestion. Independent comparison for IIoT architects evaluating edge-to-cloud connectivity.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/comparisons/aws-greengrass-vs-azure-iot-edge/">
+  <meta property="og:title" content="AWS IoT Greengrass vs. Azure IoT Edge: Edge Runtime Comparison | Industrial IoT Software">
+  <meta property="og:description" content="AWS IoT Greengrass vs. Azure IoT Edge: two hyperscaler edge runtimes optimized for cloud data ingestion.">
+  <meta property="og:url" content="https://industrialiotsoftware.com/comparisons/aws-greengrass-vs-azure-iot-edge/">
+  <meta property="og:type" content="article">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+  <style>
+    .compare-table td:first-child{width:200px;font-weight:700;font-size:11px;color:var(--mid);letter-spacing:0.02em;}
+    .compare-table .section-divider td{background:var(--bg);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--faint);padding:10px 12px 6px;border-bottom:var(--hairline);}
+    .compare-table .win-a td:nth-child(2){color:var(--accent);font-weight:700;}
+    .compare-table .win-b td:nth-child(3){color:var(--accent);font-weight:700;}
+    .wins-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:var(--hairline);margin-bottom:32px;}
+    .wins-col{background:var(--surface);padding:20px 24px;}
+    .wins-col-label{font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);margin:0 0 12px;display:block;}
+    .wins-col ul{list-style:none;padding:0;margin:0;}
+    .wins-col li{font-size:var(--small);padding:7px 0;border-bottom:var(--hairline);display:flex;gap:10px;align-items:flex-start;line-height:1.5;color:var(--mid);}
+    .wins-col li:last-child{border-bottom:none;}
+    .wins-col li::before{content:'+';color:var(--accent);font-weight:700;flex-shrink:0;}
+    .context-callout{border:var(--hairline);border-left:3px solid var(--accent);background:var(--surface);padding:14px 16px;margin:20px 0;}
+    .context-callout-label{font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;display:block;}
+    .context-callout p{font-size:var(--small);color:var(--charcoal);line-height:1.7;margin-bottom:0;}
+    @media(max-width:640px){.wins-grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for industrial IoT software buyers</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation"><div id="sidebar-nav"></div></nav>
+    <main class="main">
+      <div class="content">
+        <div class="breadcrumb"><a href="/">Home</a><span class="breadcrumb-sep">/</span><a href="/comparisons/">Comparisons</a><span class="breadcrumb-sep">/</span><span>AWS Greengrass vs. Azure IoT Edge</span></div>
+        <span class="page-label">Edge Computing Platforms &mdash; Head-to-Head</span>
+        <h1>AWS IoT Greengrass vs. Azure IoT Edge</h1>
+        <p class="lead">These are not competing industrial edge platforms in the traditional sense. Both AWS IoT Greengrass and Azure IoT Edge have been repositioned by their respective hyperscalers as thin transport runtimes — optimized for getting data from the edge into cloud services efficiently, not for autonomous edge operations. If you are evaluating them as primary IIoT edge platforms, the more relevant question is which cloud you are building in. If you need an industrial-grade edge compute platform, the comparison that matters is one of these against Litmus, ZEDEDA, or Siemens Industrial Edge.</p>
+
+        <div class="context-callout">
+          <span class="context-callout-label">Context before comparing</span>
+          <p>Both hyperscalers have deprioritized their edge IoT runtimes as standalone operational platforms. AWS IoT Greengrass and Azure IoT Edge are increasingly positioned as data transport layers — their primary purpose is pulling data into AWS or Azure services quickly and cheaply. Organizations that need offline-first edge operation, containerized application hosting, or autonomous edge compute independent of cloud connectivity should evaluate purpose-built industrial edge platforms alongside or instead of these runtimes.</p>
+        </div>
+
+        <div class="table-wrap">
+          <table class="compare-table">
+            <thead><tr><th style="width:200px;">Criteria</th><th>AWS IoT Greengrass</th><th>Azure IoT Edge</th></tr></thead>
+            <tbody>
+              <tr class="section-divider"><td colspan="3">Platform</td></tr>
+              <tr><td>Primary function</td><td>Edge runtime for running AWS workloads locally and routing data to AWS IoT Core</td><td>Edge runtime for deploying Azure workloads to devices and routing data to Azure IoT Hub</td></tr>
+              <tr><td>Cloud dependency</td><td>Designed around AWS services; significant capability reduction without cloud connectivity</td><td>Designed around Azure services; significant capability reduction without cloud connectivity</td></tr>
+              <tr><td>Deployment model</td><td>Software runtime on Linux; AWS manages the cloud management plane</td><td>Software runtime on Linux or Windows; Azure manages the cloud management plane</td></tr>
+              <tr><td>Pricing</td><td>$ — pay per message to AWS IoT Core; runtime itself is free</td><td>$ — pay per message to Azure IoT Hub; runtime itself is free</td></tr>
+              <tr class="section-divider"><td colspan="3">Edge capabilities</td></tr>
+              <tr><td>Local compute</td><td>Lambda functions, containers (Greengrass components); runs locally when connected</td><td>IoT Edge modules (Docker containers); runs locally when connected</td></tr>
+              <tr><td>Offline operation</td><td>Limited — local processing runs offline but cloud management and updates require connectivity</td><td>Limited — modules run offline but management and telemetry require Azure connectivity</td></tr>
+              <tr><td>Container support</td><td>Greengrass components can run Docker containers</td><td>Native Docker container module support</td></tr>
+              <tr><td>ML inference at edge</td><td>AWS SageMaker Edge Manager integration; deploy trained models to edge</td><td>Azure Machine Learning integration; deploy ONNX models to edge</td></tr>
+              <tr class="section-divider"><td colspan="3">Industrial protocol support</td></tr>
+              <tr><td>OPC-UA</td><td>Via AWS IoT SiteWise connector; limited native protocol depth</td><td>Via third-party modules (Litmus Edge Bridge, Kepware); not native</td></tr>
+              <tr><td>Modbus / legacy protocols</td><td>Via third-party connectors; requires separate protocol translation layer</td><td>Via third-party modules; requires separate protocol translation layer</td></tr>
+              <tr><td>Industrial protocol depth</td><td>Thin — designed for cloud-connected modern devices, not brownfield OT environments</td><td>Thin — same limitation; industrial protocol depth requires third-party modules</td></tr>
+              <tr class="section-divider"><td colspan="3">Cloud ecosystem integration</td></tr>
+              <tr class="win-a"><td>AWS service integration</td><td>Native — direct routing to IoT Core, S3, Lambda, SageMaker, Kinesis, DynamoDB</td><td>Via connectors; AWS services require custom integration</td></tr>
+              <tr class="win-b"><td>Azure service integration</td><td>Via connectors; Azure services require custom integration</td><td>Native — direct routing to IoT Hub, Azure Digital Twins, Azure ML, Azure Stream Analytics</td></tr>
+              <tr class="win-b"><td>Digital twin integration</td><td>AWS IoT TwinMaker; less mature than Azure Digital Twins</td><td>Native Azure Digital Twins integration; more mature digital twin ecosystem</td></tr>
+              <tr class="win-b"><td>Developer tooling</td><td>AWS CDK, CloudFormation; strong but complex</td><td>Azure DevOps, VS Code IoT extension; broader developer tooling ecosystem for IoT</td></tr>
+              <tr class="section-divider"><td colspan="3">Management</td></tr>
+              <tr><td>Fleet management</td><td>AWS IoT Device Management — device provisioning, OTA updates, fleet indexing</td><td>Azure IoT Hub device management — provisioning, OTA, device twins</td></tr>
+              <tr><td>Security model</td><td>AWS IAM, X.509 certificates, Greengrass token exchange service</td><td>Azure AD, X.509 certificates, device provisioning service</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:12px;color:var(--faint);margin-top:-20px;margin-bottom:40px;">Capability assessments based on publicly available documentation. Both platforms evolve rapidly — verify current feature sets before making architectural decisions.</p>
+
+        <div class="wins-grid">
+          <div class="wins-col">
+            <span class="wins-col-label">Greengrass wins when</span>
+            <ul>
+              <li>Your cloud data platform is AWS and you need the tightest integration with IoT Core, S3, SageMaker, and Kinesis</li>
+              <li>Your edge ML inference workflow uses SageMaker-trained models and you want native deployment via SageMaker Edge Manager</li>
+              <li>Your organization has deep AWS expertise and wants to stay within one cloud ecosystem</li>
+              <li>Your devices are modern, cloud-connected, and protocol translation is handled by an upstream layer</li>
+            </ul>
+          </div>
+          <div class="wins-col">
+            <span class="wins-col-label">Azure IoT Edge wins when</span>
+            <ul>
+              <li>Your cloud data platform is Azure and you need native integration with IoT Hub, Azure Digital Twins, and Azure ML</li>
+              <li>You are using Azure Digital Twins for asset modeling and need native edge-to-twin data routing</li>
+              <li>Your organization is standardized on Microsoft tooling and Azure DevOps for development and deployment pipelines</li>
+              <li>You are using Litmus Edge Bridge alongside IoT Edge for OT protocol translation into Azure IoT Operations</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="verdict">
+          <span class="verdict-label">The real decision</span>
+          <p>For most IIoT buyers, the choice between Greengrass and Azure IoT Edge is decided by which cloud platform the organization has already standardized on. These are not neutral tools — they are transport layers designed to pull data into their respective cloud ecosystems efficiently. Evaluating them on industrial edge capabilities is largely the wrong lens.</p>
+          <p style="margin-top:12px;">If your requirements include offline-first operation, autonomous edge compute independent of cloud connectivity, industrial protocol depth without third-party modules, or centralized fleet management for distributed OT environments, evaluate purpose-built industrial edge platforms — Litmus, ZEDEDA, or Siemens Industrial Edge — as the primary comparison. Greengrass or Azure IoT Edge may then serve as the cloud-side transport layer alongside the industrial platform rather than as a replacement for it.</p>
+        </div>
+
+        <p style="font-size:var(--small);margin-top:32px;">Related: <a href="/landscape/vendors/#edge">Full edge computing vendor index</a> &nbsp;&middot;&nbsp; <a href="/comparisons/kepware-vs-litmus/">Kepware vs. Litmus</a> &nbsp;&middot;&nbsp; <a href="/landscape/market-direction/">Where the IIoT edge market is heading</a></p>
+      </div>
+    </main>
+  </div>
+  <footer><div class="footer-inner"><span class="page-label">Industrial IoT Software</span><p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p></div></footer>
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>AVEVA PI System vs. InfluxDB: Industrial Historian Comparison | Industrial IoT Software</title>
+  <meta name="description" content="AVEVA PI System vs. InfluxDB: the dominant industrial historian vs. the open-source time-series challenger. Independent comparison for operations and data engineering teams.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/comparisons/aveva-pi-vs-influxdb/">
+  <meta property="og:title" content="AVEVA PI System vs. InfluxDB: Industrial Historian Comparison | Industrial IoT Software">
+  <meta property="og:description" content="AVEVA PI System vs. InfluxDB: the dominant industrial historian vs. the open-source time-series challenger.">
+  <meta property="og:url" content="https://industrialiotsoftware.com/comparisons/aveva-pi-vs-influxdb/">
+  <meta property="og:type" content="article">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+  <style>
+    .compare-table td:first-child{width:200px;font-weight:700;font-size:11px;color:var(--mid);letter-spacing:0.02em;}
+    .compare-table .section-divider td{background:var(--bg);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--faint);padding:10px 12px 6px;border-bottom:var(--hairline);}
+    .compare-table .win-a td:nth-child(2){color:var(--accent);font-weight:700;}
+    .compare-table .win-b td:nth-child(3){color:var(--accent);font-weight:700;}
+    .wins-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:var(--hairline);margin-bottom:32px;}
+    .wins-col{background:var(--surface);padding:20px 24px;}
+    .wins-col-label{font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);margin:0 0 12px;display:block;}
+    .wins-col ul{list-style:none;padding:0;margin:0;}
+    .wins-col li{font-size:var(--small);padding:7px 0;border-bottom:var(--hairline);display:flex;gap:10px;align-items:flex-start;line-height:1.5;color:var(--mid);}
+    .wins-col li:last-child{border-bottom:none;}
+    .wins-col li::before{content:'+';color:var(--accent);font-weight:700;flex-shrink:0;}
+    @media(max-width:640px){.wins-grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for industrial IoT software buyers</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation"><div id="sidebar-nav"></div></nav>
+    <main class="main">
+      <div class="content">
+        <div class="breadcrumb"><a href="/">Home</a><span class="breadcrumb-sep">/</span><a href="/comparisons/">Comparisons</a><span class="breadcrumb-sep">/</span><span>AVEVA PI System vs. InfluxDB</span></div>
+        <span class="page-label">Industrial Analytics &amp; Historian &mdash; Head-to-Head</span>
+        <h1>AVEVA PI System vs. InfluxDB</h1>
+        <p class="lead">AVEVA PI System is the dominant industrial historian — a 40-year installed base, deeply embedded in process industry operations, and priced accordingly. InfluxDB is an open-source time-series database built for high-frequency sensor data at modern scale. These are not equivalent platforms and the comparison is rarely an either/or decision. Understanding what each is actually built for is more useful than a feature checklist.</p>
+
+        <div class="table-wrap">
+          <table class="compare-table">
+            <thead><tr><th style="width:200px;">Criteria</th><th>AVEVA PI System</th><th>InfluxDB (InfluxData)</th></tr></thead>
+            <tbody>
+              <tr class="section-divider"><td colspan="3">Platform</td></tr>
+              <tr><td>Primary function</td><td>Industrial historian — time-series data collection, storage, contextualization, and visualization for OT environments</td><td>Time-series database — high-performance storage and query for sensor and metrics data</td></tr>
+              <tr><td>Target buyer</td><td>Operations engineers, plant managers, process engineers — no coding required</td><td>Data engineers, developers, DevOps — requires coding and configuration</td></tr>
+              <tr><td>Deployment model</td><td>On-premise (PI Server); cloud (AVEVA Connect); hybrid</td><td>Self-hosted (open-source); cloud (InfluxDB Cloud); hybrid</td></tr>
+              <tr class="section-divider"><td colspan="3">Data capabilities</td></tr>
+              <tr class="win-a"><td>Industrial data collection</td><td>300+ native OT interfaces — OPC-DA, OPC-UA, DCS, SCADA, lab systems, manual entry</td><td>Via Telegraf agents and plugins; requires configuration per data source</td></tr>
+              <tr class="win-b"><td>Write throughput</td><td>Optimized for OT polling rates; compression designed for process data patterns</td><td>High-performance writes at millisecond resolution; handles modern IIoT data volumes that PI was not designed for</td></tr>
+              <tr class="win-b"><td>Query performance</td><td>PI SQL Commander and AF Analytics; purpose-built for process data queries</td><td>Flux query language; SQL-like; excellent for high-frequency time-series at scale</td></tr>
+              <tr class="win-a"><td>Asset context / hierarchy</td><td>PI Asset Framework (AF) — industry-standard asset hierarchy, template-based contextualization, no coding</td><td>None built-in — requires custom metadata tagging and external tooling for asset context</td></tr>
+              <tr class="section-divider"><td colspan="3">Operational fit</td></tr>
+              <tr class="win-a"><td>Operations team usability</td><td>PI Vision dashboards; PI DataLink for Excel; self-service for non-technical users</td><td>Requires developer or data engineer to build dashboards; Grafana commonly used alongside</td></tr>
+              <tr class="win-b"><td>Developer / data engineering</td><td>REST via PI Web API; limited modern developer tooling</td><td>Native REST API, client libraries for Python, Go, Java; first-class developer experience</td></tr>
+              <tr class="win-b"><td>Cloud data lake integration</td><td>Via AVEVA Connect or PI Web API; not a native cloud-first architecture</td><td>Native streaming to cloud platforms; fits modern data lakehouse architectures</td></tr>
+              <tr class="section-divider"><td colspan="3">Licensing and cost</td></tr>
+              <tr><td>Licensing model</td><td>AVEVA Flex credit system — subscription-based, consumption credits; no perpetual license available; PI Interfaces, PI Vision, PI DataLink sold separately</td><td>Open-source (self-hosted, free); InfluxDB Cloud usage-based pricing</td></tr>
+              <tr class="win-b"><td>Pricing transparency</td><td>Opaque — AVEVA does not publish prices; Flex credit burn rate requires sales engagement to model</td><td>Open-source tier is free; cloud pricing published on InfluxData website</td></tr>
+              <tr><td>Pricing tier</td><td>$$$ — significant cost at scale; AVEVA Flex model has generated friction with existing customers</td><td>$ (self-hosted) to $$ (cloud at scale)</td></tr>
+              <tr class="section-divider"><td colspan="3">Ecosystem</td></tr>
+              <tr class="win-a"><td>Industry adoption</td><td>Dominant in energy, utilities, oil and gas, chemicals — 40 years of installed base</td><td>Growing; strongest in tech-forward manufacturers and greenfield deployments</td></tr>
+              <tr class="win-a"><td>Analytics ecosystem</td><td>Seeq, Power BI, and other tools built specifically around PI data — mature ecosystem</td><td>Grafana, Telegraf, and open-source tooling; less purpose-built industrial analytics</td></tr>
+              <tr><td>Watch</td><td>AVEVA Flex credit model has significantly increased cost complexity for existing customers — model your full TCO before renewal or expansion</td><td>InfluxDB v3 architecture change — verify migration path if upgrading from v1/v2</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:12px;color:var(--faint);margin-top:-20px;margin-bottom:40px;">Pricing and licensing information sourced from public documentation and customer reports. AVEVA does not publish list prices — engage sales directly for current Flex credit modeling.</p>
+
+        <div class="wins-grid">
+          <div class="wins-col">
+            <span class="wins-col-label">AVEVA PI wins when</span>
+            <ul>
+              <li>Your operations teams need self-service access to process data without writing code</li>
+              <li>You have existing PI infrastructure and the switching cost of migration exceeds the licensing frustration</li>
+              <li>Your industry is process-heavy — oil and gas, chemicals, utilities — where PI is the de facto standard and your analytics ecosystem is built around it</li>
+              <li>You need PI Asset Framework for structured asset contextualization without custom development</li>
+              <li>Your analytics tools (Seeq, Power BI) are already integrated with PI</li>
+            </ul>
+          </div>
+          <div class="wins-col">
+            <span class="wins-col-label">InfluxDB wins when</span>
+            <ul>
+              <li>You have data engineering capability and are building a modern time-series data foundation from scratch</li>
+              <li>Your data volumes — high-frequency sensors, millisecond polling — exceed what PI was designed to handle efficiently</li>
+              <li>You are building a cloud-native data architecture and need native integration with data lakehouse platforms</li>
+              <li>AVEVA's opaque Flex pricing model is making the PI renewal or expansion case difficult internally</li>
+              <li>You want open-source economics with no vendor lock-in on the storage layer</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="verdict">
+          <span class="verdict-label">The real decision</span>
+          <p>For most organizations with existing PI infrastructure, the comparison is not PI vs. InfluxDB — it is whether to extend PI or layer InfluxDB alongside it for modern data volumes and cloud integration. InfluxDB does not replace PI Asset Framework's contextualization capability. PI does not match InfluxDB's modern write throughput or developer tooling.</p>
+          <p style="margin-top:12px;">For greenfield deployments, the calculus is different. AVEVA's Flex credit model is generating real friction with existing customers at renewal — that friction is worth factoring into a greenfield TCO analysis before defaulting to PI because it is the industry standard. If your team has data engineering capability and your architecture is cloud-native, InfluxDB paired with a contextualization layer like Seeq or Cognite is worth evaluating as a complete alternative.</p>
+        </div>
+
+        <p style="font-size:var(--small);margin-top:32px;">Related: <a href="/landscape/vendors/#analytics">Full analytics and historian vendor index</a> &nbsp;&middot;&nbsp; <a href="/comparisons/siemens-insights-hub-vs-cumulocity/">Siemens Insights Hub vs. Cumulocity</a></p>
+      </div>
+    </main>
+  </div>
+  <footer><div class="footer-inner"><span class="page-label">Industrial IoT Software</span><p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p></div></footer>
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+</body>
+</html>

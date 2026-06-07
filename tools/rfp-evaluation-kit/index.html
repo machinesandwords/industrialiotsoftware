@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title><!-- Gated kit title (50-60 chars) | SITE NAME --></title>
+  <meta name="description" content="<!-- Meta description 140-160 chars -->">
+  <link rel="canonical" href="https://<!-- DOMAIN -->/tools/rfp-evaluation-kit/">
+
+  <meta property="og:title" content="<!-- OG title -->">
+  <meta property="og:description" content="<!-- OG description -->">
+  <meta property="og:url" content="https://<!-- DOMAIN -->/tools/rfp-evaluation-kit/">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://<!-- DOMAIN -->" },
+      { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://<!-- DOMAIN -->/tools/" },
+      { "@type": "ListItem", "position": 3, "name": "<!-- Kit short name -->", "item": "https://<!-- DOMAIN -->/tools/rfp-evaluation-kit/" }
+    ]
+  }
+  </script>
+
+  <style>:root{--accent:#000000;--accent-dim:#000000;--accent-pale:#f5f5f5}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+
+  <style>
+    .kit-hero {
+      border: var(--hairline); border-top: 3px solid var(--accent);
+      background: var(--surface); padding: 1.5rem; margin-bottom: 1.5rem;
+    }
+    .kit-hero-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem;
+    }
+    .kit-hero h2 {
+      font-size: 18px; font-weight: 700; color: var(--charcoal);
+      margin-bottom: 0.75rem; border-top: none; padding-top: 0; margin-top: 0;
+    }
+    .kit-contents {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; background: var(--border); border: var(--hairline); margin-bottom: 1.5rem;
+    }
+    .kit-doc { background: var(--surface); padding: 1rem 1.1rem; }
+    .kit-doc-num {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 0.3rem;
+    }
+    .kit-doc-title { font-size: 13px; font-weight: 700; color: var(--charcoal); margin-bottom: 0.4rem; }
+    .kit-doc-desc { font-size: 12px; color: var(--mid); line-height: 1.5; }
+    .gate-form {
+      border: var(--hairline); border-left: 3px solid var(--accent);
+      background: var(--surface); padding: 1.5rem; margin-bottom: 1.5rem; max-width: 480px;
+    }
+    .gate-form-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem;
+    }
+    .gate-form p { font-size: 13px; color: var(--mid); margin-bottom: 1rem; line-height: 1.6; }
+    .gate-input-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+    .gate-input-row input[type="email"] {
+      flex: 1; font-family: var(--font); font-size: 13px; padding: 0.5rem 0.65rem;
+      border: var(--hairline); background: var(--bg); color: var(--charcoal); outline: none;
+    }
+    .gate-input-row input[type="email"]:focus { border-color: var(--accent); }
+    .gate-input-row button {
+      font-family: var(--font); font-size: 12px; font-weight: 700; letter-spacing: 0.05em;
+      text-transform: uppercase; padding: 0.5rem 1.1rem; background: var(--accent);
+      color: #fff; border: none; cursor: pointer; white-space: nowrap;
+    }
+    .gate-input-row button:hover { background: var(--accent-dim); }
+    .gate-input-row button:disabled { opacity: 0.6; cursor: default; }
+    .gate-privacy { font-size: 11px; color: var(--faint); line-height: 1.5; }
+    .gate-msg { font-size: 13px; color: var(--mid); margin-top: 0.5rem; min-height: 20px; }
+    .gate-msg.error { color: #a03020; }
+    .download-block {
+      display: none; border: 1px solid var(--accent); background: var(--accent-pale);
+      padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; max-width: 480px;
+    }
+    .download-block.visible { display: block; }
+    .download-block-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem;
+    }
+    .download-block p { font-size: 13px; color: var(--charcoal); margin-bottom: 1rem; line-height: 1.6; }
+    .download-btn {
+      display: inline-block; font-family: var(--font); font-size: 12px; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase; padding: 0.55rem 1.25rem;
+      background: var(--accent); color: #fff; text-decoration: none; border: none; cursor: pointer;
+    }
+    .download-btn:hover { background: var(--accent-dim); text-decoration: none; }
+    .usage-note {
+      font-size: 12px; color: var(--mid); border-top: var(--hairline);
+      padding-top: 1rem; margin-top: 1rem; line-height: 1.6;
+    }
+    @media (max-width: 600px) { .kit-contents { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand"><!-- SITE NAME HTML --></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline"><!-- SITE TAGLINE --></div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/tools/">Tools</a>
+          <span class="breadcrumb-sep">/</span>
+          <span><!-- Kit short name --></span>
+        </div>
+
+        <span class="page-label">Tools</span>
+        <h1><!-- Kit H1 --></h1>
+
+        <p class="lead"><!-- Lead: what the kit contains, how many documents, what evaluation stage each covers. Link to the companion guide if there is one. --></p>
+
+        <!-- Kit document grid: 2x2, one block per document -->
+        <div class="kit-contents">
+          <div class="kit-doc">
+            <div class="kit-doc-num">Document 01</div>
+            <div class="kit-doc-title"><!-- CONTENT: Document 1 title --></div>
+            <div class="kit-doc-desc"><!-- CONTENT: Document 1 description --></div>
+          </div>
+          <div class="kit-doc">
+            <div class="kit-doc-num">Document 02</div>
+            <div class="kit-doc-title"><!-- CONTENT: Document 2 title --></div>
+            <div class="kit-doc-desc"><!-- CONTENT: Document 2 description --></div>
+          </div>
+          <div class="kit-doc">
+            <div class="kit-doc-num">Document 03</div>
+            <div class="kit-doc-title"><!-- CONTENT: Document 3 title --></div>
+            <div class="kit-doc-desc"><!-- CONTENT: Document 3 description --></div>
+          </div>
+          <div class="kit-doc">
+            <div class="kit-doc-num">Document 04</div>
+            <div class="kit-doc-title"><!-- CONTENT: Document 4 title --></div>
+            <div class="kit-doc-desc"><!-- CONTENT: Document 4 description --></div>
+          </div>
+        </div>
+
+        <!-- Email gate form: shown until email is submitted -->
+        <div class="gate-form" id="gate-form">
+          <div class="gate-form-label">Download the kit</div>
+          <p>Enter your email address to download. We do not share your information with vendors or third parties.</p>
+          <div class="gate-input-row">
+            <input type="email" id="gate-email" placeholder="your@email.com" autocomplete="email" required>
+            <button id="gate-submit" type="button">Download</button>
+          </div>
+          <div class="gate-msg" id="gate-msg"></div>
+          <div class="gate-privacy"><!-- Version info and update notification note --></div>
+        </div>
+
+        <!-- Download block: shown after successful email submission -->
+        <div class="download-block" id="download-block">
+          <div class="download-block-label">Your download is ready</div>
+          <p><!-- CONTENT: Kit name, version, file format note. --></p>
+          <a href="/tools/rfp-evaluation-kit/<!-- KIT-FILENAME.pdf -->"
+             class="download-btn"
+             download="<!-- KIT-FILENAME.pdf -->"
+             id="download-link">
+            Download PDF
+          </a>
+          <div class="usage-note"><!-- CONTENT: Companion guide link and how the kit relates to other tools. --></div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="page-label"><!-- SITE NAME --></span>
+      <p>An independent publication. Built by <a href="<!-- PUBLISHER URL -->"><!-- PUBLISHER NAME --></a>.</p>
+    </div>
+  </footer>
+
+  <script src="/nav.js"></script>
+
+  <script>
+    /*
+     * Replace WORKER_URL with the deployed Cloudflare Worker URL for this site.
+     * Replace GROUP_ID with the MailerLite group ID for this gated content item.
+     * Replace STORAGE_KEY with a unique key for this kit (prevents re-gating in same session).
+     */
+    var WORKER_URL  = '<!-- WORKER_URL: https://newsletter-SITENAME.ACCOUNT.workers.dev -->';
+    var GROUP_ID    = '<!-- MAILERLITE_GROUP_ID for this gated content item -->';
+    var STORAGE_KEY = '<!-- unique_kit_storage_key -->';
+
+    if (sessionStorage.getItem(STORAGE_KEY)) {
+      document.getElementById('gate-form').style.display = 'none';
+      document.getElementById('download-block').classList.add('visible');
+    }
+
+    document.getElementById('gate-submit').addEventListener('click', function() {
+      var email = document.getElementById('gate-email').value.trim();
+      var msg   = document.getElementById('gate-msg');
+      var btn   = document.getElementById('gate-submit');
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        msg.textContent = 'Please enter a valid email address.';
+        msg.className   = 'gate-msg error';
+        return;
+      }
+
+      btn.disabled    = true;
+      btn.textContent = 'Sending...';
+      msg.textContent = '';
+      msg.className   = 'gate-msg';
+
+      fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, group_id: GROUP_ID }),
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.success) {
+          sessionStorage.setItem(STORAGE_KEY, '1');
+          document.getElementById('gate-form').style.display = 'none';
+          document.getElementById('download-block').classList.add('visible');
+          document.getElementById('download-link').click();
+        } else {
+          msg.textContent = 'Something went wrong. Please try again.';
+          msg.className   = 'gate-msg error';
+          btn.disabled    = false;
+          btn.textContent = 'Download';
+        }
+      })
+      .catch(function() {
+        msg.textContent = 'Could not connect. Please try again.';
+        msg.className   = 'gate-msg error';
+        btn.disabled    = false;
+        btn.textContent = 'Download';
+      });
+    });
+
+    document.getElementById('gate-email').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') document.getElementById('gate-submit').click();
+    });
+  </script>
+
+</body>
+</html>

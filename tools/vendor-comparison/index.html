@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>IIoT Vendor Comparison Tool — Filter by Protocol, Deployment, and Category | Industrial IoT Software</title>
+  <meta name="description" content="Filter and compare industrial IoT software vendors by category, protocol support, deployment model, and pricing tier. Independent. No sponsored placements.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/tools/vendor-comparison/">
+
+  <meta property="og:title" content="IIoT Vendor Comparison Tool | Industrial IoT Software">
+  <meta property="og:description" content="Filter and compare industrial IoT software vendors by category, protocol support, deployment model, and pricing tier.">
+  <meta property="og:url" content="https://industrialiotsoftware.com/tools/vendor-comparison/">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://industrialiotsoftware.com" },
+      { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://industrialiotsoftware.com/tools/" },
+      { "@type": "ListItem", "position": 3, "name": "Vendor Comparison Tool", "item": "https://industrialiotsoftware.com/tools/vendor-comparison/" }
+    ]
+  }
+  </script>
+
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+
+  <style>
+    .tool-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    .filter-panel {
+      position: sticky;
+      top: 60px;
+      background: var(--surface);
+      border: var(--hairline);
+      padding: 1rem;
+    }
+    .filter-section { margin-bottom: 1.25rem; }
+    .filter-section:last-child { margin-bottom: 0; }
+    .filter-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--charcoal); margin-bottom: 0.5rem; display: block;
+    }
+    .filter-option {
+      display: flex; align-items: center; gap: 0.4rem;
+      margin-bottom: 0.3rem; cursor: pointer;
+    }
+    .filter-option input[type="checkbox"] {
+      accent-color: var(--accent); width: 13px; height: 13px;
+      cursor: pointer; flex-shrink: 0;
+    }
+    .filter-option span {
+      font-size: 12px; color: var(--charcoal); cursor: pointer; line-height: 1.3;
+    }
+    .filter-reset {
+      font-size: 11px; color: var(--accent); cursor: pointer; background: none; border: none;
+      padding: 0; font-family: 'Space Mono', monospace; text-decoration: underline;
+      margin-top: 0.75rem; display: block;
+    }
+    .filter-reset:hover { color: var(--accent-dim); }
+    .results-header {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: 1rem; border-bottom: var(--hairline); padding-bottom: 0.5rem;
+    }
+    .results-count { font-size: 12px; color: var(--mid); }
+    .results-count strong { color: var(--accent); }
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1px;
+      background: var(--border);
+    }
+    .vendor-card {
+      background: var(--surface); padding: 1.1rem;
+      display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .vendor-card-header {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem;
+    }
+    .vendor-card-name { font-size: 14px; font-weight: 700; }
+    .vendor-card-name a { color: var(--charcoal); text-decoration: none; }
+    .vendor-card-name a:hover { color: var(--accent); }
+    .vendor-card-price { font-size: 13px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
+    .vendor-card-tier {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--faint);
+    }
+    .vendor-card-desc { font-size: 12px; color: var(--charcoal); line-height: 1.6; }
+    .vendor-card-fit {
+      font-size: 12px; color: var(--mid); line-height: 1.5;
+      border-top: var(--hairline); padding-top: 0.5rem;
+    }
+    .vendor-card-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+    .tag {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+      color: var(--mid); background: var(--bg); border: var(--hairline);
+      padding: 0.15rem 0.4rem; line-height: 1.4;
+    }
+    .tag-matched { color: var(--accent); border-color: var(--accent); background: var(--accent-pale); }
+    .vendor-card-protocols { font-size: 11px; color: var(--mid); line-height: 1.6; }
+    .vendor-card-protocols strong {
+      color: var(--charcoal); font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .proto-match { color: var(--accent); font-weight: 700; }
+    .vendor-card-watch {
+      font-size: 11px; color: var(--mid);
+      border-top: var(--hairline); padding-top: 0.5rem; font-style: italic;
+    }
+    .no-results {
+      padding: 2rem; text-align: center; color: var(--mid); font-size: 13px;
+      background: var(--surface); border: var(--hairline);
+    }
+    .active-filters { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; min-height: 24px; }
+    .active-filter-tag {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+      color: var(--accent); background: var(--accent-pale); border: 1px solid var(--accent);
+      padding: 0.2rem 0.5rem; display: flex; align-items: center; gap: 0.3rem;
+    }
+    .active-filter-tag button {
+      background: none; border: none; color: var(--accent);
+      cursor: pointer; font-family: 'Space Mono', monospace; font-size: 12px; padding: 0; line-height: 1;
+    }
+    @media (max-width: 800px) {
+      .tool-layout { grid-template-columns: 1fr; }
+      .filter-panel { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for industrial IoT software buyers</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content" style="max-width:100%;">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/tools/">Tools</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Vendor Comparison</span>
+        </div>
+
+        <span class="page-label">Tools</span>
+        <h1>IIoT Vendor Comparison Tool</h1>
+
+        <p class="lead">Filter the full IIoT software market by category, protocol support, deployment model, and pricing tier. No sponsored placements — vendors appear based on fit, not commercial relationships.</p>
+
+        <div class="tool-layout">
+
+          <div class="filter-panel">
+
+            <div class="filter-section">
+              <span class="filter-label">Category</span>
+              <label class="filter-option"><input type="checkbox" name="category" value="connectivity-middleware"> <span>Connectivity middleware</span></label>
+              <label class="filter-option"><input type="checkbox" name="category" value="edge-platform"> <span>Edge platform</span></label>
+              <label class="filter-option"><input type="checkbox" name="category" value="analytics-historian"> <span>Analytics &amp; historian</span></label>
+              <label class="filter-option"><input type="checkbox" name="category" value="automation-suite"> <span>Automation suite</span></label>
+              <label class="filter-option"><input type="checkbox" name="category" value="open-platform"> <span>Open platform</span></label>
+              <label class="filter-option"><input type="checkbox" name="category" value="cloud-infrastructure"> <span>Cloud infrastructure</span></label>
+            </div>
+
+            <div class="filter-section">
+              <span class="filter-label">Tier</span>
+              <label class="filter-option"><input type="checkbox" name="tier" value="established"> <span>Established</span></label>
+              <label class="filter-option"><input type="checkbox" name="tier" value="challenger"> <span>Challenger</span></label>
+            </div>
+
+            <div class="filter-section">
+              <span class="filter-label">Pricing</span>
+              <label class="filter-option"><input type="checkbox" name="pricing" value="$"> <span>$ — Accessible</span></label>
+              <label class="filter-option"><input type="checkbox" name="pricing" value="$$"> <span>$$ — Mid-market</span></label>
+              <label class="filter-option"><input type="checkbox" name="pricing" value="$$$"> <span>$$$ — Enterprise</span></label>
+            </div>
+
+            <div class="filter-section">
+              <span class="filter-label">Deployment</span>
+              <label class="filter-option"><input type="checkbox" name="deployment" value="on-prem"> <span>On-premises</span></label>
+              <label class="filter-option"><input type="checkbox" name="deployment" value="cloud"> <span>Cloud</span></label>
+              <label class="filter-option"><input type="checkbox" name="deployment" value="hybrid"> <span>Hybrid</span></label>
+              <label class="filter-option"><input type="checkbox" name="deployment" value="edge-hardware"> <span>Edge hardware</span></label>
+              <label class="filter-option"><input type="checkbox" name="deployment" value="edge-software"> <span>Edge software</span></label>
+            </div>
+
+            <div class="filter-section">
+              <span class="filter-label">Industry</span>
+              <label class="filter-option"><input type="checkbox" name="industry" value="manufacturing"> <span>Manufacturing</span></label>
+              <label class="filter-option"><input type="checkbox" name="industry" value="energy"> <span>Energy</span></label>
+              <label class="filter-option"><input type="checkbox" name="industry" value="utilities"> <span>Utilities</span></label>
+              <label class="filter-option"><input type="checkbox" name="industry" value="oil-gas"> <span>Oil &amp; gas</span></label>
+              <label class="filter-option"><input type="checkbox" name="industry" value="water"> <span>Water</span></label>
+              <label class="filter-option"><input type="checkbox" name="industry" value="transportation"> <span>Transportation</span></label>
+              <label class="filter-option"><input type="checkbox" name="industry" value="food-bev"> <span>Food &amp; beverage</span></label>
+              <label class="filter-option"><input type="checkbox" name="industry" value="mining"> <span>Mining</span></label>
+            </div>
+
+            <div class="filter-section">
+              <span class="filter-label">Compliance</span>
+              <label class="filter-option"><input type="checkbox" name="compliance" value="IEC-62443"> <span>IEC 62443</span></label>
+              <label class="filter-option"><input type="checkbox" name="compliance" value="ISA-95"> <span>ISA-95</span></label>
+              <label class="filter-option"><input type="checkbox" name="compliance" value="NERC-CIP"> <span>NERC CIP</span></label>
+              <label class="filter-option"><input type="checkbox" name="compliance" value="FDA-21CFR11"> <span>FDA 21 CFR Part 11</span></label>
+            </div>
+
+            <div class="filter-section">
+              <span class="filter-label">Protocol</span>
+              <label class="filter-option"><input type="checkbox" name="protocol" value="MQTT"> <span>MQTT</span></label>
+              <label class="filter-option"><input type="checkbox" name="protocol" value="OPC-UA"> <span>OPC-UA</span></label>
+              <label class="filter-option"><input type="checkbox" name="protocol" value="Modbus"> <span>Modbus</span></label>
+              <label class="filter-option"><input type="checkbox" name="protocol" value="EtherNet/IP"> <span>EtherNet/IP</span></label>
+              <label class="filter-option"><input type="checkbox" name="protocol" value="Profinet"> <span>Profinet</span></label>
+              <label class="filter-option"><input type="checkbox" name="protocol" value="DNP3"> <span>DNP3</span></label>
+              <label class="filter-option"><input type="checkbox" name="protocol" value="BACnet"> <span>BACnet</span></label>
+              <label class="filter-option"><input type="checkbox" name="protocol" value="S7"> <span>Siemens S7</span></label>
+              <label class="filter-option"><input type="checkbox" name="protocol" value="MTConnect"> <span>MTConnect</span></label>
+            </div>
+
+            <button class="filter-reset" id="reset-btn">Reset all filters</button>
+          </div>
+
+          <div class="results-area">
+            <div class="active-filters" id="active-filters"></div>
+            <div class="results-header">
+              <span class="results-count" id="results-count"><strong>0</strong> vendors</span>
+            </div>
+            <div class="results-grid" id="results-grid"></div>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="page-label">Industrial IoT Software</span>
+      <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+    </div>
+  </footer>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+  <script>
+    var vendors = [];
+    var activeFilters = {
+      category: [],
+      tier: [],
+      pricing: [],
+      deployment: [],
+      industry: [],
+      compliance: [],
+      protocol: []
+    };
+
+    /* Display labels matching category values in vendors.json */
+    var categoryLabels = {
+      'connectivity-middleware': 'Connectivity',
+      'edge-platform':          'Edge',
+      'analytics-historian':    'Analytics',
+      'automation-suite':       'Automation suite',
+      'open-platform':          'Open platform',
+      'cloud-infrastructure':   'Cloud'
+    };
+
+    fetch('/vendors.json')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        vendors = data;
+        render();
+      });
+
+    document.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+      cb.addEventListener('change', function() {
+        var name = this.name;
+        var value = this.value;
+        if (this.checked) {
+          if (!activeFilters[name]) activeFilters[name] = [];
+          activeFilters[name].push(value);
+        } else {
+          activeFilters[name] = activeFilters[name].filter(function(v) { return v !== value; });
+        }
+        render();
+      });
+    });
+
+    document.getElementById('reset-btn').addEventListener('click', function() {
+      Object.keys(activeFilters).forEach(function(k) { activeFilters[k] = []; });
+      document.querySelectorAll('input[type="checkbox"]').forEach(function(cb) { cb.checked = false; });
+      render();
+    });
+
+    function hasActiveFilters() {
+      return Object.values(activeFilters).some(function(arr) { return arr.length > 0; });
+    }
+
+    function vendorMatches(v) {
+      /* JSON uses "category" (array), "industries", "protocols", "compliance", "deployment" */
+      if (activeFilters.category.length && !activeFilters.category.some(function(c) { return (v.category || []).includes(c); })) return false;
+      if (activeFilters.tier.length && !activeFilters.tier.includes(v.tier)) return false;
+      if (activeFilters.pricing.length && !activeFilters.pricing.includes(v.pricing)) return false;
+      if (activeFilters.deployment.length && !activeFilters.deployment.some(function(d) { return (v.deployment || []).includes(d); })) return false;
+      if (activeFilters.industry.length && !activeFilters.industry.some(function(i) { return (v.industries || []).includes(i); })) return false;
+      if (activeFilters.compliance.length && !activeFilters.compliance.some(function(c) { return (v.compliance || []).includes(c); })) return false;
+      if (activeFilters.protocol.length && !activeFilters.protocol.some(function(p) { return (v.protocols || []).includes(p); })) return false;
+      return true;
+    }
+
+    function renderActiveFilters() {
+      var container = document.getElementById('active-filters');
+      var tags = [];
+      Object.keys(activeFilters).forEach(function(key) {
+        activeFilters[key].forEach(function(val) {
+          tags.push({ key: key, val: val });
+        });
+      });
+      if (!tags.length) { container.innerHTML = ''; return; }
+      container.innerHTML = tags.map(function(t) {
+        return '<span class="active-filter-tag">' + t.val +
+          '<button onclick="removeFilter(\'' + t.key + '\',\'' + t.val + '\')">&times;</button></span>';
+      }).join('');
+    }
+
+    function removeFilter(key, val) {
+      activeFilters[key] = activeFilters[key].filter(function(v) { return v !== val; });
+      var cb = document.querySelector('input[name="' + key + '"][value="' + val + '"]');
+      if (cb) cb.checked = false;
+      render();
+    }
+
+    function renderCard(v) {
+      var matchedProtos = activeFilters.protocol.length
+        ? (v.protocols || []).filter(function(p) { return activeFilters.protocol.includes(p); })
+        : [];
+
+      var protoHtml = '';
+      if (v.protocols && v.protocols.length) {
+        var protoList = v.protocols.map(function(p) {
+          return matchedProtos.includes(p) ? '<span class="proto-match">' + p + '</span>' : p;
+        }).join(', ');
+        protoHtml = '<div class="vendor-card-protocols"><strong>Protocols:</strong> ' + protoList + '</div>';
+      }
+
+      var catTags = (v.category || []).map(function(c) {
+        var matched = activeFilters.category.includes(c);
+        return '<span class="tag' + (matched ? ' tag-matched' : '') + '">' + (categoryLabels[c] || c) + '</span>';
+      }).join('');
+
+      var deployTags = (v.deployment || []).map(function(d) {
+        var matched = activeFilters.deployment.includes(d);
+        return '<span class="tag' + (matched ? ' tag-matched' : '') + '">' + d + '</span>';
+      }).join('');
+
+      var complianceTags = (v.compliance || []).map(function(c) {
+        var matched = activeFilters.compliance.includes(c);
+        return '<span class="tag' + (matched ? ' tag-matched' : '') + '">' + c + '</span>';
+      }).join('');
+
+      var watchHtml = v.watch ? '<div class="vendor-card-watch">Watch: ' + v.watch + '</div>' : '';
+
+      return '<div class="vendor-card">' +
+        '<div class="vendor-card-header">' +
+          '<div>' +
+            '<div class="vendor-card-name"><a href="' + v.url + '" target="_blank" rel="noopener">' + v.name + '</a></div>' +
+            '<div class="vendor-card-tier">' + v.tier + '</div>' +
+          '</div>' +
+          '<div class="vendor-card-price">' + v.pricing + '</div>' +
+        '</div>' +
+        '<div class="vendor-card-desc">' + v.description + '</div>' +
+        '<div class="vendor-card-fit">' + v.best_fit + '</div>' +
+        protoHtml +
+        '<div class="vendor-card-tags">' + catTags + deployTags + complianceTags + '</div>' +
+        watchHtml +
+        '</div>';
+    }
+
+    function render() {
+      renderActiveFilters();
+      var filtered = hasActiveFilters()
+        ? vendors.filter(vendorMatches)
+        : vendors.slice().sort(function(a, b) { return a.name.localeCompare(b.name); });
+
+      var countEl = document.getElementById('results-count');
+      countEl.innerHTML = '<strong>' + filtered.length + '</strong> vendor' + (filtered.length !== 1 ? 's' : '');
+
+      var grid = document.getElementById('results-grid');
+      if (!filtered.length) {
+        grid.innerHTML = '<div class="no-results">No vendors match the selected filters. Try removing one or more criteria.</div>';
+        return;
+      }
+      grid.innerHTML = filtered.map(renderCard).join('');
+    }
+  </script>
+
+</body>
+</html>

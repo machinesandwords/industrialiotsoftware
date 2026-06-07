@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>IIoT Software Vendor Index | Industrial IoT Software</title>
+  <meta name="description" content="Every significant industrial IoT software vendor by functional category. No rankings, no sponsored placements. Connectivity, edge, analytics, and full-stack.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/landscape/vendors/">
+
+  <meta property="og:title" content="IIoT Software Vendor Index | Industrial IoT Software">
+  <meta property="og:description" content="Every significant industrial IoT software vendor by functional category. No rankings, no sponsored placements.">
+  <meta property="og:url" content="https://industrialiotsoftware.com/landscape/vendors/">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "IIoT Software Vendor Index",
+    "description": "Every significant industrial IoT software vendor by functional category. No rankings, no sponsored placements.",
+    "url": "https://industrialiotsoftware.com/landscape/vendors/",
+    "datePublished": "2026-06-06",
+    "dateModified": "2026-06-06",
+    "publisher": { "@type": "Organization", "name": "Industrial IoT Software", "url": "https://industrialiotsoftware.com" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://industrialiotsoftware.com" },
+      { "@type": "ListItem", "position": 2, "name": "Landscape", "item": "https://industrialiotsoftware.com/landscape/" },
+      { "@type": "ListItem", "position": 3, "name": "Vendor Index", "item": "https://industrialiotsoftware.com/landscape/vendors/" }
+    ]
+  }
+  </script>
+
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+
+  <style>
+    .vendor-section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      border-top: 2px solid var(--charcoal);
+      padding-top: 0.75rem;
+      margin-top: 2.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .vendor-section-number {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .vendor-section-title {
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--charcoal);
+    }
+    .vendor-tier-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin: 1.25rem 0 0.5rem;
+      padding-bottom: 0.25rem;
+      border-bottom: var(--hairline);
+    }
+    .vendor-row {
+      display: grid;
+      grid-template-columns: 180px 1fr 110px;
+      border: var(--hairline);
+      border-bottom: none;
+      background: var(--surface);
+    }
+    .vendor-row:last-of-type,
+    .vendor-row:last-child {
+      border-bottom: var(--hairline);
+    }
+    .vendor-name-col {
+      padding: 0.85rem 1rem;
+      border-right: var(--hairline);
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .vendor-name {
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .vendor-name a {
+      color: var(--charcoal);
+      text-decoration: none;
+    }
+    .vendor-name a:hover { color: var(--accent); }
+    .vendor-also {
+      font-size: 11px;
+      color: var(--faint);
+      font-style: italic;
+    }
+    .vendor-body-col {
+      padding: 0.85rem 1rem;
+      border-right: var(--hairline);
+    }
+    .vendor-desc {
+      font-size: 13px;
+      color: var(--charcoal);
+      line-height: 1.6;
+      margin-bottom: 0.4rem;
+    }
+    .vendor-fit {
+      font-size: 12px;
+      color: var(--mid);
+      line-height: 1.5;
+    }
+    .vendor-meta-col {
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .vendor-price {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+    .vendor-deploy {
+      font-size: 11px;
+      color: var(--mid);
+      line-height: 1.4;
+    }
+    .vendor-standards {
+      font-size: 11px;
+      color: var(--faint);
+      line-height: 1.4;
+    }
+    .index-note {
+      font-size: 12px;
+      color: var(--mid);
+      border-left: 3px solid var(--border);
+      padding-left: 0.75rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+    .jump-nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 1.25rem;
+      border: var(--hairline);
+      background: var(--surface);
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .jump-nav-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--faint);
+      flex-shrink: 0;
+    }
+    .jump-nav a {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .jump-nav a:hover { text-decoration: underline; }
+    .arch-callout {
+      border: 1px solid var(--accent);
+      background: var(--accent-pale);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .arch-callout-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .arch-callout p {
+      font-size: 12px;
+      color: var(--charcoal);
+      line-height: 1.7;
+      margin-bottom: 0.5rem;
+    }
+    .arch-callout p:last-child { margin-bottom: 0; }
+    .litmus-callout {
+      border: var(--hairline);
+      border-left: 3px solid var(--accent);
+      background: var(--surface);
+      padding: 0.75rem 1rem;
+      margin: 0.5rem 0 0.75rem;
+    }
+    .litmus-callout p {
+      font-size: 12px;
+      color: var(--mid);
+      line-height: 1.6;
+      margin: 0;
+    }
+    @media (max-width: 700px) {
+      .vendor-row { grid-template-columns: 1fr; }
+      .vendor-name-col, .vendor-body-col { border-right: none; border-bottom: var(--hairline); }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for industrial IoT software buyers</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/landscape/">Landscape</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Vendors</span>
+        </div>
+
+        <span class="page-label">Vendor Index</span>
+        <h1>IIoT Software Vendor Index</h1>
+
+        <p class="lead">Every significant industrial IoT software vendor, organized by functional category. No rankings. No sponsored placements. Vendors that operate across multiple categories appear in each one that applies.</p>
+
+        <p class="index-note">Pricing tiers reflect relative cost and licensing model, not published rates. $ = accessible, often usage-based or open-core. $$ = mid-market, standard enterprise licensing. $$$ = large enterprise, custom contracts, professional services typically required. Most vendors in this market do not publish list prices.</p>
+
+        <nav class="jump-nav" aria-label="Jump to section">
+          <span class="jump-nav-label">Jump to:</span>
+          <a href="#connectivity">01 &mdash; Connectivity &amp; Protocol Translation</a>
+          <a href="#edge">02 &mdash; Edge Computing Platforms</a>
+          <a href="#analytics">03 &mdash; Analytics &amp; Historian Systems</a>
+          <a href="#fullstack">04 &mdash; Full-Stack IIoT Suites</a>
+        </nav>
+
+
+        <!-- 01 CONNECTIVITY AND PROTOCOL TRANSLATION -->
+        <div class="vendor-section-header" id="connectivity">
+          <div class="vendor-section-number">01</div>
+          <div class="vendor-section-title">Connectivity and Protocol Translation</div>
+        </div>
+
+        <div class="vendor-tier-label">Established</div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://www.ptc.com/en/products/kepware" target="_blank" rel="noopener">Kepware (PTC)</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">The most widely deployed OPC server and industrial protocol translation platform. 150+ native drivers covering Rockwell, Siemens, Mitsubishi, Modbus, and most legacy equipment. KEPServerEX runs on Windows; Kepware Edge (in rollout as of 2025) extends to Linux and containers. The default connectivity choice in mixed-protocol and Rockwell-centric environments.</div>
+            <div class="vendor-fit">Best fit: Organizations with complex mixed-protocol environments needing broad, proven driver coverage. De facto standard in discrete manufacturing.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">On-prem; Edge (Linux, in rollout)</div>
+            <div class="vendor-standards">OPC-UA, OPC-DA, MQTT</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://inductiveautomation.com" target="_blank" rel="noopener">Ignition (Inductive Automation)</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Industrial application platform covering SCADA, IIoT, MES, and HMI under flat-rate unlimited licensing. Built-in OPC-UA connects to virtually any PLC. The Cirrus Link MQTT modules (Transmission, Distributor, Engine) make Ignition a widely used UNS architecture backbone via Sparkplug B. Used in 69% of Fortune 100 companies. Strong independent integrator ecosystem.</div>
+            <div class="vendor-fit">Best fit: Organizations building a Unified Namespace architecture or modernizing SCADA infrastructure. Strong value proposition for multi-site deployments where per-tag or per-client licensing compounds quickly.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">On-prem + edge + cloud</div>
+            <div class="vendor-standards">OPC-UA, MQTT, Sparkplug B</div>
+          </div>
+        </div>
+
+        <div class="vendor-tier-label">Challengers</div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://litmus.io" target="_blank" rel="noopener">Litmus</a></div>
+            <div class="vendor-also">also in 02</div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Industrial edge data platform combining protocol translation (250+ drivers) with a containerized edge computing environment on a single device. The broadest native driver coverage in the challenger tier — Fanuc CNCs, Haas mills, Siemens S7, Rockwell CompactLogix, and legacy equipment from the 1980s onward. Named a Gartner Challenger. Strategic partnerships with Azure (Litmus Edge Bridge) and major cloud platforms.</div>
+            <div class="vendor-fit">Best fit: Large enterprises with mixed-vendor, multi-era equipment that need both protocol translation and edge compute from a single deployment. Litmus can collapse Category 01 and Category 02 spend into one vendor relationship.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">Edge hardware + cloud</div>
+            <div class="vendor-standards">OPC-UA, MQTT, Sparkplug B, REST</div>
+          </div>
+        </div>
+
+        <div class="litmus-callout">
+          <p>Litmus appears in both Category 01 and Category 02. Its competitive position is built on collapsing both layers into a single platform — protocol translation and containerized edge compute on the same device. For organizations evaluating both categories simultaneously, Litmus is the most direct consolidation play in the market.</p>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://highbyte.com" target="_blank" rel="noopener">HighByte</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Industrial edge data integration platform focused specifically on data normalization and contextualization before data reaches cloud or analytics platforms. Connects to legacy PLCs and OT systems, structures raw tag data into semantically meaningful formats (JSON, UNS-ready payloads), and routes to AWS, Azure, Databricks, or on-premise targets. Positioned as the data readiness layer for AI and analytics initiatives.</div>
+            <div class="vendor-fit">Best fit: Organizations where poor data quality or inconsistent tagging is blocking analytics and AI programs. The translation layer between brownfield OT and modern data infrastructure.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">Edge + cloud</div>
+            <div class="vendor-standards">OPC-UA, MQTT, Sparkplug B, REST</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://www.hivemq.com" target="_blank" rel="noopener">HiveMQ</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Enterprise MQTT broker with Sparkplug B support, horizontal cluster scaling, and an extension SDK for custom protocol adapters including OPC-UA bridging. Capacity scales by adding cluster nodes rather than purchasing per-connection or per-driver licenses. The commercial alternative to open-source brokers (EMQX, Mosquitto) for organizations that need formal support, guaranteed SLAs, and predictable scaling economics.</div>
+            <div class="vendor-fit">Best fit: Organizations building a MQTT-based UNS backbone that need commercial support and horizontal scalability without the per-connection licensing model that compounds with fleet growth.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">On-prem + cloud</div>
+            <div class="vendor-standards">MQTT 5.0, Sparkplug B, OPC-UA (via extension)</div>
+          </div>
+        </div>
+
+
+        <!-- 02 EDGE COMPUTING PLATFORMS -->
+        <div class="vendor-section-header" id="edge">
+          <div class="vendor-section-number">02</div>
+          <div class="vendor-section-title">Edge Computing Platforms</div>
+        </div>
+
+        <div class="vendor-tier-label">Established</div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://www.siemens.com/global/en/products/automation/industry-software/industrial-edge.html" target="_blank" rel="noopener">Siemens Industrial Edge</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Containerized edge computing platform tightly integrated with Siemens automation hardware — S7 PLCs, SINUMERIK CNCs, and the broader Siemens Xcelerator ecosystem. Managed via the Industrial Edge Management system. Strong app marketplace for Siemens-native applications. The natural edge choice for organizations already standardized on Siemens automation.</div>
+            <div class="vendor-fit">Best fit: Siemens-centric manufacturing environments that want edge compute within their existing automation architecture without introducing a separate vendor relationship.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">On-prem hardware + cloud managed</div>
+            <div class="vendor-standards">OPC-UA, MQTT, Siemens Xcelerator</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://aws.amazon.com/greengrass/" target="_blank" rel="noopener">AWS IoT Greengrass</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Cloud-native edge runtime from AWS. Runs Lambda functions, ML inference models, and containerized workloads locally. Syncs with AWS IoT Core for device management and data routing. Note: AWS has repositioned Greengrass as a thin transport runtime rather than a full operational platform — it is optimized for pulling data into AWS services efficiently, not for standalone edge operations.</div>
+            <div class="vendor-fit">Best fit: Organizations building AWS-centric IIoT architectures where the primary goal is cloud data ingestion and AWS service integration rather than local edge processing independence.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$</div>
+            <div class="vendor-deploy">Edge runtime + AWS cloud</div>
+            <div class="vendor-standards">MQTT, OPC-UA (via connectors)</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://azure.microsoft.com/en-us/products/iot-edge" target="_blank" rel="noopener">Azure IoT Edge</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Microsoft's edge runtime for deploying cloud workloads to industrial devices. Deep integration with Azure IoT Hub, Azure Digital Twins, and Azure ML. Like Greengrass, Microsoft has repositioned Azure IoT Edge as a data transport layer optimized for Azure service consumption rather than an autonomous edge operations platform. Strongest in organizations already invested in the Microsoft security and data stack.</div>
+            <div class="vendor-fit">Best fit: Organizations running Microsoft-centric IT stacks wanting edge connectivity to Azure services. Less suited to environments requiring offline-first or autonomous edge operations.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$</div>
+            <div class="vendor-deploy">Edge runtime + Azure cloud</div>
+            <div class="vendor-standards">MQTT, OPC-UA (via connectors), AMQP</div>
+          </div>
+        </div>
+
+        <div class="vendor-tier-label">Challengers</div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://litmus.io" target="_blank" rel="noopener">Litmus</a></div>
+            <div class="vendor-also">also in 01</div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">See Category 01 entry. Litmus's containerized edge environment supports custom application deployment — quality checks, local ML inference, protocol translation — directly on the edge device alongside data collection. The combined protocol translation and edge compute architecture is the platform's primary competitive differentiator.</div>
+            <div class="vendor-fit">Best fit: Organizations that want to consolidate connectivity middleware and edge compute into a single platform rather than maintaining separate tools for each layer.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">Edge hardware + cloud</div>
+            <div class="vendor-standards">OPC-UA, MQTT, Sparkplug B, REST</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://www.zededa.com" target="_blank" rel="noopener">ZEDEDA</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Enterprise edge orchestration platform built on the Linux Foundation's open-source EVE-OS framework, purpose-built for distributed industrial environments. Manages containerized and VM workloads across heterogeneous edge hardware — from ruggedized industrial gateways to existing plant servers — without requiring hardware replacement. Backed by Rockwell Automation and Schneider Electric. The primary challenger to Siemens Industrial Edge for organizations running multi-vendor OT environments.</div>
+            <div class="vendor-fit">Best fit: Large industrial enterprises running multi-vendor automation environments that need enterprise-grade edge orchestration without locking into a single automation vendor's hardware ecosystem.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">On-prem + cloud managed</div>
+            <div class="vendor-standards">EVE-OS, OCI containers, MQTT</div>
+          </div>
+        </div>
+
+
+        <!-- 03 INDUSTRIAL ANALYTICS AND HISTORIAN SYSTEMS -->
+        <div class="vendor-section-header" id="analytics">
+          <div class="vendor-section-number">03</div>
+          <div class="vendor-section-title">Industrial Analytics and Historian Systems</div>
+        </div>
+
+        <div class="vendor-tier-label">Established</div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://aveva.com/en/products/aveva-pi-system/" target="_blank" rel="noopener">AVEVA PI System</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">The dominant industrial historian platform, with a 40-year installed base across energy, utilities, oil and gas, and process industries. Originally OSIsoft PI System, acquired by AVEVA in 2021. Collects, stores, and contextualizes time-series data from thousands of sources. Deeply embedded in process industry operations — many facilities have built decades of operational workflows on top of it. Note: AVEVA's shift to Flex credit-based licensing has significantly increased cost complexity and total spend for existing customers. Perpetual licenses are no longer available. Critical components (PI Interfaces, PI Vision, PI DataLink) are sold separately from the core system.</div>
+            <div class="vendor-fit">Best fit: Process industry operators — oil and gas, chemicals, utilities, power generation — with existing PI System infrastructure. Greenfield deployments should evaluate modern alternatives before defaulting to PI.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">On-prem + cloud</div>
+            <div class="vendor-standards">OPC-DA, OPC-UA, REST (PI Web API)</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://www.siemens.com/global/en/products/software/insights-hub.html" target="_blank" rel="noopener">Siemens Insights Hub</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Cloud-native IIoT-as-a-service platform (formerly MindSphere) now fully integrated into the Siemens Xcelerator ecosystem. Covers industrial telemetry, digital twins, predictive maintenance, and OEE analytics. Siemens is actively migrating its identity and access management into Xcelerator, deepening the dependency on the Siemens stack. Best value in environments where Siemens hardware already dominates.</div>
+            <div class="vendor-fit">Best fit: Large enterprises with significant Siemens automation infrastructure needing cloud-native analytics and digital twin capabilities without rebuilding their data architecture.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">Cloud (Siemens Xcelerator)</div>
+            <div class="vendor-standards">OPC-UA, MQTT, REST</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://www.ptc.com/en/products/thingworx" target="_blank" rel="noopener">PTC ThingWorx</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Mature IIoT application development platform with built-in analytics, digital twin capabilities, and AR-enhanced field operations via Vuforia. Deep connectivity via Kepware (150+ industrial protocols). One of the most capable purpose-built IIoT development platforms for rapid application creation. Strong in asset-intensive industries that need custom operational applications rather than off-the-shelf dashboards.</div>
+            <div class="vendor-fit">Best fit: Manufacturing and asset-intensive industries requiring sophisticated analytics, rapid application prototyping, and AR-enhanced field operations. Strongest when paired with Kepware connectivity.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">On-prem + cloud</div>
+            <div class="vendor-standards">OPC-UA, MQTT, REST</div>
+          </div>
+        </div>
+
+        <div class="vendor-tier-label">Challengers</div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://www.influxdata.com" target="_blank" rel="noopener">InfluxDB (InfluxData)</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Open-source time-series database purpose-built for high-frequency sensor data. Handles the storage and query performance demands that traditional relational databases and legacy historians cannot meet at modern IIoT data volumes. Strong developer community and cloud-hosted option (InfluxDB Cloud). Important caveat: InfluxDB is a developer and data engineering tool. It requires significant custom coding to handle messy OT metadata, inconsistent tagging, and the data quality problems common in brownfield environments. It belongs in the data stack, not as a turnkey operations analytics platform.</div>
+            <div class="vendor-fit">Best fit: Organizations with data engineering capability who need a high-performance time-series foundation for custom analytics applications. Not a replacement for turnkey OEE or predictive maintenance platforms.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$</div>
+            <div class="vendor-deploy">On-prem + cloud</div>
+            <div class="vendor-standards">REST, MQTT (via Telegraf)</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://www.seeq.com" target="_blank" rel="noopener">Seeq</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Advanced analytics platform for process manufacturing built on top of existing historians — AVEVA PI System, OSIsoft AF, Honeywell PHD, and others. Fills the analytics gap that historians leave without requiring a historian replacement. Enables process engineers and operations teams to run advanced analysis, build predictive models, and share insights without requiring data science expertise. Turnkey for operations teams, not a developer tool.</div>
+            <div class="vendor-fit">Best fit: Process industry organizations with existing PI System or historian infrastructure that need advanced analytics capability without displacing their data foundation.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">Cloud + on-prem</div>
+            <div class="vendor-standards">PI Web API, OPC-UA, REST</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://www.cognite.com" target="_blank" rel="noopener">Cognite Data Fusion</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Industrial data platform targeting oil and gas, energy, and heavy industry. Strong data contextualization and digital twin capabilities — takes raw time-series data and enriches it with asset hierarchy, engineering documentation, and operational context to make it useful for analytics and AI applications. Built for organizations managing complex asset portfolios where data exists in multiple siloed systems.</div>
+            <div class="vendor-fit">Best fit: Oil and gas operators, energy companies, and heavy industrials with complex asset portfolios and data spread across multiple siloed systems that need contextual integration rather than just storage.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">Cloud</div>
+            <div class="vendor-standards">OPC-UA, REST, PI Web API</div>
+          </div>
+        </div>
+
+
+        <!-- 04 FULL-STACK IIoT SUITES -->
+        <div class="vendor-section-header" id="fullstack">
+          <div class="vendor-section-number">04</div>
+          <div class="vendor-section-title">Full-Stack IIoT Suites</div>
+        </div>
+
+        <div class="arch-callout">
+          <div class="arch-callout-label">Architectural shift note</div>
+          <p>The enterprise market is actively moving away from monolithic, single-vendor IIoT platforms. Organizations that deployed full-stack suites in the 2015-2020 period are now navigating high licensing costs, integration ceilings, and architectural constraints that were not apparent at purchase. The composable IIoT architecture — a Category 01 connectivity layer feeding a Category 02 edge platform, landing data in a Category 03 analytics system — is replacing the full-stack approach for new deployments.</p>
+          <p>This category remains relevant for two buyer types: organizations with existing suite investments managing a multi-year transition, and organizations that prioritize vendor consolidation and deployment speed over long-term architectural flexibility. For greenfield projects, treat this category as a map of legacy incumbents and transition cases, not a shortlist of forward-looking platforms.</p>
+        </div>
+
+        <div class="vendor-tier-label">Established</div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://www.rockwellautomation.com/en-us/products/software/factory-talk.html" target="_blank" rel="noopener">Rockwell Automation (FactoryTalk)</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Full manufacturing operations suite covering MES, analytics, connectivity, and HMI in a tightly integrated stack. Deep hardware affinity with Allen-Bradley PLCs and ControlLogix systems. FactoryTalk Analytics, FactoryTalk Optix, and FactoryTalk ProductionCentre cover the production data layer. Recently added Plex MES capabilities via acquisition. The natural full-stack choice for Allen-Bradley environments.</div>
+            <div class="vendor-fit">Best fit: Discrete and hybrid manufacturing organizations where Allen-Bradley automation infrastructure dominates and vendor consolidation is a higher priority than architectural openness.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">On-prem + cloud</div>
+            <div class="vendor-standards">OPC-UA, EtherNet/IP, MQTT</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://www.honeywellforge.com" target="_blank" rel="noopener">Honeywell Forge</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Industrial IoT and analytics suite for process industries. Covers asset performance management, energy management, and operations analytics backed by Honeywell's deep process industry relationships. Strong in oil and gas, chemicals, refining, and building management. Most valuable in environments already running Honeywell automation and control systems, where integration friction is lowest.</div>
+            <div class="vendor-fit">Best fit: Process industry operators — oil and gas, chemicals, refining — already running Honeywell automation systems seeking a connected analytics layer from a trusted automation vendor.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">On-prem + cloud</div>
+            <div class="vendor-standards">OPC-UA, REST</div>
+          </div>
+        </div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://www.ge.com/digital/predix" target="_blank" rel="noopener">GE Vernova (Predix)</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Originally positioned as a horizontal IIoT platform, Predix has been substantially absorbed into GE Vernova's internal grid, wind, and electrification product portfolios since the GE Vernova spinout. It is rarely bought as a standalone horizontal IIoT platform today. Organizations evaluating Predix are almost always doing so in the context of GE Vernova's power generation and grid management products, not as a general-purpose IIoT suite.</div>
+            <div class="vendor-fit">Best fit: Power generation and grid operators already within the GE Vernova ecosystem. Not recommended as a horizontal IIoT platform for general industrial use cases.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$$</div>
+            <div class="vendor-deploy">Cloud</div>
+            <div class="vendor-standards">REST, OPC-UA</div>
+          </div>
+        </div>
+
+        <div class="vendor-tier-label">Challengers</div>
+
+        <div class="vendor-row">
+          <div class="vendor-name-col">
+            <div class="vendor-name"><a href="https://www.cumulocity.com" target="_blank" rel="noopener">Cumulocity IoT</a></div>
+          </div>
+          <div class="vendor-body-col">
+            <div class="vendor-desc">Open, cloud-native IIoT platform with on-premises, edge, and hybrid deployment options. Originally part of Software AG; completed a management buyout in early 2025 backed by Avedon Capital and Schroders Capital, and now operates as a fully independent company. The MBO removed the platform from Software AG's constrained portfolio and gives Cumulocity significantly more product focus and execution agility than it had as a corporate subsidiary. Strong in utilities, telecommunications, and device-fleet management use cases.</div>
+            <div class="vendor-fit">Best fit: Organizations managing large device fleets needing open architecture and flexible deployment options. The 2025 independence makes it a more credible long-term platform bet than it was under Software AG.</div>
+          </div>
+          <div class="vendor-meta-col">
+            <div class="vendor-price">$$</div>
+            <div class="vendor-deploy">Cloud + on-prem + edge</div>
+            <div class="vendor-standards">MQTT, OPC-UA, REST</div>
+          </div>
+        </div>
+
+
+        <h2>Where to go next</h2>
+
+        <p>The <a href="/landscape/">landscape overview</a> explains the strategic trade-offs between vendor categories before you engage with specific vendors. The <a href="/tools/vendor-comparison/">vendor comparison tool</a> lets you filter and compare platforms by protocol support, deployment model, and architectural approach. The <a href="/landscape/market-direction/">market direction page</a> covers where the architectural center of gravity is moving and what that means for buying decisions made today.</p>
+
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="page-label">Industrial IoT Software</span>
+      <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+    </div>
+  </footer>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>

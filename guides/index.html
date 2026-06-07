@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>Industrial IoT Software Guides | Industrial IoT Software</title>
+  <meta name="description" content="Practical guides for IIoT software buyers and implementers. UNS architecture, legacy PLC connectivity, pilot design, unidirectional data pipelines, and protocol compatibility.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/guides/">
+
+  <meta property="og:title" content="Industrial IoT Software Guides | Industrial IoT Software">
+  <meta property="og:description" content="Practical guides for IIoT software buyers and implementers. No vendor affiliation.">
+  <meta property="og:url" content="https://industrialiotsoftware.com/guides/">
+  <meta property="og:type" content="website">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://industrialiotsoftware.com" },
+      { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://industrialiotsoftware.com/guides/" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Industrial IoT Software Guides",
+    "description": "Practical guides for IIoT software buyers and implementers.",
+    "url": "https://industrialiotsoftware.com/guides/",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "url": "https://industrialiotsoftware.com/guides/unified-namespace/", "name": "Building Your First Unified Namespace" },
+      { "@type": "ListItem", "position": 2, "url": "https://industrialiotsoftware.com/guides/legacy-plc-telemetry/", "name": "Extracting Telemetry from Legacy PLCs Without Native Ethernet" },
+      { "@type": "ListItem", "position": 3, "url": "https://industrialiotsoftware.com/guides/iiot-pilot-structure/", "name": "How to Structure an IIoT Pilot That Can Scale" },
+      { "@type": "ListItem", "position": 4, "url": "https://industrialiotsoftware.com/guides/unidirectional-data-pipeline/", "name": "The Read-Only Data Pipeline" },
+      { "@type": "ListItem", "position": 5, "url": "https://industrialiotsoftware.com/guides/protocol-compatibility/", "name": "Protocol Compatibility: What Your Vendor Won't Tell You" }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+
+  <style>
+    .guide-list { list-style: none; padding: 0; margin-bottom: 32px; }
+    .guide-list li { border-bottom: var(--hairline); }
+    .guide-list li:last-child { border-bottom: none; }
+    .guide-list a {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 14px 0;
+      color: var(--charcoal);
+      text-decoration: none;
+    }
+    .guide-list a:hover .guide-list-name { color: var(--accent); }
+    .guide-list-body { flex: 1; }
+    .guide-list-name { font-size: var(--small); font-weight: 700; margin-bottom: 2px; }
+    .guide-list-desc { font-size: 12px; color: var(--mid); line-height: 1.5; }
+    .guide-list-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 4px;
+      display: block;
+    }
+    .guide-list-arrow { color: var(--border); font-size: 11px; padding-top: 2px; flex-shrink: 0; }
+    .guide-list a:hover .guide-list-arrow { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for industrial IoT software buyers</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Guides</span>
+        </div>
+
+        <span class="page-label">Guides</span>
+        <h1>Industrial IoT Software Guides</h1>
+
+        <p class="lead">Practical guides for IIoT software buyers and implementers — from architecture decisions and platform evaluation through brownfield connectivity and pilot design. Written for practitioners, not procurement committees.</p>
+
+        <ul class="guide-list">
+
+          <li>
+            <a href="/guides/unified-namespace/">
+              <div class="guide-list-body">
+                <span class="guide-list-tag">Architecture</span>
+                <div class="guide-list-name">Building Your First Unified Namespace</div>
+                <div class="guide-list-desc">How to structure MQTT topic hierarchies using the ISA-95 model. Covers topic hierarchy design, Sparkplug B alignment with UNS, the telemetry vs. attributes split, and the failure modes that break UNS deployments at scale.</div>
+              </div>
+              <span class="guide-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="/guides/legacy-plc-telemetry/">
+              <div class="guide-list-body">
+                <span class="guide-list-tag">Connectivity</span>
+                <div class="guide-list-name">Extracting Telemetry from Legacy PLCs Without Native Ethernet</div>
+                <div class="guide-list-desc">Hardware and software guide for connecting older Allen-Bradley, Siemens, and Modbus RTU equipment to a modern IIoT data pipeline without replacing the PLC. Covers DH+, DH-485, DF1, S5 AS511, and the three-layer extraction architecture.</div>
+              </div>
+              <span class="guide-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="/guides/iiot-pilot-structure/">
+              <div class="guide-list-body">
+                <span class="guide-list-tag">Evaluation</span>
+                <div class="guide-list-name">How to Structure an IIoT Pilot That Can Scale</div>
+                <div class="guide-list-desc">A framework for designing proof-of-concept deployments that survive contact with the rest of the factory. Covers the four-persona scoping requirement, Purdue Model network architecture, semantic normalization testing, and the edge management blindspot.</div>
+              </div>
+              <span class="guide-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="/guides/unidirectional-data-pipeline/">
+              <div class="guide-list-body">
+                <span class="guide-list-tag">Architecture</span>
+                <div class="guide-list-name">The Read-Only Data Pipeline</div>
+                <div class="guide-list-desc">How to use hardware-enforced unidirectional data flow to protect safety-critical OT systems while feeding enterprise analytics. Covers the split-proxy architecture that makes data diodes work, FEC, NTP isolation, and why native TCP protocols cannot cross the hardware gap.</div>
+              </div>
+              <span class="guide-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="/guides/protocol-compatibility/">
+              <div class="guide-list-body">
+                <span class="guide-list-tag">Evaluation</span>
+                <div class="guide-list-name">Protocol Compatibility: What Your Vendor Won't Tell You</div>
+                <div class="guide-list-desc">The gap between claimed protocol support and actual connectivity in your environment. Covers firmware version gaps, Siemens Optimized Block Access, Allen-Bradley CIP connection limits, Modbus endianness, and how to run a pre-purchase compatibility test that surfaces real problems.</div>
+              </div>
+              <span class="guide-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+
+        </ul>
+
+        <footer>
+          <div class="footer-inner">
+            <span class="page-label">Industrial IoT Software</span>
+            <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+          </div>
+        </footer>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>Protocol Compatibility: What Your Vendor Won't Tell You — Guide | Industrial IoT Software</title>
+  <meta name="description" content="The gap between claimed protocol support and actual connectivity. Firmware versions, program-scoped tags, Siemens Optimized Block Access, Modbus endianness, and CIP connection limits.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/guides/protocol-compatibility/">
+
+  <meta property="og:title" content="Protocol Compatibility: What Your Vendor Won't Tell You — Guide | Industrial IoT Software">
+  <meta property="og:description" content="The gap between claimed protocol support and actual connectivity in your environment.">
+  <meta property="og:url" content="https://industrialiotsoftware.com/guides/protocol-compatibility/">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Protocol Compatibility: What Your Vendor Won't Tell You",
+    "description": "The gap between claimed protocol support and actual connectivity in your environment.",
+    "url": "https://industrialiotsoftware.com/guides/protocol-compatibility/",
+    "datePublished": "2026-06-06",
+    "dateModified": "2026-06-06",
+    "publisher": { "@type": "Organization", "name": "Industrial IoT Software", "url": "https://industrialiotsoftware.com" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://industrialiotsoftware.com" },
+      { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://industrialiotsoftware.com/guides/" },
+      { "@type": "ListItem", "position": 3, "name": "Protocol Compatibility: What Your Vendor Won't Tell You", "item": "https://industrialiotsoftware.com/guides/protocol-compatibility/" }
+    ]
+  }
+  </script>
+
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+
+  <style>
+    code {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      background: var(--bg);
+      padding: 1px 4px;
+      border: var(--hairline);
+      color: var(--charcoal);
+    }
+
+    .prereq-block {
+      border: var(--hairline);
+      border-left: 3px solid var(--accent);
+      background: var(--surface);
+      padding: 16px 20px;
+      margin: 24px 0;
+    }
+    .prereq-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+      display: block;
+    }
+    .prereq-block ul { margin: 0; padding-left: 18px; }
+    .prereq-block li {
+      font-size: var(--small);
+      color: var(--mid);
+      margin-bottom: 6px;
+      line-height: 1.6;
+    }
+
+    .gap-block {
+      border: var(--hairline);
+      border-bottom: none;
+      background: var(--surface);
+    }
+    .gap-block:last-of-type { border-bottom: var(--hairline); }
+    .gap-header {
+      padding: 10px 16px;
+      border-bottom: var(--hairline);
+      background: var(--bg);
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .gap-tag {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .gap-body {
+      padding: 12px 16px;
+      font-size: var(--small);
+      color: var(--charcoal);
+      line-height: 1.75;
+    }
+    .gap-body p { margin-bottom: 10px; }
+    .gap-body p:last-child { margin-bottom: 0; }
+
+    .siemens-callout {
+      border: var(--hairline);
+      border-left: 3px solid #b45309;
+      background: var(--surface);
+      padding: 14px 16px;
+      margin: 12px 0;
+    }
+    .siemens-callout-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #b45309;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .siemens-callout p {
+      font-size: var(--small);
+      color: var(--charcoal);
+      line-height: 1.7;
+      margin-bottom: 0;
+    }
+
+    /* Compatibility matrix table */
+    .compat-matrix {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--small);
+      margin: 20px 0;
+      border: var(--hairline);
+    }
+    .compat-matrix thead tr {
+      background: var(--charcoal);
+    }
+    .compat-matrix thead th {
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #e8e8e6;
+      border: none;
+      white-space: nowrap;
+    }
+    .compat-matrix thead th:first-child { width: 180px; }
+    .compat-matrix tbody tr { background: var(--surface); }
+    .compat-matrix tbody tr:nth-child(even) { background: var(--bg); }
+    .compat-matrix tbody td {
+      padding: 10px 14px;
+      border-bottom: var(--hairline);
+      vertical-align: top;
+      line-height: 1.6;
+    }
+    .compat-matrix tbody tr:last-child td { border-bottom: none; }
+    .compat-matrix .claim-col { color: var(--mid); font-style: italic; }
+    .compat-matrix .test-col { color: var(--charcoal); }
+    .compat-matrix .label-col { font-weight: 700; color: var(--charcoal); }
+
+    .test-protocol {
+      border: var(--hairline);
+      background: var(--surface);
+      margin: 16px 0;
+    }
+    .test-protocol-header {
+      padding: 10px 16px;
+      border-bottom: var(--hairline);
+      background: var(--bg);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--faint);
+    }
+    .test-protocol-body { padding: 14px 16px; }
+    .test-item {
+      display: flex;
+      gap: 14px;
+      padding: 8px 0;
+      border-bottom: var(--hairline);
+      align-items: baseline;
+    }
+    .test-item:last-child { border-bottom: none; }
+    .test-item-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      flex-shrink: 0;
+      width: 120px;
+    }
+    .test-item-body {
+      font-size: var(--small);
+      color: var(--charcoal);
+      line-height: 1.65;
+    }
+
+    .question-block {
+      border: var(--hairline);
+      border-bottom: none;
+      background: var(--surface);
+    }
+    .question-block:last-of-type { border-bottom: var(--hairline); }
+    .question-header {
+      padding: 10px 16px;
+      border-bottom: var(--hairline);
+      background: var(--bg);
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+    .question-body {
+      padding: 12px 16px;
+      font-size: var(--small);
+      color: var(--mid);
+      line-height: 1.75;
+    }
+
+    .assumption-block {
+      border: var(--hairline);
+      border-bottom: none;
+      background: var(--surface);
+    }
+    .assumption-block:last-of-type { border-bottom: var(--hairline); }
+    .assumption-header {
+      padding: 10px 16px;
+      border-bottom: var(--hairline);
+      background: var(--bg);
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+    .assumption-body {
+      padding: 12px 16px;
+      font-size: var(--small);
+      color: var(--mid);
+      line-height: 1.75;
+    }
+
+    @media (max-width: 640px) {
+      .test-item { flex-direction: column; gap: 4px; }
+      .test-item-label { width: auto; }
+      .compat-matrix thead th:nth-child(2) { display: none; }
+      .compat-matrix tbody td:nth-child(2) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for industrial IoT software buyers</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/guides/">Guides</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Protocol Compatibility: What Your Vendor Won't Tell You</span>
+        </div>
+
+        <span class="page-label">Guide</span>
+        <h1>Protocol Compatibility: What Your Vendor Won't Tell You</h1>
+
+        <p class="lead">Every IIoT platform vendor claims broad protocol support. What the marketing materials do not show is the gap between supporting a protocol family and actually connecting to the specific device, firmware version, and tag type running on your floor.</p>
+
+        <div class="prereq-block">
+          <span class="prereq-label">Before you start — what you need</span>
+          <ul>
+            <li>The make, model, and firmware version of every PLC and controller you intend to connect</li>
+            <li>Your network topology including VLANs and subnets separating OT devices from the proposed gateway location</li>
+            <li>The vendor's driver documentation — firmware version matrices, not marketing pages</li>
+            <li>Access to one representative device of each type for a pre-purchase connectivity test</li>
+          </ul>
+        </div>
+
+        <h2>The problem</h2>
+
+        <p>Protocol support is not binary. A platform that supports Allen-Bradley EtherNet/IP can connect to a CompactLogix L33ER running firmware 30.011. It may not read all tag types from a CompactLogix L32E running firmware 17.003. The driver exists. The device is on the supported list. The specific combination may not work — and you will not find out until the gateway is on your network.</p>
+
+        <h2>Where support claims break down</h2>
+
+        <div class="gap-block">
+          <div class="gap-header">
+            <span class="gap-tag">Allen-Bradley</span>
+            Firmware version gaps
+          </div>
+          <div class="gap-body">
+            <p>PLC firmware evolves. A driver written for a specific firmware version may not handle data structures introduced in a later version, or may fail on devices running older firmware that predates a feature the driver assumes is present. Always ask: what is the oldest and newest firmware version your driver has been tested against for this specific device model?</p>
+          </div>
+        </div>
+
+        <div class="gap-block">
+          <div class="gap-header">
+            <span class="gap-tag">Allen-Bradley</span>
+            Program-scoped tags and UDTs
+          </div>
+          <div class="gap-body">
+            <p>Most drivers handle standard integer and float tags reliably. String tags, UDT arrays, and program-scoped tags are where coverage gets inconsistent. In Allen-Bradley Logix platforms, controller-scoped tags are generally accessible. Program-scoped tags require driver navigation of the program namespace — not all drivers implement this fully.</p>
+            <p>If your PLC uses program-scoped tags — and most real-world programs do — verify explicitly that the driver can read them and ask for a production reference who uses them in a comparable environment.</p>
+          </div>
+        </div>
+
+        <div class="gap-block">
+          <div class="gap-header">
+            <span class="gap-tag">Siemens</span>
+            Optimized Block Access barrier
+          </div>
+          <div class="gap-body">
+            <p>This is the biggest protocol roadblock in the Siemens world and it is almost never mentioned in vendor documentation. By default, modern Siemens TIA Portal projects configure data blocks with Optimized Block Access enabled. Generic third-party drivers using standard ISO-on-TCP with absolute addressing (e.g., <code>DB1.DBD0</code>) cannot read these blocks.</p>
+            <div class="siemens-callout">
+              <span class="siemens-callout-label">The Optimized Block Access barrier</span>
+              <p>An S7-1200 or S7-1500 with Optimized Block Access enabled will accept a connection from a third-party driver and return no data — or return errors with no clear indication of why. The driver will not report a protocol mismatch. You will see a healthy connection and empty tags.</p>
+            </div>
+            <p>To read optimized data blocks, the driver must support native symbolic browsing via the S7Comm+ protocol, or an engineer must manually disable optimization on every data block intended for polling. Disabling optimization is a PLC program modification that requires change management approval and retesting. Verify which approach your vendor's driver uses before purchase — and if it requires program modifications, factor that into your deployment timeline.</p>
+          </div>
+        </div>
+
+        <div class="gap-block">
+          <div class="gap-header">
+            <span class="gap-tag">EtherNet/IP</span>
+            Explicit messaging connection limits
+          </div>
+          <div class="gap-body">
+            <p>IIoT gateways use Explicit Messaging (Class 3/UCMM) to poll PLCs for data collection. Implicit Messaging (Class 1) is reserved for real-time deterministic I/O control between the PLC and remote I/O racks or drives — it is not a data collection mechanism. The constraint to understand is the explicit messaging connection pool.</p>
+            <p>Legacy and low-end processors — Allen-Bradley MicroLogix, SLC 5/05, older CompactLogix L32E — have strict limits on simultaneous explicit message connections. If an HMI, a programming laptop, and your new IIoT gateway are all polling the PLC simultaneously, the gateway will hit "no available CIP connections" errors. Know the connection pool limit of every target device before configuring polling.</p>
+          </div>
+        </div>
+
+        <div class="gap-block">
+          <div class="gap-header">
+            <span class="gap-tag">Modbus</span>
+            Register mapping and endianness
+          </div>
+          <div class="gap-body">
+            <p>Modbus has no native concept of a float or a string — it only understands 16-bit registers. To read a 32-bit floating-point value, a gateway must read two adjacent registers and reconstruct the float. If the gateway interprets byte and word ordering differently from the device — Big-Endian vs. Little-Endian, or word-swapped — a temperature reading of 23.5°C arrives in your analytics platform as NaN or a nonsensical value. There will be no connection error. The pipeline looks healthy. The data is wrong.</p>
+            <p>Additionally, some Modbus implementations use 0-based register indexing while others use 1-based, causing all addresses to shift by one. Verify byte order, word order, and register offset with the device documentation before configuring tags.</p>
+          </div>
+        </div>
+
+        <div class="gap-block">
+          <div class="gap-header">
+            <span class="gap-tag">All protocols</span>
+            Network topology dependencies
+          </div>
+          <div class="gap-body">
+            <p>OT networks are segmented by VLANs, separated by firewalls, and divided into isolated subnets. A gateway that can reach a device on the corporate LAN may not reach the same device on a cell-level OT VLAN behind a managed switch with strict ACLs. Test connectivity from the actual network location the gateway will occupy — not from a laptop on the corporate network.</p>
+          </div>
+        </div>
+
+        <h2>The vendor compatibility matrix</h2>
+
+        <div class="table-wrap">
+          <table class="compat-matrix">
+            <thead>
+              <tr>
+                <th>Vendor claim</th>
+                <th>What it usually means</th>
+                <th>What to actually test</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="label-col">"Full EtherNet/IP support"</td>
+                <td class="claim-col">Controller-scoped tags on current firmware</td>
+                <td class="test-col">Program-scoped tags and nested UDTs on your specific CPU and firmware version</td>
+              </tr>
+              <tr>
+                <td class="label-col">"Supports S7-1200 and S7-1500"</td>
+                <td class="claim-col">Connects — may not read optimized blocks</td>
+                <td class="test-col">Does it use S7Comm+ symbolic browsing, or does it require disabling Optimized Block Access?</td>
+              </tr>
+              <tr>
+                <td class="label-col">"Plug-and-play Modbus driver"</td>
+                <td class="claim-col">Reads 16-bit integer registers</td>
+                <td class="test-col">32-bit float byte order and word order — verify against a known reference value</td>
+              </tr>
+              <tr>
+                <td class="label-col">"Unlimited tag polling"</td>
+                <td class="claim-col">No gateway-side limit</td>
+                <td class="test-col">PLC explicit messaging connection pool under concurrent HMI and gateway load</td>
+              </tr>
+              <tr>
+                <td class="label-col">"250+ protocol drivers"</td>
+                <td class="claim-col">Driver exists for the protocol family</td>
+                <td class="test-col">Native driver or OPC-UA wrapper? Tested against your firmware version specifically?</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>The pre-purchase compatibility test</h2>
+
+        <p>Before committing to a platform, run a controlled connectivity test. Most vendors will provide a trial license. If a vendor declines to support a pre-purchase test, treat that as a data point.</p>
+
+        <div class="test-protocol">
+          <div class="test-protocol-header">Test protocol — what to run and what to look for</div>
+          <div class="test-protocol-body">
+            <div class="test-item">
+              <div class="test-item-label">Environment</div>
+              <div class="test-item-body">Install the gateway on hardware in your OT network segment — not the corporate LAN. Use the actual firmware version running in production.</div>
+            </div>
+            <div class="test-item">
+              <div class="test-item-label">Tag coverage</div>
+              <div class="test-item-body">Read at least 50 representative tags including string tags, UDTs, and program-scoped tags. Connectivity is not the test. Reading every tag type your use case requires is the test.</div>
+            </div>
+            <div class="test-item">
+              <div class="test-item-label">Bulk load</div>
+              <div class="test-item-body">Read at least 500 tags spread across different memory structures — not 500 sequential registers in one block. Smart drivers batch sequential tags into a single network request. A driver that cannot optimize will send one packet per tag, choking the PLC's communication processor. Performance degradation that does not appear at 50 tags often appears clearly at 500.</div>
+            </div>
+            <div class="test-item">
+              <div class="test-item-label">Duration</div>
+              <div class="test-item-body">Run for at least 24 hours. One hour of successful connectivity is insufficient to identify intermittent errors, CIP connection pool exhaustion under concurrent load, or clock drift effects on timestamped data.</div>
+            </div>
+            <div class="test-item">
+              <div class="test-item-label">Value verification</div>
+              <div class="test-item-body">Read the same tags simultaneously in RSLogix, TIA Portal, or equivalent and confirm values match. For Modbus, pay particular attention to 32-bit float values — a byte order mismatch will not surface as an error, only as a wrong number.</div>
+            </div>
+            <div class="test-item">
+              <div class="test-item-label">Reconnection</div>
+              <div class="test-item-body">Restart the gateway mid-test. Verify automatic reconnection within your defined window without manual intervention.</div>
+            </div>
+          </div>
+        </div>
+
+        <h2>Questions to ask vendors before purchase</h2>
+
+        <div class="question-block">
+          <div class="question-header">What firmware versions has your driver been tested against for this specific device model?</div>
+          <div class="question-body">Ask for the version matrix, not a general answer. "We support Allen-Bradley EtherNet/IP" is not an answer to this question.</div>
+        </div>
+
+        <div class="question-block">
+          <div class="question-header">Does your Allen-Bradley driver support program-scoped tags and nested UDTs?</div>
+          <div class="question-body">If yes, ask for a production reference who uses them in a comparable environment — not a demo environment with flat controller-scoped tags.</div>
+        </div>
+
+        <div class="question-block">
+          <div class="question-header">Does your Siemens driver use S7Comm+ symbolic browsing, or does it require disabling Optimized Block Access?</div>
+          <div class="question-body">If it requires disabling optimization, what is the change management process? Who owns the PLC program modification, and how long does it take to approve and test?</div>
+        </div>
+
+        <div class="question-block">
+          <div class="question-header">How does your Modbus driver handle 32-bit floats — byte order, word order, register offset?</div>
+          <div class="question-body">Is byte and word order configurable per device? Some environments have mixed-endian devices from different eras that require per-device configuration.</div>
+        </div>
+
+        <div class="question-block">
+          <div class="question-header">What is the explicit messaging connection limit for the Rockwell CPUs in my environment, and how does your gateway manage its connection count under concurrent polling?</div>
+          <div class="question-body">Ask specifically about your CPU models. The MicroLogix, SLC 5/05, and older CompactLogix processors have significantly lower limits than current-generation hardware.</div>
+        </div>
+
+        <div class="question-block">
+          <div class="question-header">What happens to buffered data if the gateway loses upstream connectivity?</div>
+          <div class="question-body">Does it guarantee delivery or drop data after the buffer fills? For OEE calculation, maintenance records, or regulatory reporting, the answer determines whether the platform is viable for your use case.</div>
+        </div>
+
+        <h2>Where assumptions break</h2>
+
+        <div class="assumption-block">
+          <div class="assumption-header">Assuming the demo worked means production will work</div>
+          <div class="assumption-body">A vendor demo runs on vendor-controlled hardware at firmware versions the vendor knows work. Ask which firmware version the demo device is running. If it does not match your facility, request a test on matching hardware before purchase.</div>
+        </div>
+
+        <div class="assumption-block">
+          <div class="assumption-header">Assuming one device of a type means all devices of that type</div>
+          <div class="assumption-body">A facility with 20 CompactLogix PLCs may have four hardware revisions and three firmware versions across them. Test one device from each distinct revision and firmware version in your environment.</div>
+        </div>
+
+        <div class="assumption-block">
+          <div class="assumption-header">Assuming connectivity means complete data access</div>
+          <div class="assumption-body">The gateway connected. Tags are reading. Three months later the analytics team discovers the production counts used for OEE calculation are program-scoped tags the driver cannot read — so the OEE dashboard has been calculating from a proxy value since day one. Define the complete tag list required for each use case before the connectivity test and verify every tag on the list.</div>
+        </div>
+
+        <div class="assumption-block">
+          <div class="assumption-header">Assuming Modbus values are correct because there are no errors</div>
+          <div class="assumption-body">A byte-order mismatch produces wrong numbers, not errors. The pipeline looks healthy. The data is wrong. Verify 32-bit float values against a known reference before declaring the Modbus integration functional.</div>
+        </div>
+
+        <hr>
+
+        <p>Related: the <a href="/guides/legacy-plc-telemetry/">legacy PLC telemetry guide</a> covers the hardware layer for devices without native Ethernet. The <a href="/guides/iiot-pilot-structure/">pilot structure guide</a> covers how to design a compatibility test into the pilot scope before committing to a platform. The <a href="/landscape/vendors/#connectivity">vendor index connectivity section</a> covers Kepware, Litmus, and HighByte with notes on protocol depth.</p>
+
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="page-label">Industrial IoT Software</span>
+      <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+    </div>
+  </footer>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>

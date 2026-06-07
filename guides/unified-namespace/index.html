@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>Building Your First Unified Namespace — Practical Guide | Industrial IoT Software</title>
+  <meta name="description" content="How to structure MQTT topic hierarchies using the ISA-95 model. A practical implementation guide covering topic hierarchy, Sparkplug B alignment, and common failure modes.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/guides/unified-namespace/">
+
+  <meta property="og:title" content="Building Your First Unified Namespace — Practical Guide | Industrial IoT Software">
+  <meta property="og:description" content="How to structure MQTT topic hierarchies using the ISA-95 model. A practical implementation guide covering topic hierarchy, Sparkplug B alignment, and common failure modes.">
+  <meta property="og:url" content="https://industrialiotsoftware.com/guides/unified-namespace/">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Building Your First Unified Namespace",
+    "description": "How to structure MQTT topic hierarchies using the ISA-95 model. A practical implementation guide covering topic hierarchy, Sparkplug B alignment, and common failure modes.",
+    "url": "https://industrialiotsoftware.com/guides/unified-namespace/",
+    "datePublished": "2026-06-06",
+    "dateModified": "2026-06-06",
+    "publisher": { "@type": "Organization", "name": "Industrial IoT Software", "url": "https://industrialiotsoftware.com" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://industrialiotsoftware.com" },
+      { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://industrialiotsoftware.com/guides/" },
+      { "@type": "ListItem", "position": 3, "name": "Building Your First Unified Namespace", "item": "https://industrialiotsoftware.com/guides/unified-namespace/" }
+    ]
+  }
+  </script>
+
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+
+  <style>
+    .prereq-block {
+      border: var(--hairline);
+      border-left: 3px solid var(--accent);
+      background: var(--surface);
+      padding: 16px 20px;
+      margin: 24px 0;
+    }
+    .prereq-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+      display: block;
+    }
+    .prereq-block ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+    .prereq-block li {
+      font-size: var(--small);
+      color: var(--mid);
+      margin-bottom: 6px;
+      line-height: 1.6;
+    }
+    .code-block {
+      background: var(--charcoal);
+      color: #e8e8e6;
+      padding: 16px 20px;
+      margin: 16px 0;
+      overflow-x: auto;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .step-block {
+      border: var(--hairline);
+      background: var(--surface);
+      margin: 12px 0;
+    }
+    .step-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding: 12px 16px;
+      border-bottom: var(--hairline);
+      background: var(--bg);
+    }
+    .step-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
+    }
+    .step-title {
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+    .step-body {
+      padding: 14px 16px;
+    }
+    .step-body p {
+      font-size: var(--small);
+      color: var(--charcoal);
+      line-height: 1.75;
+      margin-bottom: 10px;
+    }
+    .step-body p:last-child { margin-bottom: 0; }
+    .step-body ul {
+      padding-left: 18px;
+      margin: 8px 0;
+    }
+    .step-body li {
+      font-size: var(--small);
+      color: var(--mid);
+      margin-bottom: 6px;
+      line-height: 1.6;
+    }
+    .warning-block {
+      border: var(--hairline);
+      border-left: 3px solid #b45309;
+      background: var(--surface);
+      padding: 14px 16px;
+      margin: 16px 0;
+    }
+    .warning-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #b45309;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .warning-block p {
+      font-size: var(--small);
+      color: var(--charcoal);
+      line-height: 1.7;
+      margin-bottom: 0;
+    }
+    .failure-block {
+      border: var(--hairline);
+      border-bottom: none;
+      background: var(--surface);
+    }
+    .failure-block:last-of-type { border-bottom: var(--hairline); }
+    .failure-header {
+      padding: 10px 16px;
+      border-bottom: var(--hairline);
+      background: var(--bg);
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+    .failure-body {
+      padding: 12px 16px;
+      font-size: var(--small);
+      color: var(--mid);
+      line-height: 1.75;
+    }
+    .tag-split-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: var(--hairline);
+      margin: 16px 0;
+    }
+    .tag-split-col {
+      background: var(--surface);
+      padding: 14px 16px;
+    }
+    .tag-split-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .tag-split-col ul {
+      margin: 0;
+      padding-left: 16px;
+    }
+    .tag-split-col li {
+      font-size: var(--small);
+      color: var(--mid);
+      margin-bottom: 4px;
+    }
+    code {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      background: var(--bg);
+      padding: 1px 4px;
+      border: var(--hairline);
+      color: var(--charcoal);
+    }
+    .code-block code {
+      background: none;
+      border: none;
+      padding: 0;
+      color: #e8e8e6;
+      font-size: 12px;
+    }
+    @media (max-width: 640px) {
+      .tag-split-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for industrial IoT software buyers</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/guides/">Guides</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Building Your First Unified Namespace</span>
+        </div>
+
+        <span class="page-label">Guide</span>
+        <h1>Building Your First Unified Namespace</h1>
+
+        <p class="lead">A practical implementation guide for structuring MQTT topic hierarchies using the ISA-95 model — covering topic design, Sparkplug B alignment, and the failure modes that break UNS deployments at scale.</p>
+
+        <div class="prereq-block">
+          <span class="prereq-label">Before you start — what you need</span>
+          <ul>
+            <li>An MQTT broker: Mosquitto for testing; HiveMQ or EMQX for production (see note below)</li>
+            <li>A protocol translator connected to at least one data source: Ignition with Cirrus Link MQTT modules, Kepware with an MQTT client plug-in, or HighByte Intelligence Hub</li>
+            <li>Your facility's physical layout documented: site name, production areas, lines, cells, and individual device names</li>
+            <li>MQTT Explorer (free) for inspecting the topic tree</li>
+            <li>Write access to your MQTT broker configuration and read access to at least one PLC or data source</li>
+          </ul>
+        </div>
+
+        <div class="callout">
+          <span class="callout-label">Broker note</span>
+          <p>Mosquitto is sufficient for testing and single-site pilots. A production UNS that serves as the enterprise-wide single source of truth requires a broker with distributed clustering and policy-based topic security. HiveMQ and EMQX are the two most common production choices. A UNS that outgrows its broker requires a migration that touches every consuming application — plan the upgrade before go-live, not after.</p>
+        </div>
+
+        <h2>The problem this solves</h2>
+
+        <p>Most IIoT deployments start the same way. An edge gateway connects to a PLC, data starts flowing, and someone publishes it to an MQTT broker under a topic like <code>factory/machine1/temp</code> or <code>plant/data/sensor_42</code>. This works for one machine. It breaks at ten. By the time a facility has fifty data sources publishing to an unstructured broker, the data is effectively unusable — topics are inconsistent, asset context is missing, and any analytics platform consuming the data has to maintain a separate mapping table just to know what it is looking at.</p>
+
+        <p>The Unified Namespace solves this by making the topic structure itself carry the asset context. When a message arrives at <code>Acme/Chicago/Assembly/Line3/Cell2/Welder_A/Temperature</code>, a consuming application knows exactly what it is looking at without a lookup table. The data is self-describing.</p>
+
+        <h2>The ISA-95 topic hierarchy</h2>
+
+        <p>ISA-95 defines a role-based equipment hierarchy for integrating enterprise and control systems. The standard's formal levels run from Enterprise down to Work Unit. In practice, the IIoT industry has converged on a six-level adaptation that maps cleanly onto MQTT topic paths:</p>
+
+        <div class="code-block"><code>Enterprise / Site / Area / Line / Cell / Device</code></div>
+
+        <p>This is not a verbatim ISA-95 specification — "Device" is not a formal ISA-95 level, and Line and Cell are parallel concepts in the standard rather than a strict hierarchy. It is the common adaptation that practitioners use, and it is what most UNS tooling and documentation assumes.</p>
+
+        <p>Applied to a real facility:</p>
+
+        <div class="code-block"><code>Acme /                          ← Enterprise (company name)
+  Chicago /                     ← Site (facility location)
+    Assembly /                  ← Area (production area or department)
+      Line3 /                   ← Line (production line)
+        Cell2 /                 ← Cell (work cell or machine group)
+          Welder_A /            ← Device (individual asset)
+            Status              ← Telemetry (dynamic — changes continuously)
+            Temperature
+            CycleCount
+            FaultCode
+            _attr/              ← Attributes (static — rarely changes)
+              SerialNumber
+              AssetID
+              MaxRatedTemp</code></div>
+
+        <p>At the tag level, mature UNS architectures split tags into two subtypes. Telemetry covers dynamic data that changes continuously. Attributes cover static data that rarely changes. Keeping them separate prevents consuming applications from processing static data on every update cycle.</p>
+
+        <div class="tag-split-grid">
+          <div class="tag-split-col">
+            <div class="tag-split-label">Telemetry (dynamic)</div>
+            <ul>
+              <li>Status (running, faulted, idle)</li>
+              <li>Temperature</li>
+              <li>CycleCount</li>
+              <li>FaultCode</li>
+              <li>OEE, throughput, rejects</li>
+            </ul>
+          </div>
+          <div class="tag-split-col">
+            <div class="tag-split-label">Attributes (static)</div>
+            <ul>
+              <li>SerialNumber</li>
+              <li>AssetID</li>
+              <li>MaxRatedTemp</li>
+              <li>InstallDate</li>
+              <li>Manufacturer, Model</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="warning-block">
+          <span class="warning-label">Case sensitivity</span>
+          <p>MQTT topics are case-sensitive. <code>Line3</code> and <code>line3</code> are two completely different topics to a broker. Pick a naming convention — CamelCase or underscores, consistent capitalization — before any data flows, and enforce it across every gateway and every engineer configuring the system.</p>
+        </div>
+
+        <h2>Implementation steps</h2>
+
+        <div class="step-block">
+          <div class="step-header">
+            <span class="step-num">Step 1</span>
+            <span class="step-title">Map your physical hierarchy before touching the broker</span>
+          </div>
+          <div class="step-body">
+            <p>Write out your Enterprise, Site, Area, Line, Cell, and Device names in a spreadsheet before configuring anything. Decisions made here are hard to undo once data starts flowing. Use consistent naming: no spaces, no special characters, consistent capitalization throughout. This is your UNS schema — treat changes to it with the same discipline you would apply to a production database schema.</p>
+          </div>
+        </div>
+
+        <div class="step-block">
+          <div class="step-header">
+            <span class="step-num">Step 2</span>
+            <span class="step-title">Define your tag list per device</span>
+          </div>
+          <div class="step-body">
+            <p>For each device in your hierarchy, list every data point you intend to publish and classify each as telemetry or attribute. Group telemetry tags by function: Status (running, faulted, idle), Performance (cyclecount, OEE, throughput), Quality (rejects, rework), Maintenance (temperature, vibration, runtime hours). This becomes your UNS data dictionary — the authoritative reference for what the namespace contains and what each tag means.</p>
+          </div>
+        </div>
+
+        <div class="step-block">
+          <div class="step-header">
+            <span class="step-num">Step 3</span>
+            <span class="step-title">Configure your protocol translator to publish to the correct topics</span>
+          </div>
+          <div class="step-body">
+            <p>In Ignition with Cirrus Link MQTT Transmission, map each tag to its full ISA-95 path in the topic configuration. In Kepware with an MQTT client plug-in, set the topic string in the channel or device configuration. In HighByte, topic mapping is handled in the data flow configuration.</p>
+            <p>The broker enforces nothing — your translator is solely responsible for publishing to the correct path. If the translator publishes to the wrong path, the broker accepts it without complaint and your namespace becomes inconsistent.</p>
+          </div>
+        </div>
+
+        <div class="step-block">
+          <div class="step-header">
+            <span class="step-num">Step 4</span>
+            <span class="step-title">Align Sparkplug B with your UNS (if applicable)</span>
+          </div>
+          <div class="step-body">
+            <p>Sparkplug B provides robust device state management via Birth and Death certificates, compressed protobuf payloads, and sequence numbering. It is worth using. However, Sparkplug B has a rigid, unalterable topic specification:</p>
+            <div class="code-block"><code>spBv1.0 / [GroupID] / [MessageType] / [EdgeNodeID] / [DeviceID]</code></div>
+            <p>This format does not match the ISA-95 hierarchy built in Steps 1 to 3. If you publish raw Sparkplug B topics to your broker, your topic tree will be structured around edge node IDs rather than physical asset locations, breaking the UNS model. Do not attempt to add custom subtopics to a Sparkplug B path — the specification does not permit it.</p>
+            <p>The resolution depends on your tooling. In Ignition with Cirrus Link MQTT Transmission, use the Custom Namespace feature to map Sparkplug payloads so they resolve into your ISA-95 topic paths rather than the default Sparkplug header structure. In HighByte, configure the Intelligence Hub to consume raw or Sparkplug-encoded data from your edge sources and re-publish into your clean ISA-95 paths. Sparkplug handles state management and payload encoding under the hood; your UNS topic tree stays clean and physical-hierarchy-aligned.</p>
+          </div>
+        </div>
+
+        <div class="step-block">
+          <div class="step-header">
+            <span class="step-num">Step 5</span>
+            <span class="step-title">Verify with MQTT Explorer before connecting analytics</span>
+          </div>
+          <div class="step-body">
+            <p>Connect MQTT Explorer to your broker and review the full topic tree with all gateways publishing simultaneously. Look for:</p>
+            <ul>
+              <li>Inconsistent naming for the same asset across different gateways (Welder_A vs WelderA vs welder-a)</li>
+              <li>Missing hierarchy levels — data publishing directly to <code>Chicago/Welder_A</code> without Area, Line, and Cell levels</li>
+              <li>Sparkplug topics appearing in the raw <code>spBv1.0/</code> namespace instead of mapped ISA-95 paths</li>
+              <li>Retained messages from test sessions cluttering the topic tree</li>
+            </ul>
+            <p>Fix every discrepancy before connecting any analytics platform or historian. Downstream consumers build data models from the topic structure they discover at connection time. A consumer that connects to a malformed namespace will build a malformed model.</p>
+          </div>
+        </div>
+
+        <h2>Where this breaks</h2>
+
+        <div class="failure-block">
+          <div class="failure-header">Naming convention drift</div>
+          <div class="failure-body">Two engineers configure edge gateways independently and use different conventions for the same physical asset — <code>Line3/Cell2/Welder_A</code> from one gateway, <code>line_3/cell_2/welderA</code> from another. The broker accepts both without complaint. The result is two fragmented logical twins for a single physical asset publishing to different topic paths. Any analytics platform consuming the UNS builds separate models for what it believes are two different assets. The physical Welder A has no coherent digital representation. Catch this in Step 5 before any consuming application connects.</div>
+        </div>
+
+        <div class="failure-block">
+          <div class="failure-header">Sparkplug B birth certificate failures</div>
+          <div class="failure-body">If the edge node does not publish a correct Birth Certificate on reconnect after a restart, consuming applications may continue showing last known values rather than flagging the device as offline. Verify that your MQTT client is configured to publish a Last Will and Testament (Death Certificate) on unexpected disconnect and a Birth Certificate on every reconnect. Test this explicitly by restarting the edge gateway while a consumer is connected and confirming the consumer detects the offline state.</div>
+        </div>
+
+        <div class="failure-block">
+          <div class="failure-header">Late-stage hierarchy renaming</div>
+          <div class="failure-body">Once an analytics platform, dashboard, or historian is consuming from a UNS path, renaming that path breaks every downstream consumer. Treat the hierarchy as a production schema — changes require a migration plan that accounts for every consuming application, not a quick find-and-replace in the translator configuration.</div>
+        </div>
+
+        <div class="failure-block">
+          <div class="failure-header">Mosquitto in production</div>
+          <div class="failure-body">Mosquitto works for pilots and single-site deployments. At enterprise scale with multiple sites publishing simultaneously, the lack of clustering and topic-level access control becomes a hard constraint. Plan the broker upgrade before the UNS reaches production scale. Migrating broker infrastructure after analytics consumers are connected is a significantly more disruptive project than upgrading before go-live.</div>
+        </div>
+
+        <hr>
+
+        <p>Related: <a href="/landscape/market-direction/">Where the IIoT market is heading</a> covers how UNS adoption is reshaping the vendor landscape. The <a href="/landscape/vendors/#connectivity">vendor index connectivity section</a> covers the platforms referenced in this guide.</p>
+
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="page-label">Industrial IoT Software</span>
+      <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+    </div>
+  </footer>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>

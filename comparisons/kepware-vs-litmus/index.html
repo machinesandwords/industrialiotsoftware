@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>Kepware vs. Litmus: Industrial Connectivity Comparison | Industrial IoT Software</title>
+  <meta name="description" content="Kepware vs. Litmus: proven protocol depth vs. combined edge-plus-connectivity architecture. Independent head-to-head for IIoT connectivity buyers.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/comparisons/kepware-vs-litmus/">
+  <meta property="og:title" content="Kepware vs. Litmus: Industrial Connectivity Comparison | Industrial IoT Software">
+  <meta property="og:description" content="Kepware vs. Litmus: proven protocol depth vs. combined edge-plus-connectivity architecture.">
+  <meta property="og:url" content="https://industrialiotsoftware.com/comparisons/kepware-vs-litmus/">
+  <meta property="og:type" content="article">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+  <style>
+    .compare-table td:first-child{width:200px;font-weight:700;font-size:11px;color:var(--mid);letter-spacing:0.02em;}
+    .compare-table .section-divider td{background:var(--bg);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--faint);padding:10px 12px 6px;border-bottom:var(--hairline);}
+    .compare-table .win-a td:nth-child(2){color:var(--accent);font-weight:700;}
+    .compare-table .win-b td:nth-child(3){color:var(--accent);font-weight:700;}
+    .wins-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:var(--hairline);margin-bottom:32px;}
+    .wins-col{background:var(--surface);padding:20px 24px;}
+    .wins-col-label{font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);margin:0 0 12px;display:block;}
+    .wins-col ul{list-style:none;padding:0;margin:0;}
+    .wins-col li{font-size:var(--small);padding:7px 0;border-bottom:var(--hairline);display:flex;gap:10px;align-items:flex-start;line-height:1.5;color:var(--mid);}
+    .wins-col li:last-child{border-bottom:none;}
+    .wins-col li::before{content:'+';color:var(--accent);font-weight:700;flex-shrink:0;}
+    @media(max-width:640px){.wins-grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for industrial IoT software buyers</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation"><div id="sidebar-nav"></div></nav>
+    <main class="main">
+      <div class="content">
+        <div class="breadcrumb"><a href="/">Home</a><span class="breadcrumb-sep">/</span><a href="/comparisons/">Comparisons</a><span class="breadcrumb-sep">/</span><span>Kepware vs. Litmus</span></div>
+        <span class="page-label">Connectivity Middleware &mdash; Head-to-Head</span>
+        <h1>Kepware vs. Litmus</h1>
+        <p class="lead">Both platforms connect legacy OT equipment to modern data pipelines. The difference is scope: Kepware is a focused, proven protocol translation engine with two decades of brownfield deployment history. Litmus collapses connectivity and edge compute into a single platform. The comparison is not about which has more protocol drivers. It is about whether you need a dedicated translation layer or a combined translation-and-compute architecture.</p>
+
+        <div class="table-wrap">
+          <table class="compare-table">
+            <thead><tr><th style="width:200px;">Criteria</th><th>Kepware (PTC)</th><th>Litmus</th></tr></thead>
+            <tbody>
+              <tr class="section-divider"><td colspan="3">Platform</td></tr>
+              <tr><td>Primary function</td><td>Protocol translation and OPC server</td><td>Protocol translation and containerized edge compute</td></tr>
+              <tr><td>Platform scope</td><td>Connectivity only</td><td>Connectivity and edge application hosting</td></tr>
+              <tr><td>Deployment model</td><td>Windows server (KEPServerEX); Linux containers (Kepware Edge, in rollout)</td><td>Purpose-built edge hardware or VM; cloud management</td></tr>
+              <tr><td>Architecture</td><td>Centralized OPC server with driver channels</td><td>Distributed edge nodes with cloud orchestration</td></tr>
+              <tr class="section-divider"><td colspan="3">Protocol support</td></tr>
+              <tr><td>Driver count</td><td>150+ native drivers</td><td>250+ drivers</td></tr>
+              <tr class="win-a"><td>Legacy PLC depth</td><td>Industry-leading — DH+, DH-485, DF1, S5 AS511, decades of field-hardened driver history</td><td>Strong broad coverage; less field history on edge cases with oldest legacy hardware</td></tr>
+              <tr><td>OPC standards</td><td>OPC-DA, OPC-UA client and server</td><td>OPC-UA client; MQTT, Sparkplug B, REST</td></tr>
+              <tr><td>Modbus</td><td>Modbus RTU and TCP; full register mapping configuration</td><td>Modbus RTU and TCP; register mapping configurable</td></tr>
+              <tr class="section-divider"><td colspan="3">Edge capabilities</td></tr>
+              <tr><td>Edge compute</td><td>None — connectivity only</td><td>Containerized edge environment; deploy custom apps, ML inference, quality logic locally</td></tr>
+              <tr class="win-b"><td>Offline operation</td><td>Depends on host server availability</td><td>Full offline-first operation; buffers during WAN outages</td></tr>
+              <tr class="win-b"><td>Fleet management</td><td>Per-server; Kepware Edge adds remote config</td><td>Centralized fleet management across distributed nodes</td></tr>
+              <tr class="section-divider"><td colspan="3">Integration</td></tr>
+              <tr class="win-b"><td>MQTT / UNS</td><td>Via third-party MQTT client plug-in; Cirrus Link or equivalent required</td><td>Native MQTT and Sparkplug B publishing</td></tr>
+              <tr class="win-b"><td>Cloud connectors</td><td>Via MQTT plug-in or OPC-UA; separate configuration required</td><td>Native connectors to AWS, Azure, Databricks; Litmus Edge Bridge for Azure IoT Operations</td></tr>
+              <tr class="win-a"><td>Historian integration</td><td>Strong — direct OPC connections to AVEVA PI and major historians</td><td>Via MQTT or REST; less direct historian integration</td></tr>
+              <tr class="section-divider"><td colspan="3">Procurement</td></tr>
+              <tr><td>Licensing</td><td>Per-driver channel or suite; Windows server license</td><td>Per-node subscription; hardware or VM</td></tr>
+              <tr><td>Pricing</td><td>$$</td><td>$$</td></tr>
+              <tr><td>Watch</td><td>Kepware Edge Linux rollout ongoing — verify GA status and feature parity before committing</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:12px;color:var(--faint);margin-top:-20px;margin-bottom:40px;">Protocol coverage sourced from vendor documentation. Verify driver availability for your specific device models and firmware versions before purchase.</p>
+
+        <div class="wins-grid">
+          <div class="wins-col">
+            <span class="wins-col-label">Kepware wins when</span>
+            <ul>
+              <li>Your environment includes legacy Allen-Bradley DH+ or DH-485, Siemens S5, or other older hardware where driver field history matters</li>
+              <li>Your architecture is built around OPC-DA or OPC-UA and you need a proven server</li>
+              <li>You are running Windows-based infrastructure and want the lowest-friction path</li>
+              <li>You need direct historian integration without additional middleware</li>
+              <li>Your connectivity requirements are well-defined and edge compute is handled separately</li>
+            </ul>
+          </div>
+          <div class="wins-col">
+            <span class="wins-col-label">Litmus wins when</span>
+            <ul>
+              <li>You need edge applications — ML inference, quality checks, local control logic — alongside data collection</li>
+              <li>You are building a MQTT/Sparkplug B UNS architecture and want native support without plug-ins</li>
+              <li>Your facilities have unreliable WAN and you need offline-first edge operation</li>
+              <li>You are managing connectivity across multiple distributed sites and need centralized fleet management</li>
+              <li>You want to consolidate connectivity middleware and edge compute into a single vendor relationship</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="verdict">
+          <span class="verdict-label">The real decision</span>
+          <p>If your primary problem is connecting a complex brownfield environment — especially one with legacy Allen-Bradley or older Siemens hardware — to an existing OPC-based infrastructure, Kepware's driver depth and field history are hard to match. If you are building a new data architecture around MQTT, Sparkplug B, and cloud-native analytics, and you need edge compute alongside connectivity, Litmus collapses two procurement decisions into one.</p>
+          <p style="margin-top:12px;">The question that resolves it: do you already have an edge computing layer, or are you building one? If you have one, Kepware is the simpler connectivity choice. If you are building one, Litmus avoids a second vendor relationship.</p>
+        </div>
+
+        <p style="font-size:var(--small);margin-top:32px;">Related: <a href="/comparisons/kepware-vs-ignition/">Kepware vs. Ignition</a> &nbsp;&middot;&nbsp; <a href="/comparisons/ignition-vs-litmus/">Ignition vs. Litmus</a> &nbsp;&middot;&nbsp; <a href="/landscape/vendors/#connectivity">Full connectivity vendor index</a></p>
+      </div>
+    </main>
+  </div>
+  <footer><div class="footer-inner"><span class="page-label">Industrial IoT Software</span><p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p></div></footer>
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+</body>
+</html>

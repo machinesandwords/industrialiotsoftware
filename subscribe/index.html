@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>Subscribe | <!-- SITE NAME --></title>
+  <meta name="description" content="<!-- Meta description: what the newsletter covers and who it's for. 140-160 chars -->">
+  <link rel="canonical" href="https://<!-- DOMAIN -->/subscribe/">
+
+  <meta property="og:title" content="Subscribe | <!-- SITE NAME -->">
+  <meta property="og:description" content="<!-- OG description ~120 chars -->">
+  <meta property="og:url" content="https://<!-- DOMAIN -->/subscribe/">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>:root{--accent:#000000;--accent-dim:#000000;--accent-pale:#f5f5f5}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand"><!-- SITE NAME HTML --></div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline"><!-- SITE TAGLINE --></div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Subscribe</span>
+        </div>
+
+        <span class="page-label">Newsletter</span>
+        <h1><!-- Newsletter page H1 --></h1>
+
+        <p class="lead"><!-- Lead: what the newsletter covers and why it matters for the reader. --></p>
+
+        <div class="newsletter-block" style="max-width:480px; margin-bottom:40px;">
+          <span class="page-label">Subscribe</span>
+          <p><!-- Brief description of newsletter content. No marketing copy, no sponsored content. --></p>
+          <div class="newsletter-form">
+            <input type="email" id="nl-email" placeholder="your@email.com" autocomplete="email">
+            <button id="nl-submit" type="button">Subscribe</button>
+          </div>
+          <div id="nl-msg" style="font-size:11px; color:var(--mid); margin-top:8px; min-height:16px;"></div>
+          <p style="font-size:11px; color:var(--faint); margin-top:8px; margin-bottom:0;">We do not share your address with vendors or third parties.</p>
+        </div>
+
+        <h2>What the newsletter covers</h2>
+
+        <p><!-- Describe publish cadence and how the newsletter relates to site updates. --></p>
+
+        <ul style="font-size:var(--small); line-height:1.8; color:var(--mid); padding-left:1.25rem;">
+          <li><!-- Newsletter coverage item 1 --></li>
+          <li><!-- Newsletter coverage item 2 --></li>
+          <li><!-- Newsletter coverage item 3 --></li>
+          <li><!-- Newsletter coverage item 4 --></li>
+        </ul>
+
+        <div class="page-footer">
+          <span class="page-label"><!-- SITE NAME --></span>
+          <p>An independent publication. Built by <a href="<!-- PUBLISHER URL -->"><!-- PUBLISHER NAME --></a>.</p>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+</body>
+</html>

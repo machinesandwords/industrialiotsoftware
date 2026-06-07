@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>Ignition vs. Litmus: IIoT Platform Comparison | Industrial IoT Software</title>
+  <meta name="description" content="Ignition vs. Litmus: full industrial application platform vs. edge-first connectivity and compute. Independent head-to-head for IIoT architecture buyers.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/comparisons/ignition-vs-litmus/">
+  <meta property="og:title" content="Ignition vs. Litmus: IIoT Platform Comparison | Industrial IoT Software">
+  <meta property="og:description" content="Ignition vs. Litmus: full industrial application platform vs. edge-first connectivity and compute.">
+  <meta property="og:url" content="https://industrialiotsoftware.com/comparisons/ignition-vs-litmus/">
+  <meta property="og:type" content="article">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+  <style>
+    .compare-table td:first-child{width:200px;font-weight:700;font-size:11px;color:var(--mid);letter-spacing:0.02em;}
+    .compare-table .section-divider td{background:var(--bg);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--faint);padding:10px 12px 6px;border-bottom:var(--hairline);}
+    .compare-table .win-a td:nth-child(2){color:var(--accent);font-weight:700;}
+    .compare-table .win-b td:nth-child(3){color:var(--accent);font-weight:700;}
+    .wins-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:var(--hairline);margin-bottom:32px;}
+    .wins-col{background:var(--surface);padding:20px 24px;}
+    .wins-col-label{font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--accent);margin:0 0 12px;display:block;}
+    .wins-col ul{list-style:none;padding:0;margin:0;}
+    .wins-col li{font-size:var(--small);padding:7px 0;border-bottom:var(--hairline);display:flex;gap:10px;align-items:flex-start;line-height:1.5;color:var(--mid);}
+    .wins-col li:last-child{border-bottom:none;}
+    .wins-col li::before{content:'+';color:var(--accent);font-weight:700;flex-shrink:0;}
+    @media(max-width:640px){.wins-grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for industrial IoT software buyers</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation"><div id="sidebar-nav"></div></nav>
+    <main class="main">
+      <div class="content">
+        <div class="breadcrumb"><a href="/">Home</a><span class="breadcrumb-sep">/</span><a href="/comparisons/">Comparisons</a><span class="breadcrumb-sep">/</span><span>Ignition vs. Litmus</span></div>
+        <span class="page-label">Connectivity &amp; Edge &mdash; Head-to-Head</span>
+        <h1>Ignition vs. Litmus</h1>
+        <p class="lead">Ignition and Litmus both support MQTT, Sparkplug B, and UNS architectures — but they arrive at connectivity from opposite directions. Ignition is a full industrial application platform where connectivity is one layer of a broader SCADA, HMI, and MES stack. Litmus is purpose-built for the connectivity and edge compute problem, without the application platform overhead. The comparison comes down to whether you need the full Ignition platform or a focused edge-and-connectivity layer.</p>
+
+        <div class="table-wrap">
+          <table class="compare-table">
+            <thead><tr><th style="width:200px;">Criteria</th><th>Ignition (Inductive Automation)</th><th>Litmus</th></tr></thead>
+            <tbody>
+              <tr class="section-divider"><td colspan="3">Platform</td></tr>
+              <tr><td>Primary function</td><td>Full industrial application platform — SCADA, HMI, MES, connectivity, reporting</td><td>Protocol translation and containerized edge compute</td></tr>
+              <tr><td>Platform scope</td><td>Broad — operational platform with connectivity as one layer</td><td>Focused — connectivity and edge application hosting</td></tr>
+              <tr><td>Deployment model</td><td>On-premise server; Ignition Edge for field deployment; cloud-deployable</td><td>Purpose-built edge hardware or VM; cloud orchestration</td></tr>
+              <tr><td>Licensing</td><td>Flat-rate unlimited tags, clients, and users per server</td><td>Per-node subscription</td></tr>
+              <tr class="section-divider"><td colspan="3">Connectivity</td></tr>
+              <tr><td>Protocol coverage</td><td>Built-in OPC-UA for modern PLCs; legacy via third-party modules or Kepware as upstream source</td><td>250+ native drivers including broad legacy coverage</td></tr>
+              <tr class="win-b"><td>Legacy PLC depth</td><td>Good for current hardware; deep legacy requires third-party modules or upstream Kepware</td><td>Strong native legacy coverage including older Rockwell and Siemens families</td></tr>
+              <tr><td>MQTT / Sparkplug B</td><td>Via Cirrus Link MQTT Transmission module; Custom Namespace for UNS alignment; industry-standard UNS backbone choice</td><td>Native MQTT and Sparkplug B; built-in topic mapping for UNS</td></tr>
+              <tr><td>UNS architecture</td><td>Widely deployed as UNS backbone — Cirrus Link modules are purpose-built for this</td><td>Built for UNS-first architectures; native Sparkplug B</td></tr>
+              <tr class="section-divider"><td colspan="3">Edge capabilities</td></tr>
+              <tr><td>Edge compute</td><td>Ignition Edge supports polling and store-and-forward; limited tag count at edge tier</td><td>Full containerized edge environment; deploy custom apps, ML inference, quality logic</td></tr>
+              <tr class="win-b"><td>Offline operation</td><td>Store-and-forward via Ignition Edge; full server required for application logic</td><td>Full offline-first operation; all edge apps run without WAN</td></tr>
+              <tr class="win-b"><td>Fleet management</td><td>Per-server management; scaling requires additional server instances</td><td>Centralized fleet management across distributed edge nodes</td></tr>
+              <tr class="win-b"><td>Container hosting</td><td>Not supported — Ignition is not a container orchestration platform</td><td>Native — run custom Docker containers on edge hardware alongside connectivity</td></tr>
+              <tr class="section-divider"><td colspan="3">Application capabilities</td></tr>
+              <tr class="win-a"><td>SCADA / HMI</td><td>Full SCADA and HMI development environment</td><td>None — connectivity and compute only</td></tr>
+              <tr class="win-a"><td>MES / OEE</td><td>Built-in OEE, production tracking, recipe management</td><td>None</td></tr>
+              <tr class="win-a"><td>Reporting</td><td>Built-in database-driven reporting engine</td><td>None</td></tr>
+              <tr class="section-divider"><td colspan="3">Procurement</td></tr>
+              <tr><td>Pricing</td><td>$$</td><td>$$</td></tr>
+              <tr><td>Integrator ecosystem</td><td>Large certified integrator network; Ignition Exchange marketplace</td><td>Growing partner network; less mature than Ignition's SI ecosystem</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:12px;color:var(--faint);margin-top:-20px;margin-bottom:40px;">Protocol coverage sourced from vendor documentation. Verify driver availability for your specific device models before purchase.</p>
+
+        <div class="wins-grid">
+          <div class="wins-col">
+            <span class="wins-col-label">Ignition wins when</span>
+            <ul>
+              <li>You need SCADA, HMI, or MES capabilities alongside connectivity — Ignition handles all of them</li>
+              <li>You are building a UNS architecture and want the most mature Sparkplug B ecosystem via Cirrus Link</li>
+              <li>The flat-rate licensing model delivers better economics than per-node pricing at your scale</li>
+              <li>You need reporting, OEE dashboards, or production tracking built into the same platform</li>
+              <li>You want access to the large Ignition integrator network and Exchange marketplace</li>
+            </ul>
+          </div>
+          <div class="wins-col">
+            <span class="wins-col-label">Litmus wins when</span>
+            <ul>
+              <li>You need to run containerized applications — ML models, quality logic, local analytics — at the edge alongside connectivity</li>
+              <li>Your facilities have unreliable WAN and you need fully autonomous offline edge operation</li>
+              <li>You are managing connectivity across many distributed sites and need centralized node fleet management</li>
+              <li>You have deep legacy protocol requirements and want native driver coverage without upstream translation layers</li>
+              <li>You want a focused tool without the overhead of a full application platform</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="verdict">
+          <span class="verdict-label">The real decision</span>
+          <p>If you are modernizing a SCADA or MES environment and want connectivity bundled into the same platform that handles visualization and reporting, Ignition is the stronger fit. If your architecture is cloud-native and analytics already live upstream, and your problem is specifically getting clean normalized data from the edge to the cloud — with the ability to run compute at the edge — Litmus is the more focused solution.</p>
+          <p style="margin-top:12px;">These platforms are often complementary rather than competitive. Litmus handles edge-to-MQTT; Ignition handles MQTT-to-application. Evaluate whether your architecture needs both layers or whether one platform can handle the scope you actually need before treating them as an either/or decision.</p>
+        </div>
+
+        <p style="font-size:var(--small);margin-top:32px;">Related: <a href="/comparisons/kepware-vs-ignition/">Kepware vs. Ignition</a> &nbsp;&middot;&nbsp; <a href="/comparisons/kepware-vs-litmus/">Kepware vs. Litmus</a> &nbsp;&middot;&nbsp; <a href="/landscape/vendors/#connectivity">Full connectivity vendor index</a></p>
+      </div>
+    </main>
+  </div>
+  <footer><div class="footer-inner"><span class="page-label">Industrial IoT Software</span><p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p></div></footer>
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+</body>
+</html>

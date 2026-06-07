@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>IIoT Platform Comparisons | Industrial IoT Software</title>
+  <meta name="description" content="Independent head-to-head comparisons of industrial IoT software platforms. Kepware vs. Litmus, Ignition vs. Litmus, AVEVA PI vs. InfluxDB, and more. No vendor affiliation.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/comparisons/">
+
+  <meta property="og:title" content="IIoT Platform Comparisons | Industrial IoT Software">
+  <meta property="og:description" content="Independent head-to-head comparisons of industrial IoT software platforms. No vendor affiliation.">
+  <meta property="og:url" content="https://industrialiotsoftware.com/comparisons/">
+  <meta property="og:type" content="website">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://industrialiotsoftware.com" },
+      { "@type": "ListItem", "position": 2, "name": "Comparisons", "item": "https://industrialiotsoftware.com/comparisons/" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "IIoT Platform Comparisons",
+    "description": "Independent head-to-head comparisons of industrial IoT software platforms.",
+    "url": "https://industrialiotsoftware.com/comparisons/",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "url": "https://industrialiotsoftware.com/comparisons/kepware-vs-litmus/", "name": "Kepware vs. Litmus" },
+      { "@type": "ListItem", "position": 2, "url": "https://industrialiotsoftware.com/comparisons/kepware-vs-ignition/", "name": "Kepware vs. Ignition" },
+      { "@type": "ListItem", "position": 3, "url": "https://industrialiotsoftware.com/comparisons/ignition-vs-litmus/", "name": "Ignition vs. Litmus" },
+      { "@type": "ListItem", "position": 4, "url": "https://industrialiotsoftware.com/comparisons/aveva-pi-vs-influxdb/", "name": "AVEVA PI System vs. InfluxDB" },
+      { "@type": "ListItem", "position": 5, "url": "https://industrialiotsoftware.com/comparisons/siemens-insights-hub-vs-cumulocity/", "name": "Siemens Insights Hub vs. Cumulocity" },
+      { "@type": "ListItem", "position": 6, "url": "https://industrialiotsoftware.com/comparisons/aws-greengrass-vs-azure-iot-edge/", "name": "AWS IoT Greengrass vs. Azure IoT Edge" }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+
+  <style>
+    .comparison-list { list-style: none; padding: 0; margin-bottom: 32px; }
+    .comparison-list li { border-bottom: var(--hairline); }
+    .comparison-list li:last-child { border-bottom: none; }
+    .comparison-list a {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 14px 0;
+      color: var(--charcoal);
+      text-decoration: none;
+    }
+    .comparison-list a:hover .comparison-list-name { color: var(--accent); }
+    .comparison-list-body { flex: 1; }
+    .comparison-list-name { font-size: var(--small); font-weight: 700; margin-bottom: 2px; }
+    .comparison-list-desc { font-size: 12px; color: var(--mid); line-height: 1.5; }
+    .comparison-list-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 4px;
+      display: block;
+    }
+    .comparison-list-arrow { color: var(--border); font-size: 11px; padding-top: 2px; flex-shrink: 0; }
+    .comparison-list a:hover .comparison-list-arrow { color: var(--accent); }
+
+    .section-head {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--mid);
+      padding: 16px 0 8px;
+      border-bottom: 1px solid var(--charcoal);
+      margin-bottom: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-head::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 12px;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for industrial IoT software buyers</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Comparisons</span>
+        </div>
+
+        <span class="page-label">Head-to-Head Comparisons</span>
+        <h1>IIoT Platform Comparisons</h1>
+
+        <p class="lead">Independent head-to-head comparisons of industrial IoT software platforms. Each comparison covers technical differentiation, deployment fit, and a direct verdict on which platform belongs in which environment. No vendor affiliation.</p>
+
+        <div class="section-intro">
+          <p>Use the <a href="/tools/vendor-comparison/">vendor comparison tool</a> to filter the full market before shortlisting. Use these comparisons once you have a shortlist and need to understand the specific trade-offs between two platforms. For protocol-level shortlisting, the <a href="/landscape/protocol-reference/">protocol compatibility reference</a> maps native vs. plug-in support across connectivity platforms.</p>
+        </div>
+
+        <!-- Connectivity -->
+        <div class="section-head" style="margin-top:32px;">Connectivity and protocol translation</div>
+        <ul class="comparison-list">
+          <li>
+            <a href="/comparisons/kepware-vs-litmus/">
+              <div class="comparison-list-body">
+                <span class="comparison-list-tag">Connectivity middleware</span>
+                <div class="comparison-list-name">Kepware vs. Litmus</div>
+                <div class="comparison-list-desc">Proven OPC server and protocol depth vs. combined edge-plus-connectivity architecture. The comparison that matters when you are deciding whether to build a dedicated translation layer or consolidate with edge compute.</div>
+              </div>
+              <span class="comparison-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+          <li>
+            <a href="/comparisons/kepware-vs-ignition/">
+              <div class="comparison-list-body">
+                <span class="comparison-list-tag">Connectivity middleware</span>
+                <div class="comparison-list-name">Kepware vs. Ignition</div>
+                <div class="comparison-list-desc">The most commonly co-evaluated pairing by controls engineers. Dedicated OPC server vs. full industrial application platform. Often used together — this comparison covers when to choose one over the other.</div>
+              </div>
+              <span class="comparison-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+          <li>
+            <a href="/comparisons/ignition-vs-litmus/">
+              <div class="comparison-list-body">
+                <span class="comparison-list-tag">Connectivity and edge</span>
+                <div class="comparison-list-name">Ignition vs. Litmus</div>
+                <div class="comparison-list-desc">Full industrial application platform vs. purpose-built edge connectivity and compute. Both support MQTT and Sparkplug B natively — the difference is scope and deployment model.</div>
+              </div>
+              <span class="comparison-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Analytics and historian -->
+        <div class="section-head">Analytics and historian</div>
+        <ul class="comparison-list">
+          <li>
+            <a href="/comparisons/aveva-pi-vs-influxdb/">
+              <div class="comparison-list-body">
+                <span class="comparison-list-tag">Historian and time-series</span>
+                <div class="comparison-list-name">AVEVA PI System vs. InfluxDB</div>
+                <div class="comparison-list-desc">The dominant industrial historian vs. the open-source time-series challenger. Covers the AVEVA Flex credit licensing issue, greenfield vs. brownfield fit, and when the comparison is actually an either/or decision.</div>
+              </div>
+              <span class="comparison-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Full-stack suites -->
+        <div class="section-head">Full-stack IIoT suites</div>
+        <ul class="comparison-list">
+          <li>
+            <a href="/comparisons/siemens-insights-hub-vs-cumulocity/">
+              <div class="comparison-list-body">
+                <span class="comparison-list-tag">IIoT suite</span>
+                <div class="comparison-list-name">Siemens Insights Hub vs. Cumulocity</div>
+                <div class="comparison-list-desc">Closed automation ecosystem vs. independent open-architecture platform. Cumulocity's 2025 management buyout from Software AG changes the calculus — this comparison covers what that means for buyers.</div>
+              </div>
+              <span class="comparison-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Edge -->
+        <div class="section-head">Edge computing</div>
+        <ul class="comparison-list">
+          <li>
+            <a href="/comparisons/aws-greengrass-vs-azure-iot-edge/">
+              <div class="comparison-list-body">
+                <span class="comparison-list-tag">Edge runtime</span>
+                <div class="comparison-list-name">AWS IoT Greengrass vs. Azure IoT Edge</div>
+                <div class="comparison-list-desc">Two hyperscaler edge runtimes repositioned as cloud data transport layers. Covers what they are actually built for, where they fall short as industrial edge platforms, and when purpose-built alternatives are a better fit.</div>
+              </div>
+              <span class="comparison-list-arrow">&rsaquo;</span>
+            </a>
+          </li>
+        </ul>
+
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="page-label">Industrial IoT Software</span>
+      <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+    </div>
+  </footer>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>

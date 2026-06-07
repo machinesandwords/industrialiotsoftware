@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>The Read-Only Data Pipeline — Unidirectional Data Architecture | Industrial IoT Software</title>
+  <meta name="description" content="How to use hardware-enforced unidirectional data flow to protect safety-critical OT systems while feeding enterprise analytics. Split-proxy architecture, FEC, NTP isolation, and failure modes.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/guides/unidirectional-data-pipeline/">
+
+  <meta property="og:title" content="The Read-Only Data Pipeline — Unidirectional Data Architecture | Industrial IoT Software">
+  <meta property="og:description" content="How to use hardware-enforced unidirectional data flow to protect safety-critical OT systems while feeding enterprise analytics.">
+  <meta property="og:url" content="https://industrialiotsoftware.com/guides/unidirectional-data-pipeline/">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "The Read-Only Data Pipeline: Configuring a Unidirectional Data Architecture",
+    "description": "How to use hardware-enforced unidirectional data flow to protect safety-critical OT systems while feeding enterprise analytics.",
+    "url": "https://industrialiotsoftware.com/guides/unidirectional-data-pipeline/",
+    "datePublished": "2026-06-06",
+    "dateModified": "2026-06-06",
+    "publisher": { "@type": "Organization", "name": "Industrial IoT Software", "url": "https://industrialiotsoftware.com" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://industrialiotsoftware.com" },
+      { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://industrialiotsoftware.com/guides/" },
+      { "@type": "ListItem", "position": 3, "name": "The Read-Only Data Pipeline", "item": "https://industrialiotsoftware.com/guides/unidirectional-data-pipeline/" }
+    ]
+  }
+  </script>
+
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+
+  <style>
+    code {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      background: var(--bg);
+      padding: 1px 4px;
+      border: var(--hairline);
+      color: var(--charcoal);
+    }
+
+    .prereq-block {
+      border: var(--hairline);
+      border-left: 3px solid var(--accent);
+      background: var(--surface);
+      padding: 16px 20px;
+      margin: 24px 0;
+    }
+    .prereq-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+      display: block;
+    }
+    .prereq-block ul { margin: 0; padding-left: 18px; }
+    .prereq-block li {
+      font-size: var(--small);
+      color: var(--mid);
+      margin-bottom: 6px;
+      line-height: 1.6;
+    }
+
+    .vendor-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: var(--hairline);
+      margin: 16px 0;
+    }
+    .vendor-compare-block { background: var(--surface); padding: 14px 16px; }
+    .vendor-compare-name {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .vendor-compare-body {
+      font-size: var(--small);
+      color: var(--mid);
+      line-height: 1.65;
+    }
+
+    /* Architecture diagram */
+    .arch-diagram {
+      margin: 24px 0;
+      border: var(--hairline);
+      background: var(--surface);
+      overflow-x: auto;
+    }
+    .arch-diagram-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--faint);
+      padding: 10px 16px;
+      border-bottom: var(--hairline);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .arch-diagram-inner {
+      padding: 28px 20px;
+      display: grid;
+      grid-template-columns: 1fr 40px 1fr 64px 1fr 40px 1fr;
+      align-items: center;
+      gap: 0;
+      min-width: 600px;
+    }
+
+    .arch-zone {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .arch-zone-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      text-align: center;
+      padding-bottom: 8px;
+    }
+    .arch-zone-label.protected { color: #b45309; }
+    .arch-zone-label.diode-label { color: var(--accent); }
+    .arch-zone-label.consuming { color: var(--mid); }
+
+    .arch-box {
+      border: 2px solid var(--border);
+      background: var(--bg);
+      padding: 10px 12px;
+      text-align: center;
+    }
+    .arch-box.protected-box { border-color: #b45309; background: #fdf6ee; }
+    .arch-box.diode-box {
+      border-color: var(--accent);
+      background: var(--accent-pale);
+      border-width: 2px;
+    }
+    .arch-box.consuming-box { border-color: var(--border); background: var(--bg); }
+
+    .arch-box-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+    .arch-box.protected-box .arch-box-title { color: #b45309; }
+    .arch-box.diode-box .arch-box-title { color: var(--accent); }
+    .arch-box.consuming-box .arch-box-title { color: var(--charcoal); }
+
+    .arch-box-sub { font-size: 10px; color: var(--mid); line-height: 1.5; margin-bottom: 3px; }
+    .arch-box-note { font-size: 10px; font-style: italic; color: var(--faint); line-height: 1.4; }
+
+    .arch-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding-top: 20px;
+    }
+    .arch-arrow-line {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    .arch-arrow-shaft { height: 2px; flex: 1; }
+    .arch-arrow-shaft.green { background: var(--accent); }
+    .arch-arrow-shaft.blocked { background: #b45309; }
+    .arch-arrow-head {
+      width: 0; height: 0;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+    }
+    .arch-arrow-head.green { border-left: 8px solid var(--accent); }
+    .arch-arrow-head.blocked { border-left: 8px solid #b45309; }
+    .arch-arrow-label { font-size: 9px; text-align: center; line-height: 1.4; }
+    .arch-arrow-label.green { color: var(--accent); font-weight: 700; }
+    .arch-arrow-label.blocked { color: #b45309; font-weight: 700; }
+
+    .arch-blocker {
+      width: 14px; height: 14px;
+      background: #b45309;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .arch-no-return {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 9px;
+      color: #b45309;
+      font-weight: 700;
+      opacity: 0.6;
+    }
+    .arch-no-return-shaft { height: 1px; flex: 1; background: #b45309; opacity: 0.4; }
+
+    /* Protocol explainer */
+    .protocol-explainer {
+      border: var(--hairline);
+      border-left: 3px solid #b45309;
+      background: var(--surface);
+      padding: 16px 20px;
+      margin: 20px 0;
+    }
+    .protocol-explainer-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #b45309;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .protocol-explainer p {
+      font-size: var(--small);
+      color: var(--charcoal);
+      line-height: 1.75;
+      margin-bottom: 8px;
+    }
+    .protocol-explainer p:last-child { margin-bottom: 0; }
+
+    .step-block {
+      border: var(--hairline);
+      background: var(--surface);
+      margin: 12px 0;
+    }
+    .step-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding: 12px 16px;
+      border-bottom: var(--hairline);
+      background: var(--bg);
+    }
+    .step-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
+    }
+    .step-title { font-size: var(--small); font-weight: 700; color: var(--charcoal); }
+    .step-body { padding: 14px 16px; }
+    .step-body p {
+      font-size: var(--small);
+      color: var(--charcoal);
+      line-height: 1.75;
+      margin-bottom: 10px;
+    }
+    .step-body p:last-child { margin-bottom: 0; }
+
+    .failure-block {
+      border: var(--hairline);
+      border-bottom: none;
+      background: var(--surface);
+    }
+    .failure-block:last-of-type { border-bottom: var(--hairline); }
+    .failure-header {
+      padding: 10px 16px;
+      border-bottom: var(--hairline);
+      background: var(--bg);
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+    .failure-body {
+      padding: 12px 16px;
+      font-size: var(--small);
+      color: var(--mid);
+      line-height: 1.75;
+    }
+
+    @media (max-width: 640px) {
+      .vendor-compare { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for industrial IoT software buyers</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/guides/">Guides</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>The Read-Only Data Pipeline</span>
+        </div>
+
+        <span class="page-label">Guide</span>
+        <h1>The Read-Only Data Pipeline</h1>
+        <p style="font-size:var(--body);color:var(--mid);margin-top:-12px;margin-bottom:24px;">Configuring a Unidirectional Data Architecture</p>
+
+        <p class="lead">How to use hardware-enforced unidirectional data flow to protect safety-critical OT systems while feeding enterprise analytics — without relying on firewall rules that can be misconfigured or compromised.</p>
+
+        <div class="prereq-block">
+          <span class="prereq-label">Before you start — what you need</span>
+          <ul>
+            <li>A defined protected zone (OT or safety network) and consuming zone (enterprise network or cloud)</li>
+            <li>A unidirectional security gateway: Waterfall Security Solutions or Owl Cyber Defense (see architectural differences below)</li>
+            <li>A data source in the protected zone: OT historian, OPC server, or Modbus device</li>
+            <li>A receiving system in the consuming zone: replica historian, analytics platform, or MQTT broker</li>
+            <li>Network documentation for both zones: IP addressing, VLAN topology, firewall rules</li>
+            <li>A hardware-based GPS/GNSS time source for the protected zone (see Step 5)</li>
+          </ul>
+        </div>
+
+        <h2>Two architectures, not one</h2>
+
+        <p>The two primary vendors in this space use different approaches at the hardware level, which affects how agents and replication are configured:</p>
+
+        <div class="vendor-compare">
+          <div class="vendor-compare-block">
+            <div class="vendor-compare-name">Owl Cyber Defense — Layer 1 diode</div>
+            <div class="vendor-compare-body">Pure physical layer separation using photodiode or fiber transceiver modification. Creates a hardware-enforced one-way path at the optical level. The data stream crosses as raw packets; vendor agents on each side handle protocol translation.</div>
+          </div>
+          <div class="vendor-compare-block">
+            <div class="vendor-compare-name">Waterfall Security — Application gateway</div>
+            <div class="vendor-compare-body">Operates at the application layer. A specialized hardware appliance natively replicates historians or databases, presenting a pre-replicated copy to the consuming network rather than passing raw packet streams. Integration is at the data model level, not the network packet level.</div>
+          </div>
+        </div>
+
+        <h2>The problem this solves</h2>
+
+        <p>The standard IIoT architecture connects the OT network to the enterprise network through a firewall. The firewall enforces rules about what traffic is allowed in each direction. The problem is that a firewall is software — software has vulnerabilities, rules get misconfigured, and credentials get compromised. In the 2021 Oldsmar water treatment facility attack, the attacker accessed a SCADA system through a remote access tool that was legitimately installed. The firewall allowed the connection because the traffic looked authorized.</p>
+
+        <p>A unidirectional security gateway solves this with physics rather than software. The OT network can push data to the enterprise network. Nothing in the enterprise network can reach back — not because a rule says so, but because there is no physical path for the signal to travel.</p>
+
+        <h2>Why native protocols cannot cross a data diode</h2>
+
+        <div class="protocol-explainer">
+          <span class="protocol-explainer-label">Critical architecture point</span>
+          <p>Protocols like OPC-UA, OPC-DA, Modbus TCP, and MQTT run over TCP/IP. TCP is inherently bidirectional: for every packet sent, the receiver must send an acknowledgment (ACK) packet back to verify delivery and manage flow control. Because a data diode physically eliminates the return fiber path, no ACK can ever return. A native OPC-UA or MQTT connection will fail instantly at the TCP handshake — the session cannot establish.</p>
+          <p>Data diodes therefore use a split-proxy architecture. The protected-side agent terminates the native TCP connection from the OT historian inside the protected zone, extracts the payload, and wraps it into a unidirectional transport — typically UDP or a proprietary protocol with forward error correction — for blind transmission across the diode. The consuming-side agent receives this stream, reconstructs the data, and creates a new standard TCP connection on the consuming network. The diode never passes a native industrial protocol. It passes a unidirectional stream that the vendor's agents reconstruct on the other side.</p>
+        </div>
+
+        <h2>The split-proxy architecture</h2>
+
+        <div class="arch-diagram">
+          <div class="arch-diagram-label">Unidirectional data pipeline — split-proxy architecture</div>
+          <div class="arch-diagram-inner">
+
+            <!-- Protected zone -->
+            <div class="arch-zone">
+              <div class="arch-zone-label protected">Protected zone</div>
+              <div class="arch-box protected-box">
+                <div class="arch-box-title">OT Historian / OPC Server</div>
+                <div class="arch-box-sub">PI Server, Ignition, OPC-UA server</div>
+                <div class="arch-box-note">TCP connection stays inside zone</div>
+              </div>
+              <div style="text-align:center;font-size:16px;color:#b45309;padding:4px 0;">↓</div>
+              <div class="arch-box protected-box">
+                <div class="arch-box-title">Protected-Side Proxy</div>
+                <div class="arch-box-sub">Terminates TCP, extracts payload, wraps in UDP/FEC</div>
+              </div>
+            </div>
+
+            <!-- Arrow: out -->
+            <div class="arch-arrow">
+              <div class="arch-arrow-line">
+                <div class="arch-arrow-shaft green"></div>
+                <div class="arch-arrow-head green"></div>
+              </div>
+              <div class="arch-arrow-label green">UDP/FEC<br>stream out</div>
+              <div style="height:10px;"></div>
+              <div class="arch-no-return">
+                <div class="arch-no-return-shaft"></div>
+                <div class="arch-blocker">✕</div>
+              </div>
+              <div class="arch-arrow-label blocked">No ACK<br>return</div>
+            </div>
+
+            <!-- Diode -->
+            <div class="arch-zone">
+              <div class="arch-zone-label diode-label">Hardware diode</div>
+              <div class="arch-box diode-box" style="height:120px;display:flex;flex-direction:column;justify-content:center;">
+                <div class="arch-box-title">Data Diode</div>
+                <div class="arch-box-sub">Fiber TX only<br>No physical RX on protected side</div>
+                <div class="arch-box-note" style="margin-top:6px;">FEC enabled to recover lost packets without retransmission</div>
+              </div>
+            </div>
+
+            <!-- Arrow: out -->
+            <div class="arch-arrow">
+              <div class="arch-arrow-line">
+                <div class="arch-arrow-shaft green"></div>
+                <div class="arch-arrow-head green"></div>
+              </div>
+              <div class="arch-arrow-label green">Reconstructed<br>stream out</div>
+            </div>
+
+            <!-- Consuming zone -->
+            <div class="arch-zone">
+              <div class="arch-zone-label consuming">Consuming zone</div>
+              <div class="arch-box consuming-box">
+                <div class="arch-box-title">Consuming-Side Proxy</div>
+                <div class="arch-box-sub">Receives UDP stream, reconstructs data, creates new TCP connection</div>
+              </div>
+              <div style="text-align:center;font-size:16px;color:var(--mid);padding:4px 0;">↓</div>
+              <div class="arch-box consuming-box">
+                <div class="arch-box-title">Enterprise Analytics</div>
+                <div class="arch-box-sub">Replica historian, MQTT broker, cloud platform</div>
+                <div class="arch-box-note">Standard TCP — entirely new connection</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <h2>Implementation steps</h2>
+
+        <div class="step-block">
+          <div class="step-header">
+            <span class="step-num">Step 1</span>
+            <span class="step-title">Define the data scope</span>
+          </div>
+          <div class="step-body">
+            <p>List every tag, historian point, and OPC node that needs to cross the boundary before configuring any hardware. Data not on this list stays in the protected zone. This list becomes the agent replication configuration and the basis for your change management process going forward.</p>
+          </div>
+        </div>
+
+        <div class="step-block">
+          <div class="step-header">
+            <span class="step-num">Step 2</span>
+            <span class="step-title">Install and configure the protected-side proxy agent</span>
+          </div>
+          <div class="step-body">
+            <p>Install the vendor-supplied proxy agent on a host inside the protected zone. Configure it to connect to your OT historian or OPC server as a local TCP client — this bidirectional TCP connection stays entirely within the protected zone and does not cross the diode. The agent extracts tag data, wraps it into the vendor's unidirectional transport format, and transmits it to the diode's input port. Configure the polling rate, buffer size, and forward error correction settings per the vendor's capacity specifications for your tag count and polling frequency.</p>
+          </div>
+        </div>
+
+        <div class="step-block">
+          <div class="step-header">
+            <span class="step-num">Step 3</span>
+            <span class="step-title">Configure the diode hardware</span>
+          </div>
+          <div class="step-body">
+            <p>Physical installation varies by vendor. Critical parameters: transmission rate matched to your data volume, buffer size set to handle your longest expected consuming-side outage, and forward error correction enabled. FEC sends redundant parity blocks alongside the data stream so the consuming agent can reconstruct corrupted packets without a retransmission request — which is not possible across a one-way link. Without FEC, corrupted packets are permanently lost with no upstream notification.</p>
+          </div>
+        </div>
+
+        <div class="step-block">
+          <div class="step-header">
+            <span class="step-num">Step 4</span>
+            <span class="step-title">Install and configure the consuming-side proxy agent</span>
+          </div>
+          <div class="step-body">
+            <p>The consuming-side agent receives the unidirectional stream from the diode's output port, reconstructs the data, and writes it to the destination system using a new standard TCP connection on the consuming network. This connection is entirely separate from the protected-zone historian — the diode never bridged them at the protocol level. Configure the destination connection and verify data is arriving correctly before considering the pipeline operational.</p>
+          </div>
+        </div>
+
+        <div class="step-block">
+          <div class="step-header">
+            <span class="step-num">Step 5</span>
+            <span class="step-title">Configure time synchronization for the protected zone</span>
+          </div>
+          <div class="step-body">
+            <p>Do not connect the protected zone to a network-based NTP server shared with the consuming zone. A shared NTP connection creates a bidirectional network path that circumvents the physical isolation the diode provides — and undermines the compliance argument the diode is intended to support.</p>
+            <p>The protected OT network requires an isolated time source. The standard approach is a GPS or GNSS-based hardware clock: a receiver antenna mounted externally, connected to a dedicated NTP server appliance inside the protected zone that serves time to OT devices without any external network dependency. Some diode vendors offer a specialized one-way NTP replication module that passes time packets outbound only — verify whether your vendor supports this before assuming it is available.</p>
+          </div>
+        </div>
+
+        <div class="step-block">
+          <div class="step-header">
+            <span class="step-num">Step 6</span>
+            <span class="step-title">Verify unidirectionality</span>
+          </div>
+          <div class="step-body">
+            <p>After the system is operational, attempt to initiate a connection from the consuming zone to the protected zone through the diode. The attempt must fail at the hardware level. Document the test and its result. In regulated environments — NERC CIP, NIS2 — this verification is required for compliance evidence. Auditors will ask for it.</p>
+          </div>
+        </div>
+
+        <h2>Where this breaks</h2>
+
+        <div class="failure-block">
+          <div class="failure-header">Attempting to pass native TCP protocols directly across the diode</div>
+          <div class="failure-body">Configuring the agent to pass native OPC-UA or MQTT directly — rather than using the split-proxy architecture — results in immediate connection failures. The TCP handshake cannot complete without a return path. Use the vendor's proxy agents on both sides. Do not substitute generic protocol connectors.</div>
+        </div>
+
+        <div class="failure-block">
+          <div class="failure-header">Packet loss without notification</div>
+          <div class="failure-body">Because there is no return path, the protected side has no awareness of whether the consuming side is alive, crashed, or dropping packets. If the consuming agent crashes or the destination network drops packets, data is permanently lost at the gap without triggering any upstream error. Ensure FEC is enabled and correctly sized for your transmission rate. Monitor the consuming-side agent's receive statistics — not the protected-side transmit statistics — to detect loss.</div>
+        </div>
+
+        <div class="failure-block">
+          <div class="failure-header">NTP misconfiguration creating a back-channel</div>
+          <div class="failure-body">Connecting both zones to the same network-based NTP server creates a bidirectional network path that circumvents the diode. Use a dedicated GPS/GNSS hardware clock for the protected zone. Document the time source architecture in your compliance evidence — it will be reviewed.</div>
+        </div>
+
+        <div class="failure-block">
+          <div class="failure-header">Buffer overflow during consuming-side outages</div>
+          <div class="failure-body">When the consuming side is unavailable and the buffer fills, real-time data continues arriving while historical data replays on reconnect. Depending on the historian's handling of out-of-order timestamps, this produces gaps or duplicates in the replica dataset. Configure buffer size for your longest expected outage and verify the historian's back-fill behavior before go-live.</div>
+        </div>
+
+        <div class="failure-block">
+          <div class="failure-header">Tag list scope creep exceeding diode capacity</div>
+          <div class="failure-body">Every addition to the replication configuration increases transmission load. Establish a change management process. Review additions against diode capacity before committing. Uncontrolled growth is the most common cause of capacity ceiling problems in production unidirectional pipelines.</div>
+        </div>
+
+        <hr>
+
+        <p>Related: the <a href="/landscape/vendors/#enforcement">vendor index enforcement section</a> covers Waterfall Security Solutions and Owl Cyber Defense. The <a href="/guides/iiot-pilot-structure/">pilot structure guide</a> covers how to incorporate the InfoSec and network architecture constraints of a unidirectional deployment into a scalable pilot plan.</p>
+
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="page-label">Industrial IoT Software</span>
+      <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+    </div>
+  </footer>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>

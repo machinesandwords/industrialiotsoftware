@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>Extracting Telemetry from Legacy PLCs — Practical Guide | Industrial IoT Software</title>
+  <meta name="description" content="How to connect older Allen-Bradley, Siemens, and Modbus RTU equipment to a modern IIoT data pipeline without replacing hardware.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/guides/legacy-plc-telemetry/">
+
+  <meta property="og:title" content="Extracting Telemetry from Legacy PLCs — Practical Guide | Industrial IoT Software">
+  <meta property="og:description" content="How to connect older Allen-Bradley, Siemens, and Modbus RTU equipment to a modern IIoT data pipeline without replacing hardware.">
+  <meta property="og:url" content="https://industrialiotsoftware.com/guides/legacy-plc-telemetry/">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Extracting Telemetry from Legacy PLCs Without Native Ethernet",
+    "description": "How to connect older Allen-Bradley, Siemens, and Modbus RTU equipment to a modern IIoT data pipeline without replacing hardware.",
+    "url": "https://industrialiotsoftware.com/guides/legacy-plc-telemetry/",
+    "datePublished": "2026-06-06",
+    "dateModified": "2026-06-06",
+    "publisher": { "@type": "Organization", "name": "Industrial IoT Software", "url": "https://industrialiotsoftware.com" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://industrialiotsoftware.com" },
+      { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://industrialiotsoftware.com/guides/" },
+      { "@type": "ListItem", "position": 3, "name": "Extracting Telemetry from Legacy PLCs", "item": "https://industrialiotsoftware.com/guides/legacy-plc-telemetry/" }
+    ]
+  }
+  </script>
+
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+
+  <style>
+    .prereq-block {
+      border: var(--hairline);
+      border-left: 3px solid var(--accent);
+      background: var(--surface);
+      padding: 16px 20px;
+      margin: 24px 0;
+    }
+    .prereq-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+      display: block;
+    }
+    .prereq-block ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+    .prereq-block li {
+      font-size: var(--small);
+      color: var(--mid);
+      margin-bottom: 6px;
+      line-height: 1.6;
+    }
+
+    /* Architecture diagram */
+    .arch-diagram {
+      margin: 24px 0;
+      border: var(--hairline);
+      background: var(--surface);
+      overflow-x: auto;
+    }
+    .arch-diagram-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--faint);
+      padding: 10px 16px;
+      border-bottom: var(--hairline);
+    }
+    .arch-diagram-inner {
+      padding: 24px 20px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      min-width: 560px;
+    }
+    .arch-node {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .arch-box {
+      width: 100%;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      padding: 10px 8px;
+      text-align: center;
+    }
+    .arch-box.accent-box {
+      border-color: var(--accent);
+      background: var(--accent-pale);
+    }
+    .arch-box-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--charcoal);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+    .arch-box-sub {
+      font-size: 10px;
+      color: var(--mid);
+      line-height: 1.5;
+    }
+    .arch-box-example {
+      font-size: 10px;
+      color: var(--accent);
+      margin-top: 4px;
+      font-style: italic;
+    }
+    .arch-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 0 4px;
+      flex-shrink: 0;
+      width: 56px;
+    }
+    .arch-arrow-line {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    .arch-arrow-shaft {
+      height: 2px;
+      background: var(--border);
+      flex: 1;
+    }
+    .arch-arrow-head {
+      width: 0;
+      height: 0;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 8px solid var(--border);
+    }
+    .arch-arrow-label {
+      font-size: 9px;
+      color: var(--faint);
+      text-align: center;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
+    .code-block {
+      background: var(--charcoal);
+      color: #e8e8e6;
+      padding: 16px 20px;
+      margin: 16px 0;
+      overflow-x: auto;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+    .code-block code {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      background: none;
+      border: none;
+      padding: 0;
+      color: #e8e8e6;
+    }
+    code {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      background: var(--bg);
+      padding: 1px 4px;
+      border: var(--hairline);
+      color: var(--charcoal);
+    }
+
+    .plc-type-block {
+      border: var(--hairline);
+      border-bottom: none;
+      background: var(--surface);
+    }
+    .plc-type-block:last-of-type { border-bottom: var(--hairline); }
+    .plc-type-header {
+      padding: 10px 16px;
+      border-bottom: var(--hairline);
+      background: var(--bg);
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .plc-type-protocol {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .plc-type-body {
+      padding: 14px 16px;
+      font-size: var(--small);
+      color: var(--charcoal);
+      line-height: 1.75;
+    }
+    .plc-type-body p { margin-bottom: 10px; }
+    .plc-type-body p:last-child { margin-bottom: 0; }
+
+    .warning-block {
+      border: var(--hairline);
+      border-left: 3px solid #b45309;
+      background: var(--surface);
+      padding: 14px 16px;
+      margin: 12px 0;
+    }
+    .warning-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #b45309;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .warning-block p {
+      font-size: var(--small);
+      color: var(--charcoal);
+      line-height: 1.7;
+      margin-bottom: 0;
+    }
+
+    .failure-block {
+      border: var(--hairline);
+      border-bottom: none;
+      background: var(--surface);
+    }
+    .failure-block:last-of-type { border-bottom: var(--hairline); }
+    .failure-header {
+      padding: 10px 16px;
+      border-bottom: var(--hairline);
+      background: var(--bg);
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+    .failure-body {
+      padding: 12px 16px;
+      font-size: var(--small);
+      color: var(--mid);
+      line-height: 1.75;
+    }
+
+    .layer-header {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin: 32px 0 12px;
+    }
+    .layer-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
+    }
+    .layer-title {
+      font-size: var(--h2);
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for industrial IoT software buyers</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/guides/">Guides</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>Extracting Telemetry from Legacy PLCs</span>
+        </div>
+
+        <span class="page-label">Guide</span>
+        <h1>Extracting Telemetry from Legacy PLCs Without Native Ethernet</h1>
+
+        <p class="lead">A practical hardware-and-software guide for connecting older Allen-Bradley, Siemens, and Modbus RTU equipment to a modern IIoT data pipeline — without replacing the PLC.</p>
+
+        <div class="prereq-block">
+          <span class="prereq-label">Before you start — what you need</span>
+          <ul>
+            <li>The make, model, and CPU type of every PLC you intend to connect</li>
+            <li>The communication protocol each device speaks: DH+, DH-485, DF1, Modbus RTU, AS511, or Profibus</li>
+            <li>The PLC's register map or data table addresses — without this, you cannot configure tags</li>
+            <li>Appropriate serial-to-Ethernet hardware for each PLC type (see Layer 1)</li>
+            <li>A protocol translation platform: Kepware, Ignition, or Litmus</li>
+            <li>Network access from the gateway host machine to the serial converter's IP address</li>
+          </ul>
+        </div>
+
+        <div class="callout">
+          <span class="callout-label">Safety note</span>
+          <p>Do not use the methods described in this guide to connect safety instrumented systems or safety PLCs. Those devices require a separate, qualified approach with formal change management and safety lifecycle review.</p>
+        </div>
+
+        <h2>The problem this solves</h2>
+
+        <p>A significant portion of manufacturing equipment running today was installed before Ethernet was an industrial standard. Allen-Bradley PLC-5s and SLC 500s communicate over Data Highway Plus or DH-485. Older Siemens S5 controllers use a serial current-loop interface. Virtually every piece of process equipment from the 1980s and 1990s speaks some variant of Modbus RTU over RS-232 or RS-485. None of these devices have an Ethernet port.</p>
+
+        <p>Replacing a running PLC in a production environment is a capital project requiring validation, requalification, and a planned maintenance window. Extraction is a day's work. The three-layer architecture below is how it is done.</p>
+
+        <h2>The three-layer extraction architecture</h2>
+
+        <div class="arch-diagram">
+          <div class="arch-diagram-label">Hardware translation chain</div>
+          <div class="arch-diagram-inner">
+
+            <div class="arch-node">
+              <div class="arch-box">
+                <div class="arch-box-title">Legacy PLC</div>
+                <div class="arch-box-sub">Serial or proprietary protocol</div>
+                <div class="arch-box-example">PLC-5, SLC 500,<br>S5, Modbus RTU</div>
+              </div>
+            </div>
+
+            <div class="arch-arrow">
+              <div class="arch-arrow-line">
+                <div class="arch-arrow-shaft"></div>
+                <div class="arch-arrow-head"></div>
+              </div>
+              <div class="arch-arrow-label">RS-232<br>RS-485<br>DH+ / TTY</div>
+            </div>
+
+            <div class="arch-node">
+              <div class="arch-box accent-box">
+                <div class="arch-box-title">Serial-to-Ethernet</div>
+                <div class="arch-box-sub">Physical layer bridge</div>
+                <div class="arch-box-example">Moxa NPort,<br>ProSoft AN-X2,<br>IBH Link S5++</div>
+              </div>
+            </div>
+
+            <div class="arch-arrow">
+              <div class="arch-arrow-line">
+                <div class="arch-arrow-shaft"></div>
+                <div class="arch-arrow-head"></div>
+              </div>
+              <div class="arch-arrow-label">TCP/IP<br>Ethernet</div>
+            </div>
+
+            <div class="arch-node">
+              <div class="arch-box accent-box">
+                <div class="arch-box-title">Protocol Engine</div>
+                <div class="arch-box-sub">Protocol translation</div>
+                <div class="arch-box-example">Kepware,<br>Ignition,<br>Litmus</div>
+              </div>
+            </div>
+
+            <div class="arch-arrow">
+              <div class="arch-arrow-line">
+                <div class="arch-arrow-shaft"></div>
+                <div class="arch-arrow-head"></div>
+              </div>
+              <div class="arch-arrow-label">MQTT<br>OPC-UA<br>REST</div>
+            </div>
+
+            <div class="arch-node">
+              <div class="arch-box">
+                <div class="arch-box-title">IIoT Pipeline</div>
+                <div class="arch-box-sub">UNS / broker / historian</div>
+                <div class="arch-box-example">HiveMQ, AVEVA PI,<br>cloud platform</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <p>The serial-to-Ethernet converter handles the physical layer problem. The protocol translation software handles the protocol layer problem. The IIoT platform handles the data layer problem. Each layer has its own failure modes and its own configuration requirements.</p>
+
+        <div class="layer-header">
+          <span class="layer-num">Layer 1</span>
+          <span class="layer-title">Physical connection by PLC type</span>
+        </div>
+
+        <div class="plc-type-block">
+          <div class="plc-type-header">
+            <span>Allen-Bradley PLC-5</span>
+            <span class="plc-type-protocol">DH+</span>
+          </div>
+          <div class="plc-type-body">
+            <p>DH+ is a proprietary Rockwell token-ring network. It requires a dedicated bridging device: either the Rockwell 1784-U2DHP USB-to-DH+ converter or the ProSoft AN-X2-AB-DHRIO gateway. Do not use a generic serial converter. DH+ is not RS-232 or RS-485 and a standard converter will not function.</p>
+          </div>
+        </div>
+
+        <div class="plc-type-block">
+          <div class="plc-type-header">
+            <span>Allen-Bradley SLC 5/01, 5/02, 5/03</span>
+            <span class="plc-type-protocol">DH-485</span>
+          </div>
+          <div class="plc-type-body">
+            <p>Most SLC 500s use DH-485, not DH+. Only the SLC 5/04 has a DH+ port. DH-485 is electrically RS-485 with token-passing logic. It can be bridged to Ethernet using less expensive third-party gateways such as the DL-Plus or NetAIC converter. This is significantly cheaper and simpler than the DH+ path.</p>
+          </div>
+        </div>
+
+        <div class="plc-type-block">
+          <div class="plc-type-header">
+            <span>Allen-Bradley SLC 500, Channel 0</span>
+            <span class="plc-type-protocol">DF1 Serial (RS-232)</span>
+          </div>
+          <div class="plc-type-body">
+            <p>The SLC 500's Channel 0 is RS-232 DF1. Connect a Moxa NPort 5150 (which supports RS-232, RS-422, and RS-485 — do not use the NPort 5110, which is RS-232 only and will not cover RS-485 applications).</p>
+            <p>Configure the Moxa in Real COM Mode and install Moxa's driver on the Kepware host to map it to a virtual COM port (COM4, COM5, etc.), then configure Kepware as a standard serial DF1 channel mapped to that virtual COM port. If you use raw TCP Server mode instead, you must explicitly enable the Serial Encapsulation setting in Kepware's channel configuration or the driver will not communicate correctly.</p>
+            <div class="warning-block">
+              <span class="warning-label">Duplex mismatch</span>
+              <p>Check Channel 0's duplex setting in RSLogix 500 before connecting. DF1 can be configured as Full-Duplex or Half-Duplex. A mismatch between the PLC setting and Kepware's channel configuration causes immediate framing errors and cyclic connection drops. Match them exactly before troubleshooting anything else.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="plc-type-block">
+          <div class="plc-type-header">
+            <span>Siemens S5</span>
+            <span class="plc-type-protocol">AS511 / TTY</span>
+          </div>
+          <div class="plc-type-body">
+            <p>The S5 does not speak MPI and is not an S7. It communicates via a serial current-loop (TTY) interface using the AS511 protocol, or over L1/L2 networks depending on the CPU. A standard Kepware Siemens S7 driver will not communicate with an S5.</p>
+            <p>To connect an S5 to Ethernet without adding expensive CP cards to the rack, use a dedicated active gateway such as the IBH Link S5++ or the Process-Informatik S5-LAN module. These devices translate AS511 to Ethernet and emulate an S7 TCP/IP connection, which allows Kepware's S7 driver to read the S5, or use Kepware's native Siemens S5 driver depending on the gateway model. Verify which communication mode your specific gateway emulates before configuring Kepware.</p>
+            <p>If the S5 is connected via a CP5431 Profibus card, the bridging path is significantly more complex and outside the scope of this guide.</p>
+          </div>
+        </div>
+
+        <div class="plc-type-block">
+          <div class="plc-type-header">
+            <span>Generic Modbus devices</span>
+            <span class="plc-type-protocol">Modbus RTU (RS-232 / RS-485)</span>
+          </div>
+          <div class="plc-type-body">
+            <p>The most standardized case. For RS-232 single-device connections, use a Moxa NPort 5150. For RS-485 multi-drop buses with multiple devices sharing the same bus, use a Moxa NPort 5230 (2-port) or NPort 5130 (1-port). The rack-mounted NPort 5600 series is an 8- or 16-port industrial server appropriate for large aggregation points, not individual machine connections.</p>
+            <p>Configure using Real COM Mode (preferred) or TCP Server mode with Serial Encapsulation enabled in Kepware. Use Kepware's Modbus TCP/IP Ethernet driver or Ignition's Modbus TCP driver.</p>
+            <p>RS-485 multi-drop topologies require 120-ohm termination resistors at both physical ends of the bus. Enable the Moxa's built-in termination resistor if the converter is at the physical end of the run. Do not add termination at a mid-bus converter.</p>
+          </div>
+        </div>
+
+        <div class="layer-header">
+          <span class="layer-num">Layer 2</span>
+          <span class="layer-title">Protocol translation configuration</span>
+        </div>
+
+        <p>Once the serial-to-Ethernet converter is reachable on the network, configure your protocol translation platform to poll the PLC.</p>
+
+        <p>For legacy Allen-Bradley and Modbus devices in both Kepware and Ignition, tags must be created manually or imported via CSV. You cannot browse a tag tree on a PLC-5, SLC 500, or Modbus device — these are data-table-based processors, not tag-based. Allen-Bradley legacy addresses follow the format:</p>
+
+        <div class="code-block"><code>[DeviceName]N7:0    ← integer file
+[DeviceName]F8:0    ← float file
+[DeviceName]B3:0    ← bit file
+[DeviceName]T4:0.ACC ← timer accumulator</code></div>
+
+        <p>Modbus addresses follow Kepware's Modbus addressing convention, for example <code>400001</code> for the first holding register. There is no tag browser. Build your tag list from the PLC's register map or data table documentation before starting configuration.</p>
+
+        <p>Set the scan rate conservatively regardless of platform. Start at 1000ms. Verify that the PLC's communication processor utilization stays below 30% after connecting. If it rises above that, increase the scan interval. Check whether other devices — HMIs, programming terminals, existing data collection systems — are also connected to the same port. Most legacy PLCs support only one active connection per port at a time.</p>
+
+        <div class="layer-header">
+          <span class="layer-num">Layer 3</span>
+          <span class="layer-title">Data normalization and forwarding</span>
+        </div>
+
+        <p>Once tags are reading correctly, apply your UNS topic structure before forwarding upstream. Raw data table addresses — <code>N7:0</code>, <code>F8:12</code>, <code>400001</code> — are meaningless to any downstream analytics system. The extraction layer is the right place to normalize tag names into semantically useful labels before they enter the data pipeline. See the <a href="/guides/unified-namespace/">Unified Namespace guide</a> for the topic hierarchy structure.</p>
+
+        <h2>Where this breaks</h2>
+
+        <div class="failure-block">
+          <div class="failure-header">Duplex mismatch on DF1 serial</div>
+          <div class="failure-body">DF1 Channel 0 on the SLC 500 can be configured as Full-Duplex or Half-Duplex in RSLogix 500. A mismatch between the PLC setting and Kepware's channel configuration causes immediate framing errors and cyclic connection drops. Check the PLC's Channel 0 configuration before troubleshooting the converter or cable.</div>
+        </div>
+
+        <div class="failure-block">
+          <div class="failure-header">Baud rate and framing mismatches</div>
+          <div class="failure-body">If the converter's serial settings do not exactly match the PLC's port settings — baud rate, data bits, stop bits, parity — the connection will appear to establish but return garbage data or timeout errors. Common DF1 defaults: 19200 baud, 8 data bits, 1 stop bit, no parity. Modbus RTU varies widely; 9600 and 19200 are both common. Verify in the PLC programming software before guessing.</div>
+        </div>
+
+        <div class="failure-block">
+          <div class="failure-header">Serial encapsulation not enabled in Kepware</div>
+          <div class="failure-body">If the Moxa is in raw TCP Server mode and Kepware's channel does not have Serial Encapsulation enabled, the driver will not communicate correctly. The connection may appear to establish at the network layer while returning no data. Enable Serial Encapsulation in the channel configuration, or switch to Real COM Mode with a virtual COM port mapping.</div>
+        </div>
+
+        <div class="failure-block">
+          <div class="failure-header">S5 gateway emulation mode mismatch</div>
+          <div class="failure-body">IBH Link and S5-LAN gateways operate in different emulation modes depending on firmware and configuration. If Kepware is configured for S7 TCP/IP but the gateway is not in S7 emulation mode, or if the CPU type in Kepware's device settings does not match the gateway's configuration, the connection will fail silently or return incorrect data. Verify the emulation mode in the gateway's configuration interface and match it to Kepware's device settings before testing.</div>
+        </div>
+
+        <div class="failure-block">
+          <div class="failure-header">RS-485 termination problems</div>
+          <div class="failure-body">RS-485 requires 120-ohm termination at both physical ends of the bus. Missing termination causes noise and intermittent failures that are difficult to distinguish from configuration problems. Enable the Moxa's software-configurable termination resistor if the converter is at the physical end of the run. Do not add termination at a mid-bus converter position.</div>
+        </div>
+
+        <div class="failure-block">
+          <div class="failure-header">Communication processor saturation</div>
+          <div class="failure-body">Intermittent read failures and increasing PLC scan times indicate communication processor saturation. Reduce polling frequency first. If the problem persists, check whether other devices are also connected to the same port. Most legacy PLCs support only one active connection per port at a time — a second connection attempt from a programming terminal or existing HMI can knock out the data collection connection entirely.</div>
+        </div>
+
+        <hr>
+
+        <p>Related: the <a href="/guides/unified-namespace/">Unified Namespace guide</a> covers how to normalize and structure the tag data extracted from legacy PLCs before it enters the IIoT pipeline. The <a href="/landscape/vendors/#connectivity">vendor index connectivity section</a> covers Kepware, Ignition, and Litmus in detail.</p>
+
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="page-label">Industrial IoT Software</span>
+      <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+    </div>
+  </footer>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>

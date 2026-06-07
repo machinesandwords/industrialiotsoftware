@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+
+  <title>How to Structure an IIoT Pilot That Can Scale — Guide | Industrial IoT Software</title>
+  <meta name="description" content="A framework for designing IIoT proof-of-concept deployments that survive contact with the rest of the factory. Why most pilots fail and how to scope one that doesn't.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/guides/iiot-pilot-structure/">
+
+  <meta property="og:title" content="How to Structure an IIoT Pilot That Can Scale — Guide | Industrial IoT Software">
+  <meta property="og:description" content="A framework for designing IIoT proof-of-concept deployments that survive contact with the rest of the factory.">
+  <meta property="og:url" content="https://industrialiotsoftware.com/guides/iiot-pilot-structure/">
+  <meta property="og:type" content="article">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How to Structure an IIoT Pilot That Can Scale",
+    "description": "A framework for designing IIoT proof-of-concept deployments that survive contact with the rest of the factory.",
+    "url": "https://industrialiotsoftware.com/guides/iiot-pilot-structure/",
+    "datePublished": "2026-06-06",
+    "dateModified": "2026-06-06",
+    "publisher": { "@type": "Organization", "name": "Industrial IoT Software", "url": "https://industrialiotsoftware.com" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://industrialiotsoftware.com" },
+      { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://industrialiotsoftware.com/guides/" },
+      { "@type": "ListItem", "position": 3, "name": "How to Structure an IIoT Pilot That Can Scale", "item": "https://industrialiotsoftware.com/guides/iiot-pilot-structure/" }
+    ]
+  }
+  </script>
+
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+
+  <style>
+    .persona-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: var(--hairline);
+      margin: 20px 0;
+    }
+    .persona-block { background: var(--surface); padding: 16px; }
+    .persona-role {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .persona-title {
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 6px;
+    }
+    .persona-body {
+      font-size: var(--small);
+      color: var(--mid);
+      line-height: 1.65;
+    }
+    .persona-block.infosec { border-left: 3px solid #b45309; }
+    .persona-block.infosec .persona-role { color: #b45309; }
+
+    .constraint-block {
+      border: var(--hairline);
+      background: var(--surface);
+      margin: 12px 0;
+    }
+    .constraint-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding: 12px 16px;
+      border-bottom: var(--hairline);
+      background: var(--bg);
+    }
+    .constraint-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
+    }
+    .constraint-title { font-size: var(--small); font-weight: 700; color: var(--charcoal); }
+    .constraint-body { padding: 14px 16px; }
+    .constraint-body p {
+      font-size: var(--small);
+      color: var(--charcoal);
+      line-height: 1.75;
+      margin-bottom: 10px;
+    }
+    .constraint-body p:last-child { margin-bottom: 0; }
+
+    .purdue-diagram {
+      margin: 16px 0;
+      border: var(--hairline);
+      background: var(--surface);
+      overflow-x: auto;
+    }
+    .purdue-diagram-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--faint);
+      padding: 10px 16px;
+      border-bottom: var(--hairline);
+    }
+    .purdue-inner { padding: 16px 20px; min-width: 400px; }
+    .purdue-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .purdue-level {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--faint);
+      width: 56px;
+      flex-shrink: 0;
+      text-align: right;
+    }
+    .purdue-box {
+      flex: 1;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      padding: 7px 12px;
+      font-size: 11px;
+      color: var(--charcoal);
+      line-height: 1.4;
+    }
+    .purdue-box.highlight {
+      border-color: var(--accent);
+      background: var(--accent-pale);
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .purdue-box.dmz {
+      border-color: var(--accent);
+      border-style: dashed;
+      background: var(--accent-pale);
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .purdue-arrow {
+      display: flex;
+      justify-content: flex-end;
+      padding-right: 4px;
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .criteria-block {
+      border: var(--hairline);
+      background: var(--surface);
+      margin: 16px 0;
+    }
+    .criteria-header {
+      padding: 10px 16px;
+      border-bottom: var(--hairline);
+      background: var(--bg);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--faint);
+    }
+    .criteria-row {
+      display: flex;
+      gap: 16px;
+      align-items: baseline;
+      padding: 10px 16px;
+      border-bottom: var(--hairline);
+      font-size: var(--small);
+    }
+    .criteria-row:last-child { border-bottom: none; }
+    .criteria-key {
+      font-weight: 700;
+      color: var(--charcoal);
+      flex-shrink: 0;
+      width: 140px;
+    }
+    .criteria-val { color: var(--mid); line-height: 1.6; }
+
+    .failure-block {
+      border: var(--hairline);
+      border-bottom: none;
+      background: var(--surface);
+    }
+    .failure-block:last-of-type { border-bottom: var(--hairline); }
+    .failure-header {
+      padding: 10px 16px;
+      border-bottom: var(--hairline);
+      background: var(--bg);
+      font-size: var(--small);
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+    .failure-body {
+      padding: 12px 16px;
+      font-size: var(--small);
+      color: var(--mid);
+      line-height: 1.75;
+    }
+
+    @media (max-width: 640px) {
+      .persona-grid { grid-template-columns: 1fr; }
+      .criteria-key { width: auto; }
+      .criteria-row { flex-direction: column; gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for industrial IoT software buyers</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation">
+      <div id="sidebar-nav"></div>
+    </nav>
+
+    <main class="main">
+      <div class="content">
+
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href="/guides/">Guides</a>
+          <span class="breadcrumb-sep">/</span>
+          <span>How to Structure an IIoT Pilot That Can Scale</span>
+        </div>
+
+        <span class="page-label">Guide</span>
+        <h1>How to Structure an IIoT Pilot That Can Scale</h1>
+
+        <p class="lead">Around 60% of IIoT initiatives stall at the proof-of-concept stage. Most fail not because the technology does not work, but because the pilot was designed to prove the technology — not to prove that it can scale. This guide covers the difference.</p>
+
+        <h2>The problem with most IIoT pilots</h2>
+
+        <p>Most IIoT pilots are designed to succeed at the pilot stage. A vendor selects the best-case machine, the most cooperative controls engineer, and the cleanest data source in the facility. The pilot runs. The dashboard looks good. The steering committee approves phase two. Then the project stalls when the team discovers that the other 47 machines run different PLCs, use different tag naming conventions, generate data at different rates, and were never part of the pilot scope.</p>
+
+        <p>A pilot designed to prove the technology is different from a pilot designed to prove scalability. The conditions that made the pilot succeed — one machine, one protocol, one cooperative engineer — do not exist across the full facility.</p>
+
+        <h2>Assemble the right people first</h2>
+
+        <p>Four stakeholders need to be in the room when the pilot is scoped. If any of them are missing, their constraints will surface later and derail the project.</p>
+
+        <div class="persona-grid">
+          <div class="persona-block">
+            <div class="persona-role">Operations</div>
+            <div class="persona-title">COO / Plant Manager — the KPI owner</div>
+            <div class="persona-body">Owns the metric the pilot is supposed to move. Defines what success looks like in business terms. Without their definition of success, the pilot has no agreed outcome.</div>
+          </div>
+          <div class="persona-block">
+            <div class="persona-role">Controls / OT Engineering</div>
+            <div class="persona-title">Controls Engineer / Automation Lead — the data owner</div>
+            <div class="persona-body">Knows what the target equipment communicates, how it is networked, and what cannot be touched. Defines feasibility. Their veto is the hardest to recover from post-scoping.</div>
+          </div>
+          <div class="persona-block">
+            <div class="persona-role">Enterprise IT / Cloud Architecture</div>
+            <div class="persona-title">IT Architect / CDO — the infrastructure owner</div>
+            <div class="persona-body">Owns the network, the cloud platform, and the data architecture the pilot will eventually feed. Defines the destination and the connectivity requirements to reach it.</div>
+          </div>
+          <div class="persona-block infosec">
+            <div class="persona-role">Cybersecurity / InfoSec</div>
+            <div class="persona-title">CISO / InfoSec Lead — the gatekeeper</div>
+            <div class="persona-body">Distinct from general IT. Approves firewall rules, edge device hardening, and outbound connectivity. Getting their sign-off after the gateway is configured is a project restart. They must be in the room before scoping begins — not after.</div>
+          </div>
+        </div>
+
+        <p>You also need a documented baseline before any hardware is installed: current OEE, downtime hours and costs, existing data collection methods, and the machines in scope. Without a baseline, you cannot demonstrate ROI and you cannot make a credible case for scaling.</p>
+
+        <h2>The three constraints that block scale-out</h2>
+
+        <p>A scalable pilot deliberately tests the hard problems. Structure the scope around the three constraints that most commonly prevent pilots from reaching production.</p>
+
+        <div class="constraint-block">
+          <div class="constraint-header">
+            <span class="constraint-num">Constraint 01</span>
+            <span class="constraint-title">Protocol heterogeneity and semantic normalization</span>
+          </div>
+          <div class="constraint-body">
+            <p>If your facility has four PLC brands, the pilot should include at least two. A pilot that proves connectivity to one CompactLogix does not prove the platform can connect to the Siemens S7 on the adjacent line. Deliberately include a legacy or non-standard device.</p>
+            <p>Connectivity alone is not the test. The real scaling problem is semantic normalization. If the CompactLogix names its spindle speed tag <code style="font-family:'Space Mono',monospace;font-size:11px;background:var(--bg);padding:1px 4px;border:var(--hairline);">Spd_RPM</code> and the Siemens names it <code style="font-family:'Space Mono',monospace;font-size:11px;background:var(--bg);padding:1px 4px;border:var(--hairline);">Rotational_Velocity</code>, your data pipeline fragments at scale. The pilot must prove the platform can map both devices into the same semantic data model — the same tag name, the same unit, the same UNS path — before the data leaves the factory floor.</p>
+          </div>
+        </div>
+
+        <div class="constraint-block">
+          <div class="constraint-header">
+            <span class="constraint-num">Constraint 02</span>
+            <span class="constraint-title">Network architecture and the Purdue Model</span>
+          </div>
+          <div class="constraint-body">
+            <p>The pilot should cross at least one network boundary and test the architecture that will apply at scale. In industrial environments, that architecture is defined by the Purdue Model (ISA-95 / IEC 62443).</p>
+
+            <div class="purdue-diagram">
+              <div class="purdue-diagram-label">Purdue Model — edge gateway placement</div>
+              <div class="purdue-inner">
+                <div class="purdue-row">
+                  <div class="purdue-level">Level 4–5</div>
+                  <div class="purdue-box">Enterprise / Cloud — ERP, analytics, cloud data platform</div>
+                </div>
+                <div class="purdue-row">
+                  <div class="purdue-level" style="color:var(--accent);">Level 3.5</div>
+                  <div class="purdue-box dmz">DMZ — Edge gateway sits here. Outbound only: port 8883 (MQTT) or 443 (HTTPS). No inbound to PLCs.</div>
+                </div>
+                <div class="purdue-row">
+                  <div class="purdue-level">Level 3</div>
+                  <div class="purdue-box">Site operations — Historian, SCADA, MES</div>
+                </div>
+                <div class="purdue-row">
+                  <div class="purdue-level">Level 2</div>
+                  <div class="purdue-box">Control systems — DCS, SCADA supervisory</div>
+                </div>
+                <div class="purdue-row" style="margin-bottom:0;">
+                  <div class="purdue-level">Level 1–0</div>
+                  <div class="purdue-box">Field devices — PLCs, sensors, actuators</div>
+                </div>
+              </div>
+            </div>
+
+            <p>The edge gateway sits at Level 3.5. It pulls data up from Levels 1 and 2 and pushes it outbound to the enterprise layer at Level 4. The traffic pattern is strictly one-way outbound — no inbound connections back to the PLCs are permitted.</p>
+            <p>Do not run the pilot gateway on the corporate LAN and discover the segmentation requirements at rollout. Test it from the Level 3.5 DMZ position with InfoSec's firewall rules in place. If the platform cannot operate under those constraints in the pilot, it will not operate at scale.</p>
+          </div>
+        </div>
+
+        <div class="constraint-block">
+          <div class="constraint-header">
+            <span class="constraint-num">Constraint 03</span>
+            <span class="constraint-title">Operational change</span>
+          </div>
+          <div class="constraint-body">
+            <p>The pilot should include at least one workflow change: a maintenance team responding to a predictive alert, an operator acknowledging a quality exceedance, a supervisor reviewing a shift report generated from IIoT data. Data collection is the easy part. Getting operations teams to change their workflows based on data is the thing that determines whether the program delivers ROI.</p>
+            <p>If nobody changes their behavior during the pilot, the pilot has not tested the thing that matters.</p>
+          </div>
+        </div>
+
+        <h2>Define these before the pilot starts</h2>
+
+        <div class="criteria-block">
+          <div class="criteria-header">Written down, agreed before day one</div>
+          <div class="criteria-row">
+            <span class="criteria-key">Primary metric</span>
+            <span class="criteria-val">One number the pilot is designed to move. Unplanned downtime hours, OEE percentage, MTBF on a specific asset class. A pilot with five metrics has no metrics.</span>
+          </div>
+          <div class="criteria-row">
+            <span class="criteria-key">Duration</span>
+            <span class="criteria-val">8 to 12 weeks. Shorter does not generate enough data. Longer loses organizational attention and invites scope additions. Fix the end date before the pilot starts.</span>
+          </div>
+          <div class="criteria-row">
+            <span class="criteria-key">Scale-out criteria</span>
+            <span class="criteria-val">What has to be true at the end for the organization to approve full deployment. Include TCO predictability: many pilots succeed at ten tags and become commercially unscalable at 50,000 tags under consumption pricing. Get the vendor's committed commercial model for the enterprise footprint before the pilot ends.</span>
+          </div>
+          <div class="criteria-row">
+            <span class="criteria-key">Scope boundary</span>
+            <span class="criteria-val">An explicit list of what is in scope and what is not. Every addition extends the timeline and dilutes focus. The team needs explicit authority to hold this boundary and redirect additions to phase two.</span>
+          </div>
+        </div>
+
+        <h2>Where pilots break down</h2>
+
+        <div class="failure-block">
+          <div class="failure-header">Scope creep</div>
+          <div class="failure-body">The steering committee sees the dashboard and asks for three more machines, two more metrics, and a mobile app. Every addition extends the timeline and dilutes focus on the primary metric. Frame additions as phase two scope. The team needs explicit authority to say no during the pilot period.</div>
+        </div>
+
+        <div class="failure-block">
+          <div class="failure-header">Vendor-managed pilots</div>
+          <div class="failure-body">When the IIoT vendor's professional services team runs the pilot, the vendor controls the scoping, the configuration, and the success criteria. The internal team learns nothing about operating the platform and has no basis for evaluating whether results are reproducible without the vendor. Run the pilot with internal staff supported by the vendor, not the reverse.</div>
+        </div>
+
+        <div class="failure-block">
+          <div class="failure-header">Missing InfoSec sign-off</div>
+          <div class="failure-body">The controls engineer configures the gateway. IT approves the network segment. InfoSec identifies the gateway as an uncertified device transmitting on a non-standard port and requires it to be decommissioned pending a security review. This is entirely preventable. InfoSec's requirements must be incorporated into the pilot architecture from day one, not discovered at deployment.</div>
+        </div>
+
+        <div class="failure-block">
+          <div class="failure-header">No semantic normalization test</div>
+          <div class="failure-body">The pilot successfully reads tags from two different PLC types. The data arrives in the cloud with different tag names, different units, and different quality flags for the same physical measurement. The analytics platform cannot compare them. Semantic normalization must be tested in the pilot — not assumed and discovered missing at scale.</div>
+        </div>
+
+        <div class="failure-block">
+          <div class="failure-header">The edge management blindspot</div>
+          <div class="failure-body">One gateway during a pilot is manageable. Five hundred gateways across twelve factories is a different problem. If the platform does not include a centralized edge orchestration layer for pushing OS updates, security patches, and driver changes to remote gateways, you are buying a maintenance burden that grows with every site added. Verify edge management capability in the pilot, not after the enterprise rollout has started.</div>
+        </div>
+
+        <div class="failure-block">
+          <div class="failure-header">Post-pilot inertia</div>
+          <div class="failure-body">Positive results followed by six months of budget debates kills more IIoT programs than technical failure. Build the phase two decision into the pilot timeline. The scale-out proposal should be ready before the final results are presented, not drafted afterward.</div>
+        </div>
+
+        <hr>
+
+        <p>Related: the <a href="/guides/unified-namespace/">Unified Namespace guide</a> covers semantic normalization in detail. The <a href="/guides/protocol-compatibility/">protocol compatibility guide</a> covers how to verify connectivity claims before the pilot starts. The <a href="/landscape/vendors/#edge">vendor index edge section</a> covers platforms with centralized edge orchestration capability.</p>
+
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="page-label">Industrial IoT Software</span>
+      <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+    </div>
+  </footer>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>
