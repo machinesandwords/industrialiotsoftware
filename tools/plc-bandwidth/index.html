@@ -1,405 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
-
-  <title>PLC Bandwidth &amp; Polling Calculator | Industrial IoT Software</title>
-  <meta name="description" content="Calculate the network bandwidth consumed by your IIoT polling layer. Size edge gateways and validate network segments before deployment.">
-  <link rel="canonical" href="https://industrialiotsoftware.com/tools/plc-bandwidth/">
-
-  <meta property="og:title" content="PLC Bandwidth &amp; Polling Calculator | Industrial IoT Software">
-  <meta property="og:description" content="Calculate the network bandwidth consumed by your IIoT polling layer. Size edge gateways and validate network segments before deployment.">
-  <meta property="og:url" content="https://industrialiotsoftware.com/tools/plc-bandwidth/">
-  <meta property="og:type" content="website">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-
-  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
-  <link rel="stylesheet" href="/styles.css">
-  <script src="/config.js" defer></script>
-
-  <style>
-    /* ── Calculator shell ── */
-    .calc-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      border: var(--hairline);
-      background: var(--border);
-      gap: 1px;
-      margin-bottom: 1px;
-    }
-    .calc-panel {
-      background: var(--surface);
-      padding: 24px;
-    }
-    .calc-panel-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--faint);
-      margin-bottom: 20px;
-      padding-bottom: 12px;
-      border-bottom: var(--hairline);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .panel-num {
-      display: inline-block;
-      background: var(--accent);
-      color: white;
-      font-size: 10px;
-      padding: 1px 6px;
-      letter-spacing: 0.04em;
-    }
-
-    /* ── Fields ── */
-    .calc-field { margin-bottom: 20px; }
-    .calc-field:last-child { margin-bottom: 0; }
-    .calc-field label {
-      display: block;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--charcoal);
-      margin-bottom: 3px;
-    }
-    .field-hint {
-      font-size: 11px;
-      color: var(--faint);
-      margin-bottom: 6px;
-      font-style: italic;
-    }
-    .calc-field input[type="number"] {
-      width: 100%;
-      background: var(--bg);
-      border: var(--hairline);
-      color: var(--charcoal);
-      font-family: 'Space Mono', monospace;
-      font-size: var(--h3);
-      font-weight: 700;
-      padding: 7px 10px;
-      outline: none;
-      border-radius: 0;
-      -moz-appearance: textfield;
-      appearance: textfield;
-    }
-    .calc-field input[type="number"]::-webkit-outer-spin-button,
-    .calc-field input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
-    .calc-field input[type="number"]:focus { border-color: var(--accent); }
-
-    .calc-field select {
-      width: 100%;
-      background: var(--bg);
-      border: var(--hairline);
-      color: var(--charcoal);
-      font-family: 'Space Mono', monospace;
-      font-size: var(--h3);
-      font-weight: 700;
-      padding: 7px 10px;
-      outline: none;
-      border-radius: 0;
-      cursor: pointer;
-      -webkit-appearance: none;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6b68'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 10px center;
-      padding-right: 28px;
-    }
-    .calc-field select:focus { border-color: var(--accent); }
-
-    /* Slider */
-    .slider-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .slider-row input[type="range"] {
-      flex: 1;
-      -webkit-appearance: none;
-      appearance: none;
-      height: 2px;
-      background: var(--border);
-      outline: none;
-      cursor: pointer;
-    }
-    .slider-row input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 14px; height: 14px;
-      background: var(--accent);
-      border: none; cursor: pointer; border-radius: 0;
-    }
-    .slider-row input[type="range"]::-moz-range-thumb {
-      width: 14px; height: 14px;
-      background: var(--accent);
-      border: none; cursor: pointer; border-radius: 0;
-    }
-    .slider-readout {
-      font-size: var(--small);
-      font-weight: 700;
-      min-width: 52px;
-      text-align: right;
-      color: var(--charcoal);
-    }
-
-    /* ── Results ── */
-    .calc-results {
-      border: var(--hairline);
-      border-top: none;
-      background: var(--surface);
-      padding: 24px;
-      margin-bottom: 1px;
-    }
-    .results-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--faint);
-      margin-bottom: 20px;
-      padding-bottom: 12px;
-      border-bottom: var(--hairline);
-    }
-
-    .metrics-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      border: var(--hairline);
-      background: var(--border);
-      gap: 1px;
-      margin-bottom: 24px;
-    }
-    .metric-cell {
-      background: var(--surface);
-      padding: 14px 16px;
-    }
-    .metric-cell-label {
-      font-size: 11px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--faint);
-      margin-bottom: 4px;
-    }
-    .metric-cell-value {
-      font-size: var(--h2);
-      font-weight: 700;
-      color: var(--accent);
-      line-height: 1.1;
-    }
-    .metric-cell-value.warn   { color: #b45309; }
-    .metric-cell-value.danger { color: #991b1b; }
-    .metric-cell-sub {
-      font-size: 11px;
-      color: var(--faint);
-      margin-top: 3px;
-    }
-
-    /* ── Utilization bar ── */
-    .util-section { margin-bottom: 24px; }
-    .util-section-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--faint);
-      margin-bottom: 8px;
-    }
-    .util-bar-wrap {
-      border: var(--hairline);
-      background: var(--bg);
-      height: 28px;
-      position: relative;
-      overflow: hidden;
-    }
-    .util-bar-fill {
-      position: absolute;
-      left: 0; top: 0; height: 100%;
-      background: var(--accent);
-      transition: width 0.35s ease, background 0.35s ease;
-    }
-    .util-bar-fill.warn   { background: #b45309; }
-    .util-bar-fill.danger { background: #991b1b; }
-    .util-bar-label {
-      position: absolute;
-      right: 8px; top: 50%;
-      transform: translateY(-50%);
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--charcoal);
-    }
-    .util-thresholds {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--faint);
-      margin-top: 4px;
-    }
-
-    /* ── Protocol context note ── */
-    .protocol-note {
-      border: var(--hairline);
-      border-left: 3px solid var(--accent);
-      background: var(--accent-pale);
-      padding: 12px 16px;
-      margin-bottom: 24px;
-    }
-    .protocol-note-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 4px;
-    }
-    .protocol-note p {
-      font-size: var(--small);
-      color: var(--charcoal);
-      margin: 0;
-      line-height: 1.7;
-    }
-
-    /* ── Methodology ── */
-    .methodology-note {
-      font-size: 11px;
-      color: var(--faint);
-      border-top: var(--hairline);
-      padding-top: 16px;
-      line-height: 1.75;
-    }
-    .methodology-note strong { color: var(--mid); }
-
-    /* ── Gate bar ── */
-    .gate-bar {
-      border: var(--hairline);
-      border-top: none;
-      background: var(--accent-pale);
-      padding: 16px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-    }
-    .gate-bar-copy {
-      font-size: var(--small);
-      color: var(--mid);
-      line-height: 1.6;
-    }
-    .gate-bar-copy strong { color: var(--charcoal); }
-    .btn-export {
-      flex-shrink: 0;
-      background: var(--accent);
-      color: white;
-      border: none;
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 9px 18px;
-      cursor: pointer;
-      border-radius: 0;
-      white-space: nowrap;
-    }
-    .btn-export:hover { background: var(--accent-dim); }
-
-    /* ── Modal ── */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(42,42,40,0.65);
-      z-index: 200;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal-box {
-      background: var(--surface);
-      border: var(--hairline);
-      max-width: 460px;
-      width: 90%;
-      padding: 28px;
-    }
-    .modal-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 16px;
-    }
-    .modal-top h2 { font-size: var(--h2); font-weight: 700; margin: 0; border: none; padding: 0; }
-    .modal-close {
-      background: none; border: none;
-      font-family: 'Space Mono', monospace;
-      font-size: 18px; color: var(--faint);
-      cursor: pointer; padding: 0; line-height: 1;
-    }
-    .modal-close:hover { color: var(--charcoal); }
-    .modal-badge {
-      display: inline-block;
-      background: var(--accent);
-      color: white;
-      font-size: 10px; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      padding: 2px 8px; margin-bottom: 14px;
-    }
-    .modal-box p {
-      font-size: var(--small);
-      color: var(--mid);
-      line-height: 1.75;
-      margin-bottom: 14px;
-    }
-    .modal-box p strong { color: var(--charcoal); }
-    .modal-form { display: flex; gap: 8px; margin-bottom: 12px; }
-    .modal-form input[type="email"] {
-      flex: 1;
-      font-family: 'Space Mono', monospace;
-      font-size: var(--small);
-      padding: 8px 10px;
-      border: var(--hairline);
-      background: var(--bg);
-      color: var(--charcoal);
-      outline: none; border-radius: 0;
-    }
-    .modal-form input[type="email"]:focus { border-color: var(--accent); }
-    .modal-form button {
-      font-family: 'Space Mono', monospace;
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      padding: 8px 14px;
-      background: var(--charcoal); color: white;
-      border: none; cursor: pointer; border-radius: 0;
-      white-space: nowrap;
-    }
-    .modal-form button:hover { background: var(--accent); }
-    .modal-confirm {
-      display: none;
-      font-size: var(--small);
-      color: var(--accent);
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-    .modal-fine-print { font-size: 11px; color: var(--faint); line-height: 1.6; }
-
-    /* ── Responsive ── */
-    @media (max-width: 640px) {
-      .calc-grid { grid-template-columns: 1fr; }
-      .metrics-row { grid-template-columns: 1fr 1fr; }
-      .gate-bar { flex-direction: column; align-items: flex-start; }
-    }
-    @media (max-width: 400px) {
-      .metrics-row { grid-template-columns: 1fr; }
-    }
-  </style>
-</head>
-<body>
+  
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "PLC Bandwidth & Polling Calculator",
+  "url": "https://industrialiotsoftware.com/tools/plc-bandwidth/",
+  "description": "Calculate the network bandwidth consumed by your IIoT polling layer. Size edge gateways and validate network segments before deployment.",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://industrialiotsoftware.com" },
+    { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://industrialiotsoftware.com/tools/" },
+    { "@type": "ListItem", "position": 3, "name": "PLC Bandwidth Calculator", "item": "https://industrialiotsoftware.com/tools/plc-bandwidth/" }
+  ]
+}
+</script>
 
   <header class="topbar">
     <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
@@ -414,7 +37,7 @@
     </nav>
 
     <main class="main">
-      <div class="content">
+      <article class="content">
 
         <div class="breadcrumb">
           <a href="/">Home</a>
@@ -576,7 +199,7 @@
           <button class="btn-export" onclick="openModal()">Export PDF Report</button>
         </div>
 
-      </div><!-- /.content -->
+      </article><!-- /.content -->
     </main>
   </div><!-- /.layout -->
 

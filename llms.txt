@@ -1,0 +1,46 @@
+# Industrial IoT Software
+
+> An independent guide for industrial IoT software buyers. No vendor affiliations, no sponsored placements, no consulting relationships with the platforms covered.
+
+This site exists because most IIoT software content is produced by the vendors selling it. The operations leader evaluating a $300K platform deployment needs neutral technical ground — structured comparisons, implementation frameworks, and evaluation tools that reflect how the technology actually behaves in brownfield manufacturing environments, not how vendors position it in slide decks.
+
+Content is written for three audiences: operations leaders (COOs, plant managers) focused on OEE and downtime outcomes; controls and OT engineers focused on protocol compatibility, edge stability, and safe integration; and IT/cloud architects focused on data architecture, pipeline scalability, and enterprise integration.
+
+## Why This Site Exists
+
+- [No Switzerland](/why/): The case for independent IIoT software analysis and who this site is written for
+
+## Landscape
+
+- [Market Overview](/landscape/): How the IIoT software market is structured by functional category — connectivity, edge, analytics, and full-stack platforms — with buyer trade-off frameworks for each
+- [Vendor Index](/landscape/vendors/): Every significant IIoT software vendor organized by category (connectivity, edge compute, analytics, full-stack, historian). No rankings, no sponsored placements
+- [Market Direction](/landscape/market-direction/): Where the IIoT software market is heading — the shift from closed automation stacks to open data-centric architectures and what it means for buying decisions made today
+- [Protocol Reference](/landscape/protocols/): Field reference for the six protocols that move data between PLCs, sensors, historians, and cloud systems: Modbus TCP/RTU, OPC-UA, MQTT, Sparkplug B, EtherNet/IP, and PROFINET
+
+## Comparisons
+
+- [All Comparisons](/comparisons/): Index of all head-to-head platform comparisons, organized by category
+- [Kepware vs. Litmus](/comparisons/kepware-vs-litmus/): Dedicated OPC server with 150+ protocol drivers vs. combined edge connectivity and compute platform. When protocol translation depth matters vs. when combined edge architecture is the better choice
+- [Kepware vs. Ignition](/comparisons/kepware-vs-ignition/): Focused protocol translation engine vs. full industrial application platform covering SCADA, MES, and reporting. When to separate connectivity from the application layer vs. consolidate them
+- [Ignition vs. Litmus](/comparisons/ignition-vs-litmus/): Full industrial application platform (Inductive Automation) vs. edge-first connectivity and compute (Litmus). Platform scope, offline operation, and fleet management compared
+- [AWS IoT Greengrass vs. Azure IoT Edge](/comparisons/aws-greengrass-vs-azure-edge/): Two hyperscaler edge runtimes optimized for cloud data ingestion. Module ecosystems, local inference, offline behavior, and cloud lock-in trade-offs compared for IIoT architects
+- [AVEVA PI System vs. InfluxDB](/comparisons/aveva-pi-system-vs-influxdb/): The dominant industrial historian vs. the open-source time-series challenger. Compression, query model, integration depth, and total cost compared for operations and data engineering teams
+- [Siemens Insights Hub vs. Cumulocity](/comparisons/siemens-insights-hub-vs-cumulocity/): Closed Siemens automation ecosystem vs. independent open-architecture IIoT suite. When ecosystem lock-in is acceptable vs. when architectural independence is a requirement
+
+## Guides
+
+- [All Guides](/guides/): Index of all implementation guides for IIoT software buyers and implementers
+- [IIoT Pilot Structure](/guides/iiot-pilot-structure/): How to design an IIoT proof-of-concept that survives contact with a real factory. Why most pilots fail at scale-out and how to scope the three constraints that block production deployment
+- [Unified Namespace](/guides/unified-namespace/): How to structure MQTT topic hierarchies using the ISA-95 model. Practical implementation guide covering topic hierarchy design, Sparkplug B alignment, and common normalization failure modes
+- [Unidirectional Data Pipeline](/guides/unidirectional-data-pipeline/): Hardware-enforced unidirectional data flow for OT/IT separation. Split-proxy architecture, forward error correction, NTP isolation, and failure modes for safety-critical manufacturing environments
+- [Protocol Compatibility](/guides/protocol-compatibility/): What vendors claim vs. what actually works in the field. Firmware version conflicts, Siemens Optimized Block Access, program-scoped tags, Modbus endianness, and CIP connection limits
+- [Legacy PLC Telemetry](/guides/legacy-plc-telemetry/): How to extract telemetry from older Allen-Bradley, Siemens, and Modbus RTU equipment without replacing hardware. Gateway selection, driver configuration, and data normalization for brownfield environments
+
+## Tools
+
+- [Vendor Comparison Tool](/tools/vendor-comparison/): Filter and compare IIoT software vendors by category, protocol support, deployment model, and pricing tier. Independent. No sponsored placements
+- [ROI / Business Case Calculator](/tools/roi-calculator/): Model the financial impact of an IIoT platform deployment. Outputs payback timeline, OEE impact value, and annual cost reduction based on your operations baseline
+- [PLC Bandwidth & Polling Calculator](/tools/plc-bandwidth/): Calculate network bandwidth consumed by your IIoT polling layer. Size edge gateways and validate network segments before deployment
+- [UNS Topic Hierarchy Builder](/tools/uns-builder/): Design and validate a Unified Namespace MQTT topic hierarchy before broker configuration. Catches naming conflicts early and exports a specification for team and vendor review
+- [IIoT Platform Evaluation Checklist](/tools/evaluation-checklist/): Score two IIoT platform finalists across six weighted evaluation categories. Identify gaps and export a scorecard for steering committee review
+- [IIoT Pilot Risk Stress Tester](/tools/pilot-risk/): Assess pilot risk across seven dimensions — network readiness, OT bandwidth, integration complexity, change management — before committing scope and resources
