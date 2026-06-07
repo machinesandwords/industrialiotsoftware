@@ -22,7 +22,7 @@
     }
 
     submitBtn.disabled    = true;
-    submitBtn.textContent = 'Sending…';
+    submitBtn.textContent = 'Sending\u2026';
     msgEl.textContent     = '';
 
     fetch(WORKER_URL, {
@@ -33,7 +33,7 @@
       .then(function (r) { return r.json(); })
       .then(function (data) {
         if (data.success) {
-          msgEl.textContent     = 'You're subscribed. Check your inbox for a confirmation.';
+          msgEl.textContent     = 'You\u2019re subscribed. Check your inbox for a confirmation.';
           emailInput.value      = '';
           submitBtn.disabled    = false;
           submitBtn.textContent = 'Subscribe';
