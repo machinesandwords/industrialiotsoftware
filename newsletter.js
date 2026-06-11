@@ -4,7 +4,7 @@
  * Accepts optional group_id in request body to route to specific groups
  *
  * Groups:
- *   Newsletter / all tools:  189191445053179034 (default — set NEWSLETTER_GROUP_ID env var)
+ *   Newsletter / all tools:  189858333791880417 (default — set NEWSLETTER_GROUP_ID env var)
  */
 
 const MAILERLITE_API = 'https://api.mailerlite.com/api/v2';

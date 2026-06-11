@@ -42,7 +42,7 @@ function initToolCapture(toolSlug) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email:    email,
-        group_id: '189191445053179034',
+        group_id: '189858333791880417',
         source:   toolSlug,          // passed through for MailerLite field mapping if desired
       }),
     })
