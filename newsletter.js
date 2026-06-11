@@ -32,8 +32,8 @@
       subscribe(
         email,
         '189858333791880417',
-        function () { msg.textContent = 'You\u2019re subscribed.'; },
-        function () { msg.textContent = 'Something went wrong. Please try again.'; submitBtn.disabled = false; }
+        function () { msg.style.display = 'block'; msg.textContent = 'You\u2019re subscribed.'; },
+        function () { msg.style.display = 'block'; msg.textContent = 'Something went wrong. Please try again.'; submitBtn.disabled = false; }
       );
     });
   }

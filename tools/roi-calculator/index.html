@@ -3,14 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IIoT ROI &amp; Business Case Calculator | Industrial IoT Software</title>
-  <meta name="description" content="Build a defensible IIoT business case. Model labor savings, OEE improvement, and scrap reduction against implementation cost.">
-  <link rel="canonical" href="https://industrialiotsoftware.com/tools/roi-calculator/">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
-  <link rel="stylesheet" href="/styles.css">
+
+  <title>IIoT ROI &amp; Business Case Calculator | Industrial IoT Software</title>
+  <meta name="description" content="Model the financial impact of an IIoT platform deployment. Live payback timeline, OEE impact value, and annual cost reduction based on your operations baseline.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/tools/roi-calculator/">
+
+  <meta property="og:title" content="IIoT ROI &amp; Business Case Calculator | Industrial IoT Software">
+  <meta property="og:description" content="Model the financial impact of an IIoT platform deployment against your current operations baseline.">
+  <meta property="og:url" content="https://industrialiotsoftware.com/tools/roi-calculator/">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -33,6 +44,393 @@
     ]
   }
   </script>
+
+  <style>
+    /* ── Calculator-specific styles only ── */
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: var(--hairline);
+      background: var(--border);
+      gap: 1px;
+      margin-bottom: 1px;
+    }
+
+    .calc-panel {
+      background: var(--surface);
+      padding: 24px;
+    }
+
+    .calc-panel-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: var(--hairline);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .calc-panel-label .panel-num {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      font-size: 10px;
+      padding: 1px 6px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Field ── */
+    .calc-field {
+      margin-bottom: 20px;
+    }
+    .calc-field:last-child { margin-bottom: 0; }
+
+    .calc-field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--charcoal);
+      margin-bottom: 3px;
+    }
+    .calc-field .field-hint {
+      font-size: 11px;
+      color: var(--faint);
+      margin-bottom: 6px;
+      font-style: italic;
+    }
+
+    .calc-field input[type="number"] {
+      width: 100%;
+      background: var(--bg);
+      border: var(--hairline);
+      color: var(--charcoal);
+      font-family: 'Space Mono', monospace;
+      font-size: var(--h3);
+      font-weight: 700;
+      padding: 7px 10px;
+      outline: none;
+      border-radius: 0;
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+    .calc-field input[type="number"]::-webkit-outer-spin-button,
+    .calc-field input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .calc-field input[type="number"]:focus { border-color: var(--accent); }
+
+    /* ── Slider ── */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .slider-row input[type="range"] {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 2px;
+      background: var(--border);
+      outline: none;
+      cursor: pointer;
+    }
+    .slider-row input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      background: var(--accent);
+      border: none;
+      cursor: pointer;
+      border-radius: 0;
+    }
+    .slider-row input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      background: var(--accent);
+      border: none;
+      cursor: pointer;
+      border-radius: 0;
+    }
+    .slider-readout {
+      font-size: var(--small);
+      font-weight: 700;
+      min-width: 46px;
+      text-align: right;
+      color: var(--charcoal);
+    }
+
+    /* ── Results ── */
+    .calc-results {
+      border: var(--hairline);
+      border-top: none;
+      background: var(--surface);
+      padding: 24px;
+      margin-bottom: 1px;
+    }
+
+    .results-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: var(--hairline);
+    }
+
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: var(--hairline);
+      background: var(--border);
+      gap: 1px;
+      margin-bottom: 24px;
+    }
+    .metric-cell {
+      background: var(--surface);
+      padding: 14px 16px;
+    }
+    .metric-cell-label {
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 4px;
+    }
+    .metric-cell-value {
+      font-size: var(--h2);
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+    .metric-cell-value.negative { color: #b45309; }
+    .metric-cell-sub {
+      font-size: 11px;
+      color: var(--faint);
+      margin-top: 3px;
+    }
+
+    /* ── Timeline bar ── */
+    .timeline-section {
+      margin-bottom: 24px;
+    }
+    .timeline-section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin-bottom: 8px;
+    }
+    .tbar {
+      position: relative;
+      height: 28px;
+      background: var(--bg);
+      border: var(--hairline);
+      overflow: hidden;
+    }
+    .tbar-impl {
+      position: absolute;
+      left: 0; top: 0; height: 100%;
+      background: var(--border);
+      transition: width 0.35s ease;
+    }
+    .tbar-payback {
+      position: absolute;
+      left: 0; top: 0; height: 100%;
+      background: var(--accent);
+      opacity: 0.2;
+      transition: width 0.35s ease;
+    }
+    .tbar-marker {
+      position: absolute;
+      top: 0; height: 100%;
+      width: 2px;
+      background: var(--accent);
+      transition: left 0.35s ease;
+    }
+    .tbar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--faint);
+      margin-top: 4px;
+    }
+    .tbar-legend {
+      display: flex;
+      gap: 20px;
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--faint);
+    }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .swatch {
+      width: 12px; height: 3px; flex-shrink: 0;
+    }
+    .swatch.impl    { background: var(--border); }
+    .swatch.payback { background: var(--accent); opacity: 0.5; }
+    .swatch.marker  { background: var(--accent); width: 2px; height: 12px; }
+
+    /* ── Methodology ── */
+    .methodology-note {
+      font-size: 11px;
+      color: var(--faint);
+      border-top: var(--hairline);
+      padding-top: 16px;
+      line-height: 1.75;
+    }
+    .methodology-note strong { color: var(--mid); }
+
+    /* ── Gate bar ── */
+    .gate-bar {
+      border: var(--hairline);
+      border-top: none;
+      background: var(--accent-pale);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .gate-bar-copy {
+      font-size: var(--small);
+      color: var(--mid);
+      line-height: 1.6;
+    }
+    .gate-bar-copy strong { color: var(--charcoal); }
+    .btn-export {
+      flex-shrink: 0;
+      background: var(--accent);
+      color: white;
+      border: none;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 9px 18px;
+      cursor: pointer;
+      border-radius: 0;
+      white-space: nowrap;
+    }
+    .btn-export:hover { background: var(--accent-dim); }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(42,42,40,0.65);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--surface);
+      border: var(--hairline);
+      max-width: 460px;
+      width: 90%;
+      padding: 28px;
+    }
+    .modal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .modal-top h2 {
+      font-size: var(--h2);
+      font-weight: 700;
+      margin: 0;
+      border: none;
+      padding: 0;
+      margin-top: 0;
+    }
+    .modal-close {
+      background: none; border: none;
+      font-family: 'Space Mono', monospace;
+      font-size: 18px;
+      color: var(--faint);
+      cursor: pointer;
+      padding: 0; line-height: 1;
+    }
+    .modal-close:hover { color: var(--charcoal); }
+    .modal-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      margin-bottom: 14px;
+    }
+    .modal-box p {
+      font-size: var(--small);
+      color: var(--mid);
+      line-height: 1.75;
+      margin-bottom: 14px;
+    }
+    .modal-box p strong { color: var(--charcoal); }
+    .modal-form { display: flex; gap: 8px; margin-bottom: 12px; }
+    .modal-form input[type="email"] {
+      flex: 1;
+      font-family: 'Space Mono', monospace;
+      font-size: var(--small);
+      padding: 8px 10px;
+      border: var(--hairline);
+      background: var(--bg);
+      color: var(--charcoal);
+      outline: none;
+      border-radius: 0;
+    }
+    .modal-form input[type="email"]:focus { border-color: var(--accent); }
+    .modal-form button {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 8px 14px;
+      background: var(--charcoal);
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 0;
+      white-space: nowrap;
+    }
+    .modal-form button:hover { background: var(--accent); }
+    .modal-confirm {
+      display: none;
+      font-size: var(--small);
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .modal-fine-print {
+      font-size: 11px;
+      color: var(--faint);
+      line-height: 1.6;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .calc-grid { grid-template-columns: 1fr; }
+      .metrics-row { grid-template-columns: 1fr 1fr; }
+      .gate-bar { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 400px) {
+      .metrics-row { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 
@@ -212,7 +610,7 @@
       </div>
       <div class="modal-badge">Premium Export</div>
       <p>The formatted PDF report with your inputs, calculated outputs, methodology notes, and executive framing is in final production. <strong>Leave your email and you will get access the day it launches.</strong></p>
-      <p>You will also receive the Industrial IoT Software buyer briefing: vendor analysis, evaluation frameworks, and market intelligence for operations and controls teams.</p>
+      <p>You will also receive monthly buyer briefings, vendor analyses, evaluation frameworks, and market intelligence for operations and controls teams.</p>
       <div class="modal-form" id="modal-form">
         <input type="email" id="modal-email" placeholder="your@email.com">
         <button onclick="submitEmail()">Notify Me</button>
@@ -316,24 +714,17 @@
       fetch('https://newsletter.industrialiotsoftware.com', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: email,
-          group_id: '189858333791880417'
-        })
+        body: JSON.stringify({ email: email, group_id: '189858333791880417' })
       })
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          if (data.success) {
-            msgEl.textContent = 'You\u2019re subscribed. Check your inbox for a confirmation.';
-          } else {
-            msgEl.textContent = 'Something went wrong. Please try again.';
-          }
-        })
-        .catch(function() {
-          msgEl.textContent = 'Could not connect. Please try again.';
-        });
-
-
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        document.getElementById('modal-confirm').textContent = data.success
+          ? 'You’re on the list. We will reach out when the export goes live.'
+          : 'Something went wrong. Please try again.';
+      })
+      .catch(function(){
+        document.getElementById('modal-confirm').textContent = 'Could not connect. Please try again.';
+      });
       document.getElementById('modal-form').style.display  = 'none';
       document.getElementById('modal-confirm').style.display = 'block';
     }
