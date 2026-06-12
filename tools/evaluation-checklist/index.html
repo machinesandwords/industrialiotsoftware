@@ -115,55 +115,17 @@
       align-items: baseline;
       gap: 10px;
     }
-    .score-total {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--accent);
-      line-height: 1;
-    }
+    .score-total { font-size: 28px; font-weight: 700; color: var(--accent); line-height: 1; }
     .score-denom { font-size: var(--small); color: var(--faint); }
-    .score-vendor-name {
-      font-size: 11px;
-      font-weight: 700;
-      color: white;
-      letter-spacing: 0.04em;
-      margin-left: auto;
-      text-align: right;
-    }
-    .score-winner {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      padding: 1px 6px;
-      margin-left: 6px;
-      white-space: nowrap;
-    }
+    .score-vendor-name { font-size: 11px; font-weight: 700; color: white; letter-spacing: 0.04em; margin-left: auto; text-align: right; }
+    .score-winner { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); padding: 1px 6px; margin-left: 6px; white-space: nowrap; }
 
     /* ── Category block ── */
     .category-block { border: var(--hairline); border-bottom: none; }
     .category-block:last-of-type { border-bottom: var(--hairline); margin-bottom: 24px; }
-    .category-header {
-      display: grid;
-      grid-template-columns: 1fr auto auto auto;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 16px;
-      background: var(--bg);
-      border-bottom: var(--hairline);
-      cursor: pointer;
-      user-select: none;
-    }
+    .category-header { display: grid; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 12px; padding: 10px 16px; background: var(--bg); border-bottom: var(--hairline); cursor: pointer; user-select: none; }
     .category-header:hover { background: var(--accent-pale); }
-    .category-title {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--charcoal);
-    }
+    .category-title { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--charcoal); }
     .category-persona { font-size: 10px; color: var(--faint); letter-spacing: 0.04em; text-transform: uppercase; }
     .cat-score { font-size: var(--small); font-weight: 700; }
     .cat-score .v1 { color: var(--accent); }
@@ -175,84 +137,31 @@
     .category-block.collapsed .cat-bar-row { display: none; }
 
     /* ── Checklist item ── */
-    .checklist-item {
-      display: grid;
-      grid-template-columns: 1fr auto auto;
-      align-items: start;
-      gap: 16px;
-      padding: 12px 16px;
-      border-bottom: var(--hairline);
-    }
+    .checklist-item { display: grid; grid-template-columns: 1fr auto auto; align-items: start; gap: 16px; padding: 12px 16px; border-bottom: var(--hairline); }
     .checklist-item:last-child { border-bottom: none; }
     .item-text { font-size: var(--small); color: var(--charcoal); line-height: 1.6; }
     .item-hint { font-size: 11px; color: var(--faint); font-style: italic; margin-top: 2px; line-height: 1.5; }
-
     .score-col { display: flex; flex-direction: column; align-items: center; }
-    .score-col-label {
-      font-size: 10px;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--faint);
-      margin-bottom: 3px;
-      white-space: nowrap;
-      max-width: 80px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    .score-col-label { font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--faint); margin-bottom: 3px; white-space: nowrap; max-width: 80px; overflow: hidden; text-overflow: ellipsis; }
     .score-btns { display: flex; gap: 2px; }
-    .score-btn {
-      width: 28px; height: 28px;
-      border: var(--hairline);
-      background: var(--bg);
-      font-family: 'Space Mono', monospace;
-      font-size: 11px; font-weight: 700;
-      color: var(--faint);
-      cursor: pointer; border-radius: 0;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.1s, color 0.1s, border-color 0.1s;
-    }
+    .score-btn { width: 28px; height: 28px; border: var(--hairline); background: var(--bg); font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; color: var(--faint); cursor: pointer; border-radius: 0; display: flex; align-items: center; justify-content: center; transition: background 0.1s, color 0.1s, border-color 0.1s; }
     .score-btn:hover { border-color: var(--accent); color: var(--accent); }
     .score-btn.active-0 { background: #fee2e2; border-color: #991b1b; color: #991b1b; }
     .score-btn.active-1 { background: #fef3c7; border-color: #b45309; color: #b45309; }
     .score-btn.active-2 { background: var(--accent-pale); border-color: var(--accent); color: var(--accent); }
 
     /* ── Category progress bar ── */
-    .cat-bar-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      background: var(--border);
-      border-top: var(--hairline);
-    }
-    .cat-bar-cell {
-      background: var(--surface);
-      padding: 7px 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .cat-bar-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border-top: var(--hairline); }
+    .cat-bar-cell { background: var(--surface); padding: 7px 16px; display: flex; align-items: center; gap: 8px; }
     .cat-bar-track { flex: 1; height: 4px; background: var(--border); position: relative; }
-    .cat-bar-fill {
-      position: absolute; left: 0; top: 0; height: 100%;
-      background: var(--accent);
-      transition: width 0.3s ease;
-    }
+    .cat-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--accent); transition: width 0.3s ease; }
     .cat-bar-fill.v2 { background: var(--mid); }
     .cat-bar-pct { font-size: 11px; font-weight: 700; color: var(--faint); min-width: 32px; text-align: right; }
 
     /* ── Gap summary ── */
     .gap-section { border: var(--hairline); margin-bottom: 24px; }
-    .gap-header {
-      padding: 10px 16px; background: var(--bg);
-      border-bottom: var(--hairline);
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint);
-    }
-    .gap-row {
-      display: grid;
-      grid-template-columns: 1fr 80px 80px;
-      border-bottom: var(--hairline); font-size: 11px;
-    }
+    .gap-header { padding: 10px 16px; background: var(--bg); border-bottom: var(--hairline); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
+    .gap-row { display: grid; grid-template-columns: 1fr 80px 80px; border-bottom: var(--hairline); font-size: 11px; }
     .gap-row:last-child { border-bottom: none; }
     .gap-row-header { background: var(--bg); }
     .gap-row-header .gap-item { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); }
@@ -262,80 +171,58 @@
     .gap-score.winner { color: var(--accent); }
     .gap-score.loser  { color: #991b1b; }
     .gap-score.tied   { color: var(--mid); }
-    .gap-flag { font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #991b1b; margin-top: 2px; }
 
     /* ── Decision summary ── */
     .decision-summary {
-      border: var(--hairline);
-      border-left: 4px solid var(--accent);
-      background: var(--surface);
+      background: var(--charcoal);
       margin-bottom: 24px;
+      border: var(--hairline);
     }
     .decision-summary-header {
       padding: 10px 16px;
-      background: var(--bg);
-      border-bottom: var(--hairline);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
       font-size: 11px; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
     }
-    .decision-summary-body { padding: 16px 20px; }
+    .decision-summary-body { padding: 24px; }
     .decision-headline {
-      font-size: var(--h3);
+      font-size: var(--h2);
       font-weight: 700;
-      color: var(--charcoal);
-      margin-bottom: 16px;
-      line-height: 1.4;
+      color: white;
+      margin-bottom: 20px;
+      line-height: 1.3;
     }
     .decision-scores {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1px;
-      background: var(--border);
-      border: var(--hairline);
-      margin-bottom: 16px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 20px;
     }
     .decision-score-cell {
-      background: var(--surface);
-      padding: 12px 16px;
+      background: rgba(255,255,255,0.04);
+      padding: 14px 16px;
     }
     .decision-score-name {
       font-size: 11px; font-weight: 700;
       letter-spacing: 0.06em; text-transform: uppercase;
-      color: var(--faint); margin-bottom: 4px;
+      color: rgba(255,255,255,0.4); margin-bottom: 4px;
     }
-    .decision-score-value {
-      font-size: 28px; font-weight: 700;
-      line-height: 1;
-    }
+    .decision-score-value { font-size: 32px; font-weight: 700; line-height: 1; }
     .decision-score-value.winner { color: var(--accent); }
-    .decision-score-value.loser  { color: var(--mid); }
-    .decision-score-sub { font-size: 11px; color: var(--faint); margin-top: 3px; }
-    .decision-detail {
-      font-size: var(--small);
-      color: var(--mid);
-      line-height: 1.75;
-    }
-    .decision-detail strong { color: var(--charcoal); }
-    .decision-empty {
-      font-size: var(--small);
-      color: var(--faint);
-      font-style: italic;
-    }
+    .decision-score-value.loser  { color: rgba(255,255,255,0.3); }
+    .decision-score-sub { font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 4px; }
+    .decision-detail { font-size: var(--small); color: rgba(255,255,255,0.55); line-height: 1.75; }
+    .decision-detail strong { color: rgba(255,255,255,0.85); }
+    .decision-empty { font-size: var(--small); color: rgba(255,255,255,0.35); font-style: italic; }
 
     /* ── Gate bar ── */
-    .gate-bar {
-      border: var(--hairline); background: var(--accent-pale);
-      padding: 16px 24px; display: flex;
-      align-items: center; justify-content: space-between; gap: 24px;
-    }
+    .gate-bar { border: var(--hairline); background: var(--accent-pale); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
     .gate-bar-copy { font-size: var(--small); color: var(--mid); line-height: 1.6; }
     .gate-bar-copy strong { color: var(--charcoal); }
-    .btn-export {
-      flex-shrink: 0; background: var(--accent); color: white; border: none;
-      font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      padding: 9px 18px; cursor: pointer; border-radius: 0; white-space: nowrap;
-    }
+    .btn-export { flex-shrink: 0; background: var(--accent); color: white; border: none; font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 9px 18px; cursor: pointer; border-radius: 0; white-space: nowrap; }
     .btn-export:hover { background: var(--accent-dim); }
 
     /* ── Modal ── */
@@ -479,7 +366,7 @@
 
         <div class="gate-bar">
           <div class="gate-bar-copy">
-            <strong>PDF Scorecard</strong> &mdash; A formatted evaluation report with both vendor scores, category breakdowns, gap flags, and the decision summary. The document you bring into a vendor negotiation or present to a steering committee.
+            <strong>PDF Scorecard</strong> &mdash; A formatted evaluation report with both vendor scores, category breakdowns, and the decision summary. The document you bring into a vendor negotiation or present to a steering committee.
           </div>
           <button class="btn-export" onclick="openModal()">Export PDF Scorecard</button>
         </div>
@@ -512,7 +399,7 @@
         <button class="modal-close" onclick="closeModal()">&#215;</button>
       </div>
       <div class="modal-badge">Free Export</div>
-      <p>Enter your email to download a formatted scorecard with both vendor scores, category breakdowns, gap flags, and the decision summary.</p>
+      <p>Enter your email to download a formatted scorecard with both vendor scores, category breakdowns, and the decision summary.</p>
       <p>You will also receive buyer briefings, vendor analyses, and market intelligence for operations and controls teams.</p>
       <div class="modal-form" id="modal-form">
         <input type="email" id="modal-email" placeholder="your@email.com">
@@ -524,13 +411,6 @@
   </div>
 
   <script>
-    var VENDORS = [
-      'Ignition by Inductive Automation','Kepware (PTC)','Azure IoT Operations (Microsoft)',
-      'AWS IoT Greengrass','Litmus Edge','Flutura Cerebra','Telit Cinterion',
-      'Prosys OPC UA','Aveva Edge','Softing Industrial','Siemens MindSphere',
-      'Rockwell FactoryTalk','GE Predix','Honeywell Forge'
-    ];
-
     var CATEGORIES = [
       {
         id: 'connectivity', title: 'Connectivity & Protocol Support', persona: 'Implementation Buyer',
@@ -606,13 +486,8 @@
       var customId = v === 0 ? 'v1-custom' : 'v2-custom';
       var sel = document.getElementById(selectId);
       var custom = document.getElementById(customId);
-      if (sel.value === '__custom__') {
-        custom.classList.add('visible');
-        custom.focus();
-      } else {
-        custom.classList.remove('visible');
-        custom.value = '';
-      }
+      if (sel.value === '__custom__') { custom.classList.add('visible'); custom.focus(); }
+      else { custom.classList.remove('visible'); custom.value = ''; }
       updateVendorNames();
     }
 
@@ -632,9 +507,7 @@
       document.getElementById('label-v2').textContent = v2Name();
       document.querySelectorAll('.score-col-label.v1').forEach(function(el){ el.textContent = v1Name(); });
       document.querySelectorAll('.score-col-label.v2').forEach(function(el){ el.textContent = v2Name(); });
-      updateTotals();
-      updateGaps();
-      updateDecision();
+      updateTotals(); updateGaps(); updateDecision();
     }
 
     function setScore(catId, itemIdx, vendor, val) {
@@ -642,9 +515,7 @@
       scores[catId][itemIdx][vendor] = (current === val) ? null : val;
       renderItem(catId, itemIdx);
       updateCatBar(catId);
-      updateTotals();
-      updateGaps();
-      updateDecision();
+      updateTotals(); updateGaps(); updateDecision();
     }
 
     function renderItem(catId, itemIdx) {
@@ -684,10 +555,7 @@
 
     function updateTotals() {
       var g1=0, g2=0, gMax=0;
-      CATEGORIES.forEach(function(cat){
-        var t=catTotals(cat.id);
-        g1+=t.t1; g2+=t.t2; gMax+=t.max;
-      });
+      CATEGORIES.forEach(function(cat){ var t=catTotals(cat.id); g1+=t.t1; g2+=t.t2; gMax+=t.max; });
       document.getElementById('total-v1').textContent = g1;
       document.getElementById('total-v2').textContent = g2;
       document.getElementById('denom-v1').textContent = '/ '+gMax+' pts';
@@ -700,37 +568,25 @@
 
     function updateGaps() {
       var body = document.getElementById('gap-body');
-      var rows = '<div class="gap-row gap-row-header">' +
-        '<div class="gap-item">Category</div>' +
-        '<div class="gap-score" style="border-left:var(--hairline)">'+esc(v1Name())+'</div>' +
-        '<div class="gap-score" style="border-left:var(--hairline)">'+esc(v2Name())+'</div>' +
+      var rows = '<div class="gap-row gap-row-header">'+
+        '<div class="gap-item">Category</div>'+
+        '<div class="gap-score" style="border-left:var(--hairline)">'+esc(v1Name())+'</div>'+
+        '<div class="gap-score" style="border-left:var(--hairline)">'+esc(v2Name())+'</div>'+
       '</div>';
       CATEGORIES.forEach(function(cat){
         var t=catTotals(cat.id);
         var pct1=t.max>0?Math.round(t.t1/t.max*100):0;
         var pct2=t.max>0?Math.round(t.t2/t.max*100):0;
-
-        // Winner gets green, loser gets red, tie gets mid
-        var anyScored = t.t1 > 0 || t.t2 > 0;
+        var anyScored = t.t1>0||t.t2>0;
         var cls1, cls2;
-        if (!anyScored) {
-          cls1 = cls2 = 'tied';
-        } else if (pct1 > pct2) {
-          cls1 = 'winner'; cls2 = 'loser';
-        } else if (pct2 > pct1) {
-          cls1 = 'loser'; cls2 = 'winner';
-        } else {
-          cls1 = cls2 = 'tied';
-        }
-
-        // GAP flag: below 50% and any scoring has happened
-        var flag1 = (pct1 < 50 && anyScored) ? '<div class="gap-flag">Gap</div>' : '';
-        var flag2 = (pct2 < 50 && anyScored) ? '<div class="gap-flag">Gap</div>' : '';
-
+        if (!anyScored) { cls1=cls2='tied'; }
+        else if (pct1>pct2) { cls1='winner'; cls2='loser'; }
+        else if (pct2>pct1) { cls1='loser'; cls2='winner'; }
+        else { cls1=cls2='tied'; }
         rows+='<div class="gap-row">'+
           '<div class="gap-item">'+esc(cat.title)+'</div>'+
-          '<div class="gap-score '+cls1+'">'+pct1+'%'+flag1+'</div>'+
-          '<div class="gap-score '+cls2+'">'+pct2+'%'+flag2+'</div>'+
+          '<div class="gap-score '+cls1+'">'+pct1+'%</div>'+
+          '<div class="gap-score '+cls2+'">'+pct2+'%</div>'+
         '</div>';
       });
       body.innerHTML = rows;
@@ -739,87 +595,62 @@
     function updateDecision() {
       var body = document.getElementById('decision-body');
       var g1=0, g2=0, gMax=0;
-      CATEGORIES.forEach(function(cat){
-        var t=catTotals(cat.id);
-        g1+=t.t1; g2+=t.t2; gMax+=t.max;
-      });
+      CATEGORIES.forEach(function(cat){ var t=catTotals(cat.id); g1+=t.t1; g2+=t.t2; gMax+=t.max; });
 
-      if (g1 === 0 && g2 === 0) {
+      if (g1===0 && g2===0) {
         body.innerHTML = '<p class="decision-empty">Score at least one category to generate a summary.</p>';
         return;
       }
 
-      var pct1 = gMax > 0 ? Math.round(g1/gMax*100) : 0;
-      var pct2 = gMax > 0 ? Math.round(g2/gMax*100) : 0;
-      var n1 = v1Name();
-      var n2 = v2Name();
-
-      // Count category wins
-      var wins1=0, wins2=0;
-      var strongestAdv = null, strongestDiff = 0;
-      var closestContest = null, closestDiff = 999;
+      var pct1=gMax>0?Math.round(g1/gMax*100):0;
+      var pct2=gMax>0?Math.round(g2/gMax*100):0;
+      var n1=v1Name(), n2=v2Name();
+      var wins1=0, wins2=0, strongestAdv=null, strongestDiff=0, closestContest=null, closestDiff=999;
 
       CATEGORIES.forEach(function(cat){
-        var t = catTotals(cat.id);
-        var p1 = t.max>0 ? Math.round(t.t1/t.max*100) : 0;
-        var p2 = t.max>0 ? Math.round(t.t2/t.max*100) : 0;
-        if (p1 > p2) wins1++;
-        if (p2 > p1) wins2++;
-        var diff = Math.abs(p1-p2);
-        if ((t.t1>0||t.t2>0) && diff > strongestDiff) {
-          strongestDiff = diff;
-          strongestAdv = { title: cat.title, p1: p1, p2: p2 };
-        }
-        if ((t.t1>0||t.t2>0) && diff < closestDiff) {
-          closestDiff = diff;
-          closestContest = { title: cat.title, p1: p1, p2: p2 };
-        }
+        var t=catTotals(cat.id);
+        var p1=t.max>0?Math.round(t.t1/t.max*100):0;
+        var p2=t.max>0?Math.round(t.t2/t.max*100):0;
+        if (p1>p2) wins1++; if (p2>p1) wins2++;
+        var diff=Math.abs(p1-p2);
+        if ((t.t1>0||t.t2>0)&&diff>strongestDiff){strongestDiff=diff;strongestAdv={title:cat.title,p1:p1,p2:p2};}
+        if ((t.t1>0||t.t2>0)&&diff<closestDiff){closestDiff=diff;closestContest={title:cat.title,p1:p1,p2:p2};}
       });
 
-      var winnerName, loserName, winnerPct, loserPct;
-      if (g1 >= g2) {
-        winnerName = n1; loserName = n2; winnerPct = pct1; loserPct = pct2;
-      } else {
-        winnerName = n2; loserName = n1; winnerPct = pct2; loserPct = pct1;
-      }
+      var winnerName=g1>=g2?n1:n2;
+      var winnerWins=g1>=g2?wins1:wins2;
+      var headline=g1===g2
+        ?esc(n1)+' and '+esc(n2)+' are tied.'
+        :esc(winnerName)+' leads in '+winnerWins+' of '+CATEGORIES.length+' categories.';
 
-      var totalCats = CATEGORIES.length;
-      var winnerWins = g1 >= g2 ? wins1 : wins2;
-
-      var headline = g1 === g2
-        ? esc(n1) + ' and ' + esc(n2) + ' are tied.'
-        : esc(winnerName) + ' leads in ' + winnerWins + ' of ' + totalCats + ' categories.';
-
-      var scoresHtml =
-        '<div class="decision-scores">' +
-          '<div class="decision-score-cell">' +
-            '<div class="decision-score-name">'+esc(n1)+'</div>' +
-            '<div class="decision-score-value '+(g1>=g2?'winner':'loser')+'">'+pct1+'%</div>' +
-            '<div class="decision-score-sub">'+g1+' / '+gMax+' pts</div>' +
-          '</div>' +
-          '<div class="decision-score-cell">' +
-            '<div class="decision-score-name">'+esc(n2)+'</div>' +
-            '<div class="decision-score-value '+(g2>g1?'winner':'loser')+'">'+pct2+'%</div>' +
-            '<div class="decision-score-sub">'+g2+' / '+gMax+' pts</div>' +
-          '</div>' +
+      var scoresHtml=
+        '<div class="decision-scores">'+
+          '<div class="decision-score-cell">'+
+            '<div class="decision-score-name">'+esc(n1)+'</div>'+
+            '<div class="decision-score-value '+(g1>=g2?'winner':'loser')+'">'+pct1+'%</div>'+
+            '<div class="decision-score-sub">'+g1+' / '+gMax+' pts</div>'+
+          '</div>'+
+          '<div class="decision-score-cell">'+
+            '<div class="decision-score-name">'+esc(n2)+'</div>'+
+            '<div class="decision-score-value '+(g2>g1?'winner':'loser')+'">'+pct2+'%</div>'+
+            '<div class="decision-score-sub">'+g2+' / '+gMax+' pts</div>'+
+          '</div>'+
         '</div>';
 
-      var detailParts = [];
-      if (strongestAdv && strongestDiff > 0) {
-        var advWinner = strongestAdv.p1 >= strongestAdv.p2 ? n1 : n2;
-        var advPct    = Math.max(strongestAdv.p1, strongestAdv.p2);
-        var advLoser  = strongestAdv.p1 >= strongestAdv.p2 ? n2 : n1;
-        var advLoserPct = Math.min(strongestAdv.p1, strongestAdv.p2);
-        detailParts.push('<strong>Strongest advantage:</strong> ' + esc(strongestAdv.title) + ' — ' + esc(advWinner) + ' ' + advPct + '% vs. ' + esc(advLoser) + ' ' + advLoserPct + '%');
+      var detailParts=[];
+      if (strongestAdv&&strongestDiff>0){
+        var advWinner=strongestAdv.p1>=strongestAdv.p2?n1:n2;
+        var advLoser=strongestAdv.p1>=strongestAdv.p2?n2:n1;
+        detailParts.push('<strong>Strongest advantage:</strong> '+esc(strongestAdv.title)+' \u2014 '+esc(advWinner)+' '+Math.max(strongestAdv.p1,strongestAdv.p2)+'% vs. '+esc(advLoser)+' '+Math.min(strongestAdv.p1,strongestAdv.p2)+'%');
       }
-      if (closestContest && closestDiff < strongestDiff) {
-        detailParts.push('<strong>Closest contest:</strong> ' + esc(closestContest.title) + ' — ' + esc(n1) + ' ' + closestContest.p1 + '% vs. ' + esc(n2) + ' ' + closestContest.p2 + '%');
+      if (closestContest&&closestDiff<strongestDiff){
+        detailParts.push('<strong>Closest contest:</strong> '+esc(closestContest.title)+' \u2014 '+esc(n1)+' '+closestContest.p1+'% vs. '+esc(n2)+' '+closestContest.p2+'%');
       }
 
-      body.innerHTML =
-        '<div class="decision-headline">' + headline + '</div>' +
-        scoresHtml +
-        (detailParts.length ? '<div class="decision-detail">' + detailParts.join('<br>') + '</div>' : '');
+      body.innerHTML=
+        '<div class="decision-headline">'+headline+'</div>'+
+        scoresHtml+
+        (detailParts.length?'<div class="decision-detail">'+detailParts.join('<br>')+'</div>':'');
     }
 
     function buildChecklist() {
@@ -827,7 +658,7 @@
       container.innerHTML = CATEGORIES.map(function(cat){
         var items = cat.items.map(function(item, idx){
           var cols = [0,1].map(function(v){
-            var vname = v===0 ? v1Name() : v2Name();
+            var vname = v===0?v1Name():v2Name();
             return '<div class="score-col">'+
               '<div class="score-col-label '+(v===0?'v1':'v2')+'">'+esc(vname)+'</div>'+
               '<div class="score-btns">'+
@@ -845,14 +676,12 @@
             cols+
           '</div>';
         }).join('');
-
         var bars = [0,1].map(function(v){
           return '<div class="cat-bar-cell">'+
             '<div class="cat-bar-track"><div class="cat-bar-fill'+(v===1?' v2':'')+'" id="catbar-'+cat.id+'-'+v+'" style="width:0%"></div></div>'+
             '<div class="cat-bar-pct" id="catpct-'+cat.id+'-'+v+'">0%</div>'+
           '</div>';
         }).join('');
-
         return '<div class="category-block" id="cat-'+cat.id+'">'+
           '<div class="category-header" onclick="toggleCat(\''+cat.id+'\')">'+
             '<span class="category-title">'+esc(cat.title)+'</span>'+
@@ -864,234 +693,223 @@
           '<div class="cat-bar-row" style="background:var(--border);gap:1px;">'+bars+'</div>'+
         '</div>';
       }).join('');
-      updateGaps();
-      updateDecision();
+      updateGaps(); updateDecision();
     }
 
-    function toggleCat(id) {
-      var el = document.getElementById('cat-'+id);
-      if (el) el.classList.toggle('collapsed');
-    }
-
-    function esc(s) {
-      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
-
+    function toggleCat(id) { var el=document.getElementById('cat-'+id); if(el) el.classList.toggle('collapsed'); }
+    function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
     function openModal()  { document.getElementById('modal-overlay').classList.add('open'); }
     function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
     function handleOverlayClick(e) { if(e.target===document.getElementById('modal-overlay'))closeModal(); }
 
     function submitEmail() {
-      var email = document.getElementById('modal-email').value.trim();
-      var confirmEl = document.getElementById('modal-confirm');
-      if (!email || !email.includes('@')) { document.getElementById('modal-email').focus(); return; }
-      var btn = document.querySelector('#modal-form button');
-      btn.disabled = true;
-      btn.textContent = 'Sending...';
-      fetch('https://newsletter.industrialiotsoftware.com', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, group_id: '189858333791880417' })
+      var email=document.getElementById('modal-email').value.trim();
+      var confirmEl=document.getElementById('modal-confirm');
+      if (!email||!email.includes('@')){ document.getElementById('modal-email').focus(); return; }
+      var btn=document.querySelector('#modal-form button');
+      btn.disabled=true; btn.textContent='Sending...';
+      fetch('https://newsletter.industrialiotsoftware.com',{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({email:email,group_id:'189858333791880417'})
       })
-      .then(function(r){ return r.json(); })
+      .then(function(r){return r.json();})
       .then(function(data){
-        if (data.message === 'Subscribed') {
-          document.getElementById('modal-form').style.display = 'none';
-          confirmEl.style.display = 'block';
-          confirmEl.textContent = 'You\u2019re subscribed. Your PDF is opening now.';
-          closeModal();
-          generatePDF();
+        if (data.message==='Subscribed'){
+          document.getElementById('modal-form').style.display='none';
+          confirmEl.style.display='block';
+          confirmEl.textContent='You\u2019re subscribed. Your PDF is opening now.';
+          closeModal(); generatePDF();
         } else {
-          confirmEl.style.display = 'block';
-          confirmEl.textContent = 'Something went wrong. Please try again.';
-          btn.disabled = false;
-          btn.textContent = 'Get PDF';
+          confirmEl.style.display='block';
+          confirmEl.textContent='Something went wrong. Please try again.';
+          btn.disabled=false; btn.textContent='Get PDF';
         }
       })
       .catch(function(){
-        confirmEl.style.display = 'block';
-        confirmEl.textContent = 'Could not connect. Please try again.';
-        btn.disabled = false;
-        btn.textContent = 'Get PDF';
+        confirmEl.style.display='block';
+        confirmEl.textContent='Could not connect. Please try again.';
+        btn.disabled=false; btn.textContent='Get PDF';
       });
     }
 
     function generatePDF() {
-      var script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-      script.onload = function() {
-        var doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'letter' });
-        var margin = 48;
-        var pageW = 612;
-        var col = pageW - margin * 2;
-        var y = margin;
+      var script=document.createElement('script');
+      script.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      script.onload=function(){
+        var doc=new window.jspdf.jsPDF({unit:'pt',format:'letter'});
+        var margin=48, pageW=612, col=pageW-margin*2, y=margin;
 
-        // Header
-        doc.setFillColor(10, 126, 106);
-        doc.rect(0, 0, pageW, 60, 'F');
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(11);
-        doc.setTextColor(255, 255, 255);
-        doc.text('INDUSTRIAL IOT SOFTWARE', margin, 26);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
-        doc.setTextColor(180, 230, 220);
-        doc.text('An independent guide for industrial IoT software buyers', margin, 42);
-        doc.text('industrialiotsoftware.com', pageW - margin, 42, { align: 'right' });
+        // Header band
+        doc.setFillColor(10,126,106);
+        doc.rect(0,0,pageW,60,'F');
+        doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(255,255,255);
+        doc.text('INDUSTRIAL IOT SOFTWARE',margin,26);
+        doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(180,230,220);
+        doc.text('An independent guide for industrial IoT software buyers',margin,42);
+        doc.text('industrialiotsoftware.com',pageW-margin,42,{align:'right'});
 
-        y = 92;
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(20);
-        doc.setTextColor(30, 30, 28);
-        doc.text('IIoT Platform Evaluation Scorecard', margin, y);
-        y += 28;
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(11);
-        doc.setTextColor(100, 100, 96);
-        doc.text('Generated ' + new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), margin, y);
-        y += 36;
+        y=92;
+        doc.setFont('helvetica','bold'); doc.setFontSize(20); doc.setTextColor(30,30,28);
+        doc.text('IIoT Platform Evaluation Scorecard',margin,y);
+        y+=28;
+        doc.setFont('helvetica','normal'); doc.setFontSize(11); doc.setTextColor(100,100,96);
+        doc.text('Generated '+new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),margin,y);
+        y+=36;
+        doc.setDrawColor(220,220,216); doc.setLineWidth(0.5); doc.line(margin,y,pageW-margin,y); y+=24;
 
-        doc.setDrawColor(220, 220, 216);
-        doc.setLineWidth(0.5);
-        doc.line(margin, y, pageW - margin, y);
-        y += 24;
+        // Overall scores
+        var g1=0,g2=0,gMax=0;
+        CATEGORIES.forEach(function(cat){var t=catTotals(cat.id);g1+=t.t1;g2+=t.t2;gMax+=t.max;});
+        var pct1=gMax>0?Math.round(g1/gMax*100):0;
+        var pct2=gMax>0?Math.round(g2/gMax*100):0;
+        var n1=v1Name(),n2=v2Name();
 
-        // Totals
-        var g1=0, g2=0, gMax=0;
-        CATEGORIES.forEach(function(cat){
-          var t=catTotals(cat.id);
-          g1+=t.t1; g2+=t.t2; gMax+=t.max;
+        doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(140,140,136);
+        doc.text('OVERALL SCORES',margin,y); y+=16;
+
+        // Two score cells side by side — fixed layout
+        var halfCol=(col-8)/2;
+        [0,1].forEach(function(v){
+          var x=margin+v*(halfCol+8);
+          var name=v===0?n1:n2;
+          var pct=v===0?pct1:pct2;
+          var pts=v===0?g1:g2;
+          var isWinner=v===0?g1>=g2:g2>g1;
+          doc.setFillColor(isWinner?240:248,isWinner?248:248,isWinner?246:248);
+          doc.rect(x,y-14,halfCol,40,'F');
+          // Vendor name
+          doc.setFont('helvetica','bold'); doc.setFontSize(9);
+          doc.setTextColor(isWinner?10:100,isWinner?126:100,isWinner?106:96);
+          var displayName=name.length>24?name.substring(0,24)+'...':name;
+          doc.text(displayName,x+8,y);
+          // Score on next line
+          doc.setFontSize(18);
+          doc.setTextColor(isWinner?10:120,isWinner?126:120,isWinner?106:116);
+          doc.text(pct+'%',x+8,y+18);
+          // Pts inline after score — offset right of the percentage
+          doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(160,160,156);
+          doc.text(pts+' / '+gMax+' pts',x+8+38,y+18);
         });
-        var pct1 = gMax>0 ? Math.round(g1/gMax*100) : 0;
-        var pct2 = gMax>0 ? Math.round(g2/gMax*100) : 0;
-        var n1 = v1Name(), n2 = v2Name();
+        y+=48;
 
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(8);
-        doc.setTextColor(140, 140, 136);
-        doc.text('OVERALL SCORES', margin, y);
-        y += 16;
-
-        var halfCol = (col - 8) / 2;
-        [0,1].forEach(function(v) {
-          var x = margin + v * (halfCol + 8);
-          var name = v===0 ? n1 : n2;
-          var pct  = v===0 ? pct1 : pct2;
-          var pts  = v===0 ? g1 : g2;
-          var isWinner = v===0 ? g1>=g2 : g2>g1;
-          doc.setFillColor(isWinner ? 240 : 248, isWinner ? 248 : 248, isWinner ? 246 : 248);
-          doc.rect(x, y-14, halfCol, 36, 'F');
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(10);
-          doc.setTextColor(isWinner ? 10 : 100, isWinner ? 126 : 100, isWinner ? 106 : 96);
-          doc.text(name.length > 22 ? name.substring(0,22)+'...' : name, x+8, y);
-          doc.setFontSize(16);
-          doc.text(pct+'%', x+8, y+16);
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(9);
-          doc.setTextColor(140, 140, 136);
-          doc.text(pts+' / '+gMax+' pts', x+8+28, y+16);
-        });
-        y += 40;
-
-        doc.setDrawColor(220, 220, 216);
-        doc.line(margin, y, pageW - margin, y);
-        y += 24;
+        doc.setDrawColor(220,220,216); doc.line(margin,y,pageW-margin,y); y+=24;
 
         // Category breakdown
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(8);
-        doc.setTextColor(140, 140, 136);
-        doc.text('CATEGORY BREAKDOWN', margin, y);
-        y += 16;
+        doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(140,140,136);
+        doc.text('CATEGORY BREAKDOWN',margin,y); y+=16;
 
-        CATEGORIES.forEach(function(cat) {
-          var t = catTotals(cat.id);
-          var p1 = t.max>0 ? Math.round(t.t1/t.max*100) : 0;
-          var p2 = t.max>0 ? Math.round(t.t2/t.max*100) : 0;
-          doc.setFillColor(248, 248, 248);
-          doc.rect(margin, y-12, col, 20, 'F');
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(9);
-          doc.setTextColor(60, 60, 58);
-          doc.text(cat.title, margin+8, y);
-          var v1Winner = p1 >= p2;
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(9);
-          doc.setTextColor(v1Winner ? 10 : 153, v1Winner ? 126 : 27, v1Winner ? 106 : 27);
-          doc.text(p1+'%', pageW - margin - 80, y, { align: 'right' });
-          doc.setTextColor(!v1Winner ? 10 : 153, !v1Winner ? 126 : 27, !v1Winner ? 106 : 27);
-          doc.text(p2+'%', pageW - margin - 10, y, { align: 'right' });
-          if (p1 < 50) { doc.setFontSize(7); doc.setTextColor(153,27,27); doc.text('GAP', pageW-margin-75, y+8); }
-          if (p2 < 50) { doc.setFontSize(7); doc.setTextColor(153,27,27); doc.text('GAP', pageW-margin-5, y+8, {align:'right'}); }
-          y += 24;
-        });
+        // Header row
+        doc.setFillColor(235,235,233);
+        doc.rect(margin,y-12,col,18,'F');
+        doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(100,100,96);
+        doc.text('CATEGORY',margin+8,y-1);
+        var nameCol1=n1.length>14?n1.substring(0,14)+'...':n1;
+        var nameCol2=n2.length>14?n2.substring(0,14)+'...':n2;
+        doc.text(nameCol1,pageW-margin-90,y-1,{align:'right'});
+        doc.text(nameCol2,pageW-margin-10,y-1,{align:'right'});
+        y+=18;
 
-        y += 8;
-        doc.setDrawColor(220, 220, 216);
-        doc.line(margin, y, pageW - margin, y);
-        y += 24;
-
-        // Decision summary
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(8);
-        doc.setTextColor(140, 140, 136);
-        doc.text('DECISION SUMMARY', margin, y);
-        y += 16;
-
-        var wins1=0, wins2=0, strongestAdv=null, strongestDiff=0, closestContest=null, closestDiff=999;
         CATEGORIES.forEach(function(cat){
           var t=catTotals(cat.id);
           var p1=t.max>0?Math.round(t.t1/t.max*100):0;
           var p2=t.max>0?Math.round(t.t2/t.max*100):0;
-          if(p1>p2) wins1++; if(p2>p1) wins2++;
+          var anyScored=t.t1>0||t.t2>0;
+          doc.setFillColor(248,248,248);
+          doc.rect(margin,y-12,col,20,'F');
+          doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(60,60,58);
+          doc.text(cat.title,margin+8,y);
+          // V1 score — winner green, loser red, unscored mid
+          var v1Winner=anyScored&&p1>=p2;
+          var v1Loser=anyScored&&p1<p2;
+          doc.setFont('helvetica','bold'); doc.setFontSize(9);
+          if (!anyScored) doc.setTextColor(160,160,156);
+          else if (v1Winner) doc.setTextColor(10,126,106);
+          else doc.setTextColor(153,27,27);
+          doc.text(p1+'%',pageW-margin-90,y,{align:'right'});
+          // V2 score
+          if (!anyScored) doc.setTextColor(160,160,156);
+          else if (!v1Winner) doc.setTextColor(10,126,106);
+          else doc.setTextColor(153,27,27);
+          doc.text(p2+'%',pageW-margin-10,y,{align:'right'});
+          y+=22;
+        });
+
+        y+=12;
+        doc.setDrawColor(220,220,216); doc.line(margin,y,pageW-margin,y); y+=24;
+
+        // Decision summary — dark band
+        doc.setFillColor(42,42,40);
+        doc.rect(margin,y-14,col,18,'F');
+        doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(120,120,116);
+        doc.text('DECISION SUMMARY',margin+8,y-2);
+        y+=16;
+
+        var wins1=0,wins2=0,strongestAdv=null,strongestDiff=0,closestContest=null,closestDiff=999;
+        CATEGORIES.forEach(function(cat){
+          var t=catTotals(cat.id);
+          var p1=t.max>0?Math.round(t.t1/t.max*100):0;
+          var p2=t.max>0?Math.round(t.t2/t.max*100):0;
+          if(p1>p2)wins1++;if(p2>p1)wins2++;
           var diff=Math.abs(p1-p2);
           if((t.t1>0||t.t2>0)&&diff>strongestDiff){strongestDiff=diff;strongestAdv={title:cat.title,p1:p1,p2:p2};}
           if((t.t1>0||t.t2>0)&&diff<closestDiff){closestDiff=diff;closestContest={title:cat.title,p1:p1,p2:p2};}
         });
 
-        var winnerName = g1>=g2 ? n1 : n2;
-        var winnerWins = g1>=g2 ? wins1 : wins2;
-        var headline = g1===g2 ? n1+' and '+n2+' are tied.' : winnerName+' leads in '+winnerWins+' of '+CATEGORIES.length+' categories.';
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(11);
-        doc.setTextColor(30, 30, 28);
-        var headLines = doc.splitTextToSize(headline, col);
-        doc.text(headLines, margin, y);
-        y += headLines.length * 14 + 10;
+        var winnerName=g1>=g2?n1:n2;
+        var loserName=g1>=g2?n2:n1;
+        var winnerPct=g1>=g2?pct1:pct2;
+        var loserPct=g1>=g2?pct2:pct1;
+        var winnerWins=g1>=g2?wins1:wins2;
+        var headline=g1===g2?n1+' and '+n2+' are tied.':winnerName+' leads in '+winnerWins+' of '+CATEGORIES.length+' categories.';
 
-        if (strongestAdv) {
-          var advWinner = strongestAdv.p1>=strongestAdv.p2 ? n1 : n2;
-          var advLoser  = strongestAdv.p1>=strongestAdv.p2 ? n2 : n1;
-          var advText = 'Strongest advantage: '+strongestAdv.title+' — '+advWinner+' '+Math.max(strongestAdv.p1,strongestAdv.p2)+'% vs. '+advLoser+' '+Math.min(strongestAdv.p1,strongestAdv.p2)+'%';
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(9);
-          doc.setTextColor(100, 100, 96);
-          var advLines = doc.splitTextToSize(advText, col);
-          doc.text(advLines, margin, y);
-          y += advLines.length * 13 + 6;
+        doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(30,30,28);
+        var headLines=doc.splitTextToSize(headline,col);
+        doc.text(headLines,margin,y); y+=headLines.length*16+12;
+
+        // Score cells in PDF decision summary
+        [0,1].forEach(function(v){
+          var x=margin+v*(halfCol+8);
+          var name=v===0?n1:n2;
+          var pct=v===0?pct1:pct2;
+          var pts=v===0?g1:g2;
+          var isWinner=v===0?g1>=g2:g2>g1;
+          doc.setFillColor(isWinner?240:248,isWinner?248:248,isWinner?246:248);
+          doc.rect(x,y-14,halfCol,36,'F');
+          doc.setFont('helvetica','bold'); doc.setFontSize(8);
+          doc.setTextColor(100,100,96);
+          var dn=name.length>22?name.substring(0,22)+'...':name;
+          doc.text(dn,x+8,y-2);
+          doc.setFontSize(16);
+          doc.setTextColor(isWinner?10:120,isWinner?126:120,isWinner?106:116);
+          doc.text(pct+'%',x+8,y+14);
+          doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(160,160,156);
+          doc.text(pts+' / '+gMax+' pts',x+8+32,y+14);
+        });
+        y+=48;
+
+        if (strongestAdv&&strongestDiff>0){
+          var advWinner=strongestAdv.p1>=strongestAdv.p2?n1:n2;
+          var advLoser=strongestAdv.p1>=strongestAdv.p2?n2:n1;
+          var advText='Strongest advantage: '+strongestAdv.title+' \u2014 '+advWinner+' '+Math.max(strongestAdv.p1,strongestAdv.p2)+'% vs. '+advLoser+' '+Math.min(strongestAdv.p1,strongestAdv.p2)+'%';
+          doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(80,80,76);
+          var advLines=doc.splitTextToSize(advText,col);
+          doc.text(advLines,margin,y); y+=advLines.length*13+6;
         }
-        if (closestContest && closestDiff < strongestDiff) {
-          var closeText = 'Closest contest: '+closestContest.title+' — '+n1+' '+closestContest.p1+'% vs. '+n2+' '+closestContest.p2+'%';
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(9);
-          doc.setTextColor(100, 100, 96);
-          var closeLines = doc.splitTextToSize(closeText, col);
-          doc.text(closeLines, margin, y);
+        if (closestContest&&closestDiff<strongestDiff){
+          var closeText='Closest contest: '+closestContest.title+' \u2014 '+n1+' '+closestContest.p1+'% vs. '+n2+' '+closestContest.p2+'%';
+          doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(80,80,76);
+          var closeLines=doc.splitTextToSize(closeText,col);
+          doc.text(closeLines,margin,y);
         }
 
         // Footer
-        doc.setDrawColor(10, 126, 106);
-        doc.setLineWidth(1);
-        doc.line(margin, 752, pageW - margin, 752);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8);
-        doc.setTextColor(140, 140, 136);
-        doc.text('Industrial IoT Software is published by Machines & Words. industrialiotsoftware.com', margin, 768);
-        doc.text('This scorecard was generated by the IIoT Platform Evaluation Checklist.', margin, 780);
+        doc.setDrawColor(10,126,106); doc.setLineWidth(1); doc.line(margin,752,pageW-margin,752);
+        doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(140,140,136);
+        doc.text('Industrial IoT Software is published by Machines & Words. industrialiotsoftware.com',margin,768);
+        doc.text('Generated by the IIoT Platform Evaluation Checklist.',margin,780);
 
-        var pdfBlob = doc.output('blob');
-        window.open(URL.createObjectURL(pdfBlob), '_blank');
+        var pdfBlob=doc.output('blob');
+        window.open(URL.createObjectURL(pdfBlob),'_blank');
       };
       document.head.appendChild(script);
     }
