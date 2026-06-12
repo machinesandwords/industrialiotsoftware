@@ -849,7 +849,8 @@
     }
 
     function submitEmail() {
-      var email = document.getElementById('modal-email').value.trim();
+       console.log('submitEmail called');
+     var email = document.getElementById('modal-email').value.trim();
       var confirmEl = document.getElementById('modal-confirm');
       if (!email || !email.includes('@')) {
         document.getElementById('modal-email').focus();
@@ -879,8 +880,7 @@
           btn.textContent = 'Get PDF';
         }
       })
-    .catch(function(err) {
-        console.log('catch error:', err);
+      .catch(function() {
         confirmEl.style.display = 'block';
         confirmEl.textContent = 'Could not connect. Please try again.';
         btn.disabled = false;
