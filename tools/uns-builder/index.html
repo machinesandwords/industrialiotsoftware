@@ -187,28 +187,20 @@
       width: 100%; background: var(--accent); color: white; border: none;
       font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
       letter-spacing: 0.06em; text-transform: uppercase;
-      padding: 10px; cursor: pointer; border-radius: 0;
+      padding: 10px; cursor: pointer; border-radius: 0; margin-top: 12px;
     }
     .btn-save-path:hover { background: var(--accent-dim); }
     .btn-save-path:disabled {
-      background: var(--border);
-      color: var(--faint);
-      cursor: not-allowed;
+      background: var(--border); color: var(--faint); cursor: not-allowed;
     }
-    .btn-save-path { margin-top: 12px; }
 
     /* ── Conflict panel ── */
-    .conflict-panel {
-      margin-top: 16px; display: none;
-    }
+    .conflict-panel { margin-top: 16px; display: none; }
     .conflict-panel.visible { display: block; }
     .conflict-item {
-      border: 1px solid #b45309;
-      background: #fffbf5;
-      padding: 10px 14px;
-      margin-bottom: 6px;
-      font-size: 11px;
-      line-height: 1.7;
+      border: 1px solid #b45309; background: #fffbf5;
+      padding: 10px 14px; margin-bottom: 6px;
+      font-size: 11px; line-height: 1.7;
     }
     .conflict-item:last-child { margin-bottom: 0; }
     .conflict-type {
@@ -226,7 +218,6 @@
     }
     .output-sublabel:first-child { margin-top: 0; }
 
-    /* Topic string */
     .topic-string {
       background: var(--bg); border: var(--hairline);
       padding: 10px 12px; font-size: 11px; font-weight: 700;
@@ -238,7 +229,6 @@
     .seg-empty   { color: var(--border); font-style: italic; font-weight: 400; }
     .t-sep       { color: var(--border); }
 
-    /* Validation pills */
     .v-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
     .v-pill {
       font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
@@ -249,7 +239,6 @@
     .v-pill.bad      { border-color: #991b1b; color: #991b1b; }
     .v-pill.unsaved  { border-color: var(--border); color: var(--faint); }
 
-    /* Tree */
     .tree-wrap {
       background: var(--bg); border: var(--hairline);
       padding: 14px 16px; font-size: 11px;
@@ -263,7 +252,6 @@
     .t-tag   { color: var(--accent); font-weight: 700; }
     .t-badge { font-size: 10px; color: var(--faint); margin-left: 6px; }
 
-    /* Saved paths */
     .path-entry {
       border: var(--hairline); border-bottom: none; background: var(--surface);
     }
@@ -292,10 +280,7 @@
       background: var(--accent-pale); border: 1px solid var(--accent); padding: 1px 6px;
     }
 
-    /* Glossary */
-    .glossary-wrap {
-      border: var(--hairline); font-size: 11px; overflow-x: auto;
-    }
+    .glossary-wrap { border: var(--hairline); font-size: 11px; overflow-x: auto; }
     .glossary-row {
       display: flex; align-items: baseline; gap: 12px;
       padding: 6px 12px; border-bottom: var(--hairline);
@@ -309,7 +294,6 @@
     .glossary-count { color: var(--faint); }
     .glossary-conflict { color: #b45309; font-weight: 700; }
 
-    /* Stats bar */
     .stats-row {
       display: grid; grid-template-columns: repeat(3, 1fr);
       border: var(--hairline); background: var(--border); gap: 1px; margin-bottom: 1px;
@@ -338,55 +322,54 @@
     }
     .btn-export:hover { background: var(--accent-dim); }
 
-    /* ── Modal ── */
-    .modal-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(42,42,40,0.65); z-index: 200;
-      align-items: center; justify-content: center;
+    /* ── Post-export subscribe prompt ── */
+    .subscribe-prompt {
+      display: none;
+      border: var(--hairline);
+      border-top: none;
+      background: var(--surface);
+      padding: 20px 24px;
     }
-    .modal-overlay.open { display: flex; }
-    .modal-box {
-      background: var(--surface); border: var(--hairline);
-      max-width: 460px; width: 90%; padding: 28px;
+    .subscribe-prompt.visible { display: block; }
+    .subscribe-prompt-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--faint); margin-bottom: 8px;
     }
-    .modal-top {
-      display: flex; justify-content: space-between;
-      align-items: flex-start; margin-bottom: 16px;
+    .subscribe-prompt p {
+      font-size: var(--small); color: var(--mid); line-height: 1.7; margin-bottom: 12px;
     }
-    .modal-top h2 { font-size: var(--h2); font-weight: 700; margin: 0; border: none; padding: 0; }
-    .modal-close {
-      background: none; border: none; font-family: 'Space Mono', monospace;
-      font-size: 18px; color: var(--faint); cursor: pointer; padding: 0; line-height: 1;
-    }
-    .modal-close:hover { color: var(--charcoal); }
-    .modal-badge {
-      display: inline-block; background: var(--accent); color: white;
-      font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
-      text-transform: uppercase; padding: 2px 8px; margin-bottom: 14px;
-    }
-    .modal-box p { font-size: var(--small); color: var(--mid); line-height: 1.75; margin-bottom: 14px; }
-    .modal-box p strong { color: var(--charcoal); }
-    .modal-form { display: flex; gap: 8px; margin-bottom: 12px; }
-    .modal-form input[type="email"] {
+    .subscribe-prompt-form { display: flex; gap: 8px; }
+    .subscribe-prompt-form input[type="email"] {
       flex: 1; font-family: 'Space Mono', monospace; font-size: var(--small);
       padding: 8px 10px; border: var(--hairline); background: var(--bg);
       color: var(--charcoal); outline: none; border-radius: 0;
     }
-    .modal-form input[type="email"]:focus { border-color: var(--accent); }
-    .modal-form button {
+    .subscribe-prompt-form input[type="email"]:focus { border-color: var(--accent); }
+    .subscribe-prompt-form button {
       font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700;
       letter-spacing: 0.06em; text-transform: uppercase;
-      padding: 8px 14px; background: var(--charcoal); color: white;
+      padding: 8px 14px; background: var(--accent); color: white;
       border: none; cursor: pointer; border-radius: 0; white-space: nowrap;
     }
-    .modal-form button:hover { background: var(--accent); }
-    .modal-confirm { display: none; font-size: var(--small); color: var(--accent); font-weight: 700; margin-bottom: 12px; }
-    .modal-fine-print { font-size: 11px; color: var(--faint); line-height: 1.6; }
+    .subscribe-prompt-form button:hover { background: var(--accent-dim); }
+    .subscribe-prompt-confirm {
+      display: none; font-size: var(--small);
+      color: var(--accent); font-weight: 700; margin-top: 10px;
+    }
+    .subscribe-prompt-dismiss {
+      background: none; border: none; font-family: 'Space Mono', monospace;
+      font-size: 11px; color: var(--faint); cursor: pointer;
+      padding: 0; margin-top: 10px; display: block;
+      text-decoration: underline;
+    }
+    .subscribe-prompt-dismiss:hover { color: var(--charcoal); }
 
     @media (max-width: 700px) {
       .builder-wrap { grid-template-columns: 1fr; }
       .gate-bar { flex-direction: column; align-items: flex-start; }
       .stats-row { grid-template-columns: 1fr 1fr; }
+      .subscribe-prompt-form { flex-direction: column; }
     }
   </style>
 </head>
@@ -527,8 +510,6 @@
             <div class="tag-chips" id="tag-chips"></div>
             <div class="field-hint" id="tag-required-hint" style="margin-top:2px;">At least one tag required to save.</div>
 
-
-            <!-- Conflict panel (shows inline on save attempt) -->
             <div class="conflict-panel" id="conflict-panel"></div>
           </div>
 
@@ -567,7 +548,19 @@
           <div class="gate-bar-copy">
             <strong>JSON Schema Export</strong> &mdash; The full namespace hierarchy as a structured JSON file. Hand it to your integration team, drop it into your broker configuration, or use it as the baseline spec when onboarding a second site.
           </div>
-          <button class="btn-export" onclick="openModal()">Export JSON Schema</button>
+          <button class="btn-export" onclick="exportJSON()">Export JSON Schema</button>
+        </div>
+
+        <!-- Post-export subscribe prompt -->
+        <div class="subscribe-prompt" id="subscribe-prompt">
+          <div class="subscribe-prompt-label">Want IIoT buyer briefings?</div>
+          <p>The Independent Sensor covers the industrial IoT software market the way your vendors hope you won't. Biweekly, free.</p>
+          <div class="subscribe-prompt-form" id="subscribe-prompt-form">
+            <input type="email" id="prompt-email" placeholder="your@email.com">
+            <button onclick="submitPromptEmail()">Subscribe free</button>
+          </div>
+          <div class="subscribe-prompt-confirm" id="subscribe-prompt-confirm">You&rsquo;re subscribed.</div>
+          <button class="subscribe-prompt-dismiss" onclick="dismissPrompt()">No thanks</button>
         </div>
 
       </article><!-- /.content -->
@@ -581,29 +574,10 @@
     </div>
   </footer>
 
-  <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
-    <div class="modal-box">
-      <div class="modal-top">
-        <h2>JSON Export is Coming</h2>
-        <button class="modal-close" onclick="closeModal()">&#215;</button>
-      </div>
-      <div class="modal-badge">Premium Export</div>
-      <p>The JSON schema export is in final production. <strong>Leave your email and you will get access the day it launches.</strong></p>
-      <p>You will also receive monthly buyer briefings, vendor analyses, evaluation frameworks, and market intelligence for operations and controls teams.</p>
-      <div class="modal-form" id="modal-form">
-        <input type="email" id="modal-email" placeholder="your@email.com">
-        <button onclick="submitEmail()">Notify Me</button>
-      </div>
-      <div class="modal-confirm" id="modal-confirm">You are on the list. We will reach out when the export goes live.</div>
-      <p class="modal-fine-print">No spam. Unsubscribe any time. Industrial IoT Software is published by Machines &amp; Words.</p>
-    </div>
-  </div>
-
   <script>
     var mode = 'isa95';
     var currentTags = [];
     var savedPaths  = [];
-    // Registry: { nodeName_lower -> { canonical, level, count, paths[] } }
     var nodeRegistry = {};
 
     function esc(s) {
@@ -617,7 +591,6 @@
       return el ? sanitize(el.value.trim()) : '';
     }
 
-    // ── MODE ──
     function setMode(m) {
       mode = m;
       document.body.className = m === 'spb' ? 'mode-spb' : '';
@@ -626,7 +599,6 @@
       renderLive();
     }
 
-    // ── BUILD SEGMENTS for current inputs ──
     function getSegments() {
       if (mode === 'spb') {
         return [
@@ -650,60 +622,29 @@
       return segs.map(function(s){ return s.val || ('{'+ s.level +'}'); }).join('/');
     }
 
-    // ── CONFLICT DETECTION ──
     function detectConflicts(segs, tags, isSave) {
       var issues = [];
-
       segs.forEach(function(s) {
         if (s.fixed || !s.val) return;
         var key = s.val.toLowerCase();
         var reg = nodeRegistry[key];
         if (reg && reg.level !== s.level) {
-          issues.push({
-            type: 'Level mismatch',
-            msg: '"' + s.val + '" is registered as ' + reg.level.toUpperCase() +
-                 ' in an existing path. Using it as ' + s.level.toUpperCase() +
-                 ' here will break semantic consistency.'
-          });
+          issues.push({ type:'Level mismatch', msg:'"' + s.val + '" is registered as ' + reg.level.toUpperCase() + ' in an existing path. Using it as ' + s.level.toUpperCase() + ' here will break semantic consistency.' });
         }
-        // Case collision check
         if (reg && reg.canonical !== s.val) {
-          issues.push({
-            type: 'Case inconsistency',
-            msg: '"' + s.val + '" was previously saved as "' + reg.canonical +
-                 '". Brokers that are case-sensitive will treat these as different nodes.'
-          });
+          issues.push({ type:'Case inconsistency', msg:'"' + s.val + '" was previously saved as "' + reg.canonical + '". Brokers that are case-sensitive will treat these as different nodes.' });
         }
       });
-
-      // Duplicate path check
       if (isSave) {
         var pk = pathKey(segs);
         var existing = savedPaths.find(function(p){ return p.pathKey === pk; });
         if (existing) {
-          // Not a conflict -- we merge -- but flag duplicate tags
           tags.forEach(function(t) {
             if (existing.tags.indexOf(t) !== -1) {
-              issues.push({
-                type: 'Duplicate tag',
-                msg: '"' + t + '" already exists at this path. It will not be added again.'
-              });
+              issues.push({ type:'Duplicate tag', msg:'"' + t + '" already exists at this path. It will not be added again.' });
             }
           });
         }
-
-        // Shadowed node: a node used as a leaf (has tags) and as a parent
-        segs.forEach(function(s, i) {
-          if (s.fixed || !s.val) return;
-          savedPaths.forEach(function(p) {
-            // Check if this segment value appears at a shallower level in another path
-            for (var j = 0; j < i; j++) {
-              if (p.segs[j] && p.segs[j].val === s.val && p.segs[j].level !== s.level) return;
-            }
-          });
-        });
-
-        // Tag name drift: same tag name with different casing across all paths
         var allExistingTags = {};
         savedPaths.forEach(function(p) {
           p.tags.forEach(function(t) { allExistingTags[t.toLowerCase()] = t; });
@@ -711,19 +652,13 @@
         tags.forEach(function(t) {
           var key = t.toLowerCase();
           if (allExistingTags[key] && allExistingTags[key] !== t) {
-            issues.push({
-              type: 'Tag name drift',
-              msg: '"' + t + '" appears elsewhere as "' + allExistingTags[key] +
-                   '". Pick one canonical form to keep historian queries consistent.'
-            });
+            issues.push({ type:'Tag name drift', msg:'"' + t + '" appears elsewhere as "' + allExistingTags[key] + '". Pick one canonical form to keep historian queries consistent.' });
           }
         });
       }
-
       return issues;
     }
 
-    // ── FIELD INPUT: live conflict hint ──
     function onFieldInput(el, level) {
       var raw = sanitize(el.value.trim());
       if (!raw) { el.classList.remove('has-conflict'); renderLive(); return; }
@@ -737,7 +672,6 @@
       renderLive();
     }
 
-    // ── TAGS ──
     function addTag() {
       var input = document.getElementById('f-tag-input');
       var tag   = sanitize(input.value.trim());
@@ -762,49 +696,35 @@
       if (btn) btn.disabled = currentTags.length === 0;
     }
 
-    // ── SAVE PATH ──
     function savePath() {
       var segs = getSegments();
       var allFilled = segs.every(function(s){ return s.fixed || s.val; });
-      if (!allFilled) {
-        showConflicts([{ type:'Incomplete', msg:'Fill in all path levels before saving.' }]);
-        return;
-      }
-      if (currentTags.length === 0) {
-        showConflicts([{ type:'No tags', msg:'Add at least one tag before saving this path.' }]);
-        return;
-      }
+      if (!allFilled) { showConflicts([{ type:'Incomplete', msg:'Fill in all path levels before saving.' }]); return; }
+      if (currentTags.length === 0) { showConflicts([{ type:'No tags', msg:'Add at least one tag before saving this path.' }]); return; }
 
       var conflicts = detectConflicts(segs, currentTags, true);
       var blocking  = conflicts.filter(function(c){ return c.type==='Incomplete'||c.type==='No tags'; });
       if (blocking.length) { showConflicts(conflicts); return; }
 
-      // Show non-blocking conflicts but still save
       var pk = pathKey(segs);
       var existing = savedPaths.find(function(p){ return p.pathKey===pk; });
       if (existing) {
-        currentTags.forEach(function(t){
-          if (existing.tags.indexOf(t)===-1) existing.tags.push(t);
-        });
+        currentTags.forEach(function(t){ if (existing.tags.indexOf(t)===-1) existing.tags.push(t); });
       } else {
         savedPaths.push({ pathKey:pk, segs:segs.slice(), tags:currentTags.slice(), mode:mode });
       }
 
-      // Update registry
       segs.forEach(function(s){
         if (s.fixed || !s.val) return;
         var key = s.val.toLowerCase();
-        if (!nodeRegistry[key]) {
-          nodeRegistry[key] = { canonical:s.val, level:s.level, count:0, paths:[] };
-        }
+        if (!nodeRegistry[key]) nodeRegistry[key] = { canonical:s.val, level:s.level, count:0, paths:[] };
         nodeRegistry[key].count++;
         if (nodeRegistry[key].paths.indexOf(pk)===-1) nodeRegistry[key].paths.push(pk);
       });
 
       currentTags = [];
       renderTagChips();
-      ['f-enterprise','f-site','f-area','f-line','f-cell',
-       'f-spb-group','f-spb-edge','f-spb-device'].forEach(function(id){
+      ['f-enterprise','f-site','f-area','f-line','f-cell','f-spb-group','f-spb-edge','f-spb-device'].forEach(function(id){
         var el = document.getElementById(id);
         if (el && !el.readOnly) { el.value = ''; el.classList.remove('has-conflict'); }
       });
@@ -817,16 +737,12 @@
       if (!issues.length) { panel.className='conflict-panel'; panel.innerHTML=''; return; }
       panel.className = 'conflict-panel visible';
       panel.innerHTML = issues.map(function(c){
-        return '<div class="conflict-item">' +
-          '<span class="conflict-type">' + esc(c.type) + '</span>' +
-          '<span class="conflict-msg">' + esc(c.msg) + '</span>' +
-          '</div>';
+        return '<div class="conflict-item"><span class="conflict-type">' + esc(c.type) + '</span><span class="conflict-msg">' + esc(c.msg) + '</span></div>';
       }).join('');
     }
 
     function removePath(idx) {
       var p = savedPaths[idx];
-      // Decrement registry
       p.segs.forEach(function(s){
         if (s.fixed || !s.val) return;
         var key = s.val.toLowerCase();
@@ -840,11 +756,9 @@
       renderAll();
     }
 
-    // ── LIVE RENDER (topic string + validation only) ──
     function renderLive() {
       var segs = getSegments();
       var el   = document.getElementById('topic-display');
-
       var html = '';
       segs.forEach(function(s,i){
         if (i>0) html += '<span class="t-sep"> / </span>';
@@ -861,15 +775,11 @@
       });
       if (currentTags.length>0) {
         html += '<span class="t-sep"> / </span><span class="seg-tag">' + esc(currentTags[0]) + '</span>';
-        if (currentTags.length>1)
-          html += '<span class="t-sep"> +' + (currentTags.length-1) + '</span>';
+        if (currentTags.length>1) html += '<span class="t-sep"> +' + (currentTags.length-1) + '</span>';
       }
       el.innerHTML = html || '<span class="seg-empty">Fill in the path fields to see the topic string</span>';
 
-      // Validation pills
       var pills = [];
-      var allFilled = segs.every(function(s){ return s.fixed||s.val; });
-      // Incomplete state shown via disabled save button, not a pill
       segs.forEach(function(s){
         if (s.fixed||!s.val) return;
         if (/[^A-Za-z0-9_\-\.]/.test(s.val)) pills.push({cls:'bad', text:'Invalid chars in '+s.level});
@@ -877,14 +787,11 @@
         var reg = nodeRegistry[key];
         if (reg && reg.level!==s.level) pills.push({cls:'bad', text:'Level conflict: '+s.val});
       });
-
-
       document.getElementById('v-row').innerHTML = pills.map(function(p){
         return '<span class="v-pill '+p.cls+'">'+p.text+'</span>';
       }).join('');
     }
 
-    // ── FULL RENDER (tree, paths, glossary, stats) ──
     function renderAll() {
       renderLive();
       renderTree();
@@ -895,43 +802,28 @@
 
     function renderTree() {
       var el = document.getElementById('tree-wrap');
-      if (!savedPaths.length) {
-        el.innerHTML = '<span class="tree-empty">Save a path to build the tree</span>';
-        return;
-      }
-
+      if (!savedPaths.length) { el.innerHTML = '<span class="tree-empty">Save a path to build the tree</span>'; return; }
       var ISA_LEVELS = ['enterprise','site','area','line','cell'];
       var SPB_LEVELS = ['ns','group','msgtype','edge','device'];
-
       var lines = [];
       var seen  = {};
-
       savedPaths.forEach(function(p){
         var levs = p.mode==='spb' ? SPB_LEVELS : ISA_LEVELS;
         p.segs.forEach(function(s, depth){
           var key = depth + ':' + s.val;
           if (seen[key]) return;
           seen[key] = true;
-          var cls = depth===0 ? 't-enterprise'
-                  : depth===1 ? 't-site'
-                  : depth<=3  ? 't-area'
-                  :              't-cell';
+          var cls = depth===0 ? 't-enterprise' : depth===1 ? 't-site' : depth<=3 ? 't-area' : 't-cell';
           if (s.fixed) cls = 'seg-fixed';
           lines.push({ depth:depth, text:s.val, cls:cls, badge:levs[depth]||'' });
         });
-        p.tags.forEach(function(t){
-          lines.push({ depth:6, text:t, cls:'t-tag', badge:'tag' });
-        });
+        p.tags.forEach(function(t){ lines.push({ depth:6, text:t, cls:'t-tag', badge:'tag' }); });
       });
-
       el.innerHTML = lines.map(function(l){
         var indent = '';
         for (var i=0;i<l.depth;i++) indent += '&nbsp;&nbsp;&nbsp;';
         var connector = l.depth>0 ? '<span class="t-connector">&#9492; </span>' : '';
-        return '<div class="tree-node">'+ indent + connector +
-          '<span class="'+ l.cls +'">'+ esc(l.text) +'</span>'+
-          '<span class="t-badge">'+ l.badge +'</span>'+
-          '</div>';
+        return '<div class="tree-node">'+ indent + connector + '<span class="'+ l.cls +'">'+ esc(l.text) +'</span><span class="t-badge">'+ l.badge +'</span></div>';
       }).join('');
     }
 
@@ -941,15 +833,7 @@
       if (!savedPaths.length) { section.style.display='none'; return; }
       section.style.display = 'block';
       list.innerHTML = savedPaths.map(function(p,i){
-        return '<div class="path-entry">'+
-          '<div class="path-entry-header">'+
-            '<span class="path-entry-str">'+esc(p.pathKey)+'</span>'+
-            '<button class="btn-remove-path" onclick="removePath('+i+')">&#215;</button>'+
-          '</div>'+
-          '<div class="path-entry-tags">'+
-            p.tags.map(function(t){ return '<span class="path-tag-chip">'+esc(t)+'</span>'; }).join('')+
-          '</div>'+
-        '</div>';
+        return '<div class="path-entry"><div class="path-entry-header"><span class="path-entry-str">'+esc(p.pathKey)+'</span><button class="btn-remove-path" onclick="removePath('+i+')">&#215;</button></div><div class="path-entry-tags">'+p.tags.map(function(t){ return '<span class="path-tag-chip">'+esc(t)+'</span>'; }).join('')+'</div></div>';
       }).join('');
     }
 
@@ -959,8 +843,6 @@
       var keys    = Object.keys(nodeRegistry);
       if (!keys.length) { section.style.display='none'; return; }
       section.style.display = 'block';
-
-      // Check for conflicts in registry
       var conflictKeys = {};
       savedPaths.forEach(function(p){
         p.segs.forEach(function(s){
@@ -970,22 +852,15 @@
           if (reg && reg.level !== s.level) conflictKeys[key] = true;
         });
       });
-
       wrap.innerHTML = keys.sort().map(function(k){
         var r = nodeRegistry[k];
         var isConflict = conflictKeys[k];
-        return '<div class="glossary-row">'+
-          '<span class="glossary-name">'+esc(r.canonical)+'</span>'+
-          '<span class="glossary-level'+(isConflict?' glossary-conflict':'')+'">'+esc(r.level)+'</span>'+
-          '<span class="glossary-count">'+r.paths.length+' path'+(r.paths.length!==1?'s':'')+'</span>'+
-        '</div>';
+        return '<div class="glossary-row"><span class="glossary-name">'+esc(r.canonical)+'</span><span class="glossary-level'+(isConflict?' glossary-conflict':'')+'">'+esc(r.level)+'</span><span class="glossary-count">'+r.paths.length+' path'+(r.paths.length!==1?'s':'')+'</span></div>';
       }).join('');
     }
 
     function renderStats() {
       var totalTags = savedPaths.reduce(function(a,p){ return a+p.tags.length; }, 0);
-
-      // Count conflicts across all saved paths
       var conflictCount = 0;
       savedPaths.forEach(function(p){
         p.segs.forEach(function(s){
@@ -995,7 +870,6 @@
           if (reg && reg.level !== s.level) conflictCount++;
         });
       });
-
       document.getElementById('stat-paths').textContent = savedPaths.length;
       document.getElementById('stat-tags').textContent  = totalTags;
       var conflEl = document.getElementById('stat-conflicts');
@@ -1003,15 +877,55 @@
       conflEl.className   = 'stat-value' + (conflictCount>0?' has-issues':'');
     }
 
-    // ── MODAL ──
-    function openModal()  { document.getElementById('modal-overlay').classList.add('open'); }
-    function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
-    function handleOverlayClick(e) {
-      if (e.target===document.getElementById('modal-overlay')) closeModal();
+    // ── JSON EXPORT ──
+    function exportJSON() {
+      if (!savedPaths.length) {
+        alert('Save at least one path before exporting.');
+        return;
+      }
+
+      var spec = {
+        schema: 'uns-specification',
+        version: '1.0',
+        generated: new Date().toISOString(),
+        source: 'industrialiotsoftware.com/tools/uns-builder',
+        stats: {
+          paths: savedPaths.length,
+          tags: savedPaths.reduce(function(a,p){ return a+p.tags.length; }, 0),
+          nodes: Object.keys(nodeRegistry).length
+        },
+        paths: savedPaths.map(function(p) {
+          var obj = { mode: p.mode, topic: p.pathKey, tags: p.tags, hierarchy: {} };
+          p.segs.forEach(function(s){ obj.hierarchy[s.level] = s.val; });
+          return obj;
+        }),
+        nodeRegistry: nodeRegistry
+      };
+
+      var json = JSON.stringify(spec, null, 2);
+      var blob = new Blob([json], { type: 'application/json' });
+      var url  = URL.createObjectURL(blob);
+      var a    = document.createElement('a');
+      a.href     = url;
+      a.download = 'uns-specification.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      // Show subscribe prompt
+      document.getElementById('subscribe-prompt').classList.add('visible');
+      document.getElementById('subscribe-prompt').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
-    function submitEmail() {
-      var email = document.getElementById('modal-email').value.trim();
-      if (!email||!email.includes('@')) { document.getElementById('modal-email').focus(); return; }
+
+    // ── POST-EXPORT SUBSCRIBE ──
+    function submitPromptEmail() {
+      var email = document.getElementById('prompt-email').value.trim();
+      if (!email || !email.includes('@')) { document.getElementById('prompt-email').focus(); return; }
+      var btn = document.querySelector('#subscribe-prompt-form button');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
       fetch('https://newsletter.industrialiotsoftware.com', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1019,16 +933,25 @@
       })
       .then(function(r){ return r.json(); })
       .then(function(data){
-        var confirmEl = document.getElementById('modal-confirm');
-        confirmEl.textContent = data.success
-          ? 'You’re on the list. We will reach out when the export goes live.'
+        document.getElementById('subscribe-prompt-form').style.display = 'none';
+        var confirm = document.getElementById('subscribe-prompt-confirm');
+        confirm.style.display = 'block';
+        confirm.textContent = data.message === 'Subscribed'
+          ? 'You\u2019re subscribed.'
           : 'Something went wrong. Please try again.';
+        if (data.message !== 'Subscribed') { btn.disabled = false; btn.textContent = 'Subscribe free'; }
       })
       .catch(function(){
-        document.getElementById('modal-confirm').textContent = 'Could not connect. Please try again.';
+        var confirm = document.getElementById('subscribe-prompt-confirm');
+        confirm.style.display = 'block';
+        confirm.textContent = 'Could not connect. Please try again.';
+        btn.disabled = false;
+        btn.textContent = 'Subscribe free';
       });
-      document.getElementById('modal-form').style.display   = 'none';
-      document.getElementById('modal-confirm').style.display = 'block';
+    }
+
+    function dismissPrompt() {
+      document.getElementById('subscribe-prompt').classList.remove('visible');
     }
 
     renderAll();
