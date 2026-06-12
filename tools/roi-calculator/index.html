@@ -866,7 +866,6 @@
       })
       .then(function(r) { return r.json(); })
       .then(function(data) {
-        console.log(data);
         if (data.message === 'Subscribed') {
           document.getElementById('modal-form').style.display = 'none';
           confirmEl.style.display = 'block';
@@ -880,7 +879,8 @@
           btn.textContent = 'Get PDF';
         }
       })
-      .catch(function() {
+    .catch(function(err) {
+        console.log('catch error:', err);
         confirmEl.style.display = 'block';
         confirmEl.textContent = 'Could not connect. Please try again.';
         btn.disabled = false;
