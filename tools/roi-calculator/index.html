@@ -615,7 +615,7 @@
         <input type="email" id="modal-email" placeholder="your@email.com">
         <button onclick="submitEmail()">Get PDF</button>
       </div>
-      <div class="modal-confirm" id="modal-confirm">You are on the list. We will reach out when the export goes live.</div>
+<div class="modal-confirm" id="modal-confirm" style="display:none;"></div>
       <p class="modal-fine-print">No spam. Unsubscribe any time. Industrial IoT Software is published by Machines &amp; Words.</p>
     </div>
   </div>
@@ -866,6 +866,7 @@
       })
       .then(function(r) { return r.json(); })
       .then(function(data) {
+        console.log(data);
         if (data.message === 'Subscribed') {
           document.getElementById('modal-form').style.display = 'none';
           confirmEl.style.display = 'block';
