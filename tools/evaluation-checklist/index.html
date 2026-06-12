@@ -788,7 +788,7 @@
           doc.text(pct+'%',x+8,y+18);
           // Pts inline after score — offset right of the percentage
           doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(160,160,156);
-          doc.text(pts+' / '+gMax+' pts',x+8+38,y+18);
+          doc.text(pts+' / '+gMax+' pts',x+8+52,y+18);
         });
         y+=48;
 
@@ -883,23 +883,25 @@
           doc.setTextColor(isWinner?10:120,isWinner?126:120,isWinner?106:116);
           doc.text(pct+'%',x+8,y+14);
           doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(160,160,156);
-          doc.text(pts+' / '+gMax+' pts',x+8+32,y+14);
+          doc.text(pts+' / '+gMax+' pts',x+8+46,y+14);
         });
         y+=48;
 
         if (strongestAdv&&strongestDiff>0){
           var advWinner=strongestAdv.p1>=strongestAdv.p2?n1:n2;
           var advLoser=strongestAdv.p1>=strongestAdv.p2?n2:n1;
-          var advText='Strongest advantage: '+strongestAdv.title+' \u2014 '+advWinner+' '+Math.max(strongestAdv.p1,strongestAdv.p2)+'% vs. '+advLoser+' '+Math.min(strongestAdv.p1,strongestAdv.p2)+'%';
-          doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(80,80,76);
-          var advLines=doc.splitTextToSize(advText,col);
-          doc.text(advLines,margin,y); y+=advLines.length*13+6;
+          doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(40,40,38);
+          doc.text('Strongest advantage',margin,y); y+=14;
+          doc.setFont('helvetica','normal'); doc.setTextColor(80,80,76);
+          doc.text(strongestAdv.title,margin,y); y+=13;
+          doc.text(advWinner+' '+Math.max(strongestAdv.p1,strongestAdv.p2)+'% vs. '+advLoser+' '+Math.min(strongestAdv.p1,strongestAdv.p2)+'%',margin,y); y+=20;
         }
         if (closestContest&&closestDiff<strongestDiff){
-          var closeText='Closest contest: '+closestContest.title+' \u2014 '+n1+' '+closestContest.p1+'% vs. '+n2+' '+closestContest.p2+'%';
-          doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(80,80,76);
-          var closeLines=doc.splitTextToSize(closeText,col);
-          doc.text(closeLines,margin,y);
+          doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(40,40,38);
+          doc.text('Closest contest',margin,y); y+=14;
+          doc.setFont('helvetica','normal'); doc.setTextColor(80,80,76);
+          doc.text(closestContest.title,margin,y); y+=13;
+          doc.text(n1+' '+closestContest.p1+'% vs. '+n2+' '+closestContest.p2+'%',margin,y);
         }
 
         // Footer
