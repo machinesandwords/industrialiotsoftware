@@ -35,7 +35,7 @@
       { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://industrialiotsoftware.com" },
       { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://industrialiotsoftware.com/tools/" },
       { "@type": "ListItem", "position": 3, "name": "Evaluation Checklist", "item": "https://industrialiotsoftware.com/tools/evaluation-checklist/" }
-  ]
+    ]
   }
   </script>
 
@@ -48,7 +48,7 @@
   <script src="/config.js" defer></script>
 
   <style>
-    /* ── Vendor name bar ── */
+    /* ── Vendor selector bar ── */
     .vendor-bar {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -61,8 +61,8 @@
       background: var(--surface);
       padding: 14px 20px;
       display: flex;
-      align-items: center;
-      gap: 12px;
+      flex-direction: column;
+      gap: 8px;
     }
     .vendor-cell label {
       font-size: 11px;
@@ -70,11 +70,10 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--faint);
-      white-space: nowrap;
-      flex-shrink: 0;
     }
-    .vendor-cell input {
-      flex: 1;
+    .vendor-cell select,
+    .vendor-cell input[type="text"] {
+      width: 100%;
       background: var(--bg);
       border: var(--hairline);
       font-family: 'Space Mono', monospace;
@@ -85,7 +84,19 @@
       outline: none;
       border-radius: 0;
     }
-    .vendor-cell input:focus { border-color: var(--accent); }
+    .vendor-cell select {
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6b68'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 28px;
+    }
+    .vendor-cell select:focus,
+    .vendor-cell input[type="text"]:focus { border-color: var(--accent); }
+    .vendor-custom-input { display: none; margin-top: 4px; }
+    .vendor-custom-input.visible { display: block; }
 
     /* ── Score summary bar ── */
     .score-bar {
@@ -110,10 +121,7 @@
       color: var(--accent);
       line-height: 1;
     }
-    .score-denom {
-      font-size: var(--small);
-      color: var(--faint);
-    }
+    .score-denom { font-size: var(--small); color: var(--faint); }
     .score-vendor-name {
       font-size: 11px;
       font-weight: 700;
@@ -135,14 +143,8 @@
     }
 
     /* ── Category block ── */
-    .category-block {
-      border: var(--hairline);
-      border-bottom: none;
-    }
-    .category-block:last-of-type {
-      border-bottom: var(--hairline);
-      margin-bottom: 24px;
-    }
+    .category-block { border: var(--hairline); border-bottom: none; }
+    .category-block:last-of-type { border-bottom: var(--hairline); margin-bottom: 24px; }
     .category-header {
       display: grid;
       grid-template-columns: 1fr auto auto auto;
@@ -162,23 +164,12 @@
       text-transform: uppercase;
       color: var(--charcoal);
     }
-    .category-persona {
-      font-size: 10px;
-      color: var(--faint);
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
+    .category-persona { font-size: 10px; color: var(--faint); letter-spacing: 0.04em; text-transform: uppercase; }
     .cat-score { font-size: var(--small); font-weight: 700; }
     .cat-score .v1 { color: var(--accent); }
     .cat-score .v2 { color: var(--mid); }
     .cat-score .sep { color: var(--border); margin: 0 2px; }
-    .category-toggle {
-      font-size: 14px;
-      color: var(--faint);
-      width: 16px;
-      text-align: center;
-      transition: transform 0.2s;
-    }
+    .category-toggle { font-size: 14px; color: var(--faint); width: 16px; text-align: center; transition: transform 0.2s; }
     .category-block.collapsed .category-toggle { transform: rotate(-90deg); }
     .category-block.collapsed .category-items { display: none; }
     .category-block.collapsed .cat-bar-row { display: none; }
@@ -240,21 +231,14 @@
       align-items: center;
       gap: 8px;
     }
-    .cat-bar-track {
-      flex: 1; height: 4px;
-      background: var(--border);
-      position: relative;
-    }
+    .cat-bar-track { flex: 1; height: 4px; background: var(--border); position: relative; }
     .cat-bar-fill {
       position: absolute; left: 0; top: 0; height: 100%;
       background: var(--accent);
       transition: width 0.3s ease;
     }
     .cat-bar-fill.v2 { background: var(--mid); }
-    .cat-bar-pct {
-      font-size: 11px; font-weight: 700;
-      color: var(--faint); min-width: 32px; text-align: right;
-    }
+    .cat-bar-pct { font-size: 11px; font-weight: 700; color: var(--faint); min-width: 32px; text-align: right; }
 
     /* ── Gap summary ── */
     .gap-section { border: var(--hairline); margin-bottom: 24px; }
@@ -275,10 +259,68 @@
     .gap-row-header .gap-score { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); }
     .gap-item { padding: 8px 16px; color: var(--charcoal); }
     .gap-score { padding: 8px 12px; text-align: center; font-weight: 700; border-left: var(--hairline); }
-    .gap-score.good { color: var(--accent); }
-    .gap-score.mid  { color: #b45309; }
-    .gap-score.poor { color: #991b1b; }
+    .gap-score.winner { color: var(--accent); }
+    .gap-score.loser  { color: #991b1b; }
+    .gap-score.tied   { color: var(--mid); }
     .gap-flag { font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #991b1b; margin-top: 2px; }
+
+    /* ── Decision summary ── */
+    .decision-summary {
+      border: var(--hairline);
+      border-left: 4px solid var(--accent);
+      background: var(--surface);
+      margin-bottom: 24px;
+    }
+    .decision-summary-header {
+      padding: 10px 16px;
+      background: var(--bg);
+      border-bottom: var(--hairline);
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint);
+    }
+    .decision-summary-body { padding: 16px 20px; }
+    .decision-headline {
+      font-size: var(--h3);
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+    .decision-scores {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: var(--hairline);
+      margin-bottom: 16px;
+    }
+    .decision-score-cell {
+      background: var(--surface);
+      padding: 12px 16px;
+    }
+    .decision-score-name {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--faint); margin-bottom: 4px;
+    }
+    .decision-score-value {
+      font-size: 28px; font-weight: 700;
+      line-height: 1;
+    }
+    .decision-score-value.winner { color: var(--accent); }
+    .decision-score-value.loser  { color: var(--mid); }
+    .decision-score-sub { font-size: 11px; color: var(--faint); margin-top: 3px; }
+    .decision-detail {
+      font-size: var(--small);
+      color: var(--mid);
+      line-height: 1.75;
+    }
+    .decision-detail strong { color: var(--charcoal); }
+    .decision-empty {
+      font-size: var(--small);
+      color: var(--faint);
+      font-style: italic;
+    }
 
     /* ── Gate bar ── */
     .gate-bar {
@@ -320,6 +362,7 @@
       .score-bar   { grid-template-columns: 1fr; }
       .checklist-item { grid-template-columns: 1fr; }
       .gate-bar { flex-direction: column; align-items: flex-start; }
+      .decision-scores { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -357,15 +400,51 @@
           <p>Score each criterion: 0 (not met), 1 (partially met), 2 (fully met). Categories collapse for focus. The gap summary flags any category where a vendor scores below 50%.</p>
         </div>
 
-        <!-- Vendor names -->
+        <!-- Vendor selectors -->
         <div class="vendor-bar">
           <div class="vendor-cell">
             <label>Vendor A</label>
-            <input type="text" id="v1-name" placeholder="e.g. Ignition by Inductive Automation" oninput="updateVendorNames()">
+            <select id="v1-select" onchange="onVendorSelect(0)">
+              <option value="">Select a vendor...</option>
+              <option>Ignition by Inductive Automation</option>
+              <option>Kepware (PTC)</option>
+              <option>Azure IoT Operations (Microsoft)</option>
+              <option>AWS IoT Greengrass</option>
+              <option>Litmus Edge</option>
+              <option>Flutura Cerebra</option>
+              <option>Telit Cinterion</option>
+              <option>Prosys OPC UA</option>
+              <option>Aveva Edge</option>
+              <option>Softing Industrial</option>
+              <option>Siemens MindSphere</option>
+              <option>Rockwell FactoryTalk</option>
+              <option>GE Predix</option>
+              <option>Honeywell Forge</option>
+              <option value="__custom__">Custom...</option>
+            </select>
+            <input type="text" id="v1-custom" class="vendor-custom-input" placeholder="Enter vendor name" oninput="updateVendorNames()">
           </div>
           <div class="vendor-cell">
             <label>Vendor B</label>
-            <input type="text" id="v2-name" placeholder="e.g. Azure IoT Operations" oninput="updateVendorNames()">
+            <select id="v2-select" onchange="onVendorSelect(1)">
+              <option value="">Select a vendor...</option>
+              <option>Ignition by Inductive Automation</option>
+              <option>Kepware (PTC)</option>
+              <option>Azure IoT Operations (Microsoft)</option>
+              <option>AWS IoT Greengrass</option>
+              <option>Litmus Edge</option>
+              <option>Flutura Cerebra</option>
+              <option>Telit Cinterion</option>
+              <option>Prosys OPC UA</option>
+              <option>Aveva Edge</option>
+              <option>Softing Industrial</option>
+              <option>Siemens MindSphere</option>
+              <option>Rockwell FactoryTalk</option>
+              <option>GE Predix</option>
+              <option>Honeywell Forge</option>
+              <option value="__custom__">Custom...</option>
+            </select>
+            <input type="text" id="v2-custom" class="vendor-custom-input" placeholder="Enter vendor name" oninput="updateVendorNames()">
           </div>
         </div>
 
@@ -389,24 +468,33 @@
           <div class="gap-header">Category Gap Summary</div>
           <div id="gap-body"></div>
         </div>
-<!--
+
+        <!-- Decision summary -->
+        <div class="decision-summary">
+          <div class="decision-summary-header">Decision Summary</div>
+          <div class="decision-summary-body" id="decision-body">
+            <p class="decision-empty">Score at least one category to generate a summary.</p>
+          </div>
+        </div>
+
         <div class="gate-bar">
           <div class="gate-bar-copy">
-            <strong>PDF Scorecard</strong> &mdash; A formatted evaluation report with both vendor scores, category breakdowns, gap flags, and a summary page. The document you bring into a vendor negotiation or present to a steering committee.
+            <strong>PDF Scorecard</strong> &mdash; A formatted evaluation report with both vendor scores, category breakdowns, gap flags, and the decision summary. The document you bring into a vendor negotiation or present to a steering committee.
           </div>
           <button class="btn-export" onclick="openModal()">Export PDF Scorecard</button>
         </div>
--->
-<div class="newsletter-block">
-  <span class="page-label">Stay current</span>
-  <p>The Independent Sensor covers the OT cybersecurity software market the way your vendors hope you won't. Monthly.</p>
-  <div class="newsletter-form">
-    <input type="email" id="nl-email" placeholder="your@email.com" aria-label="Email address">
-    <button type="button" id="nl-submit">Subscribe free</button>
-  </div>
-  <div id="nl-msg" style="display:none;font-size:11px;margin-top:8px;"></div>
-</div>
 
+        <div class="newsletter-block">
+          <span class="page-label">Stay current</span>
+          <p>The Independent Sensor covers the IIoT software market the way your vendors hope you won't. Biweekly.</p>
+          <div class="newsletter-form">
+            <input type="email" id="nl-email" placeholder="your@email.com" aria-label="Email address">
+            <button type="button" id="nl-submit">Subscribe free</button>
+          </div>
+          <div id="nl-msg" style="display:none;font-size:11px;margin-top:8px;"></div>
+        </div>
+
+      </article>
     </main>
   </div>
 
@@ -417,34 +505,35 @@
     </div>
   </footer>
 
-  
   <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
     <div class="modal-box">
       <div class="modal-top">
-        <h2>PDF Export is Coming</h2>
+        <h2>Get Your PDF Scorecard</h2>
         <button class="modal-close" onclick="closeModal()">&#215;</button>
       </div>
-              
-
-
-      <div class="modal-badge">Premium Export</div>
-      <p>The formatted PDF scorecard is in final production. <strong>Leave your email and you will get access the day it launches.</strong></p>
-      <p>You will also receive monthly buyer briefings, vendor analyses, evaluation frameworks, and market intelligence for operations and controls teams.</p>
+      <div class="modal-badge">Free Export</div>
+      <p>Enter your email to download a formatted scorecard with both vendor scores, category breakdowns, gap flags, and the decision summary.</p>
+      <p>You will also receive buyer briefings, vendor analyses, and market intelligence for operations and controls teams.</p>
       <div class="modal-form" id="modal-form">
         <input type="email" id="modal-email" placeholder="your@email.com">
-        <button onclick="submitEmail()">Notify Me</button>
+        <button onclick="submitEmail()">Get PDF</button>
       </div>
-      <div class="modal-confirm" id="modal-confirm">You are on the list. We will reach out when the export goes live.</div>
+      <div class="modal-confirm" id="modal-confirm" style="display:none;"></div>
       <p class="modal-fine-print">No spam. Unsubscribe any time. Industrial IoT Software is published by Machines &amp; Words.</p>
     </div>
   </div>
 
   <script>
+    var VENDORS = [
+      'Ignition by Inductive Automation','Kepware (PTC)','Azure IoT Operations (Microsoft)',
+      'AWS IoT Greengrass','Litmus Edge','Flutura Cerebra','Telit Cinterion',
+      'Prosys OPC UA','Aveva Edge','Softing Industrial','Siemens MindSphere',
+      'Rockwell FactoryTalk','GE Predix','Honeywell Forge'
+    ];
+
     var CATEGORIES = [
       {
-        id: 'connectivity',
-        title: 'Connectivity & Protocol Support',
-        persona: 'Implementation Buyer',
+        id: 'connectivity', title: 'Connectivity & Protocol Support', persona: 'Implementation Buyer',
         items: [
           { text: 'Native drivers for target PLC brands without third-party middleware', hint: 'Verify Allen-Bradley, Siemens, Mitsubishi, Omron as applicable to your fleet' },
           { text: 'OPC-UA server and client support', hint: 'Both directions required for historian and SCADA integration' },
@@ -455,9 +544,7 @@
         ]
       },
       {
-        id: 'data-arch',
-        title: 'Data Architecture & UNS',
-        persona: 'Implementation Buyer',
+        id: 'data-arch', title: 'Data Architecture & UNS', persona: 'Implementation Buyer',
         items: [
           { text: 'Configurable topic namespace aligned to ISA-95 hierarchy', hint: 'Enterprise / Site / Area / Line / Cell / Tag structure' },
           { text: 'Context enrichment: ability to attach metadata to tags at ingestion', hint: 'Unit, description, and engineering limits attached at edge prevents context loss' },
@@ -467,9 +554,7 @@
         ]
       },
       {
-        id: 'edge-mgmt',
-        title: 'Edge Management',
-        persona: 'Implementation Buyer',
+        id: 'edge-mgmt', title: 'Edge Management', persona: 'Implementation Buyer',
         items: [
           { text: 'Centralized fleet management for edge gateways across multiple sites', hint: 'Managing 500 gateways individually is not viable at scale' },
           { text: 'Remote OS and firmware updates with rollback capability', hint: 'Verify rollback is automated on failed update, not manual' },
@@ -479,9 +564,7 @@
         ]
       },
       {
-        id: 'security',
-        title: 'Security & Compliance',
-        persona: 'Operational Buyer',
+        id: 'security', title: 'Security & Compliance', persona: 'Operational Buyer',
         items: [
           { text: 'IEC 62443 alignment or certification', hint: 'The baseline security standard for industrial automation systems' },
           { text: 'Role-based access control with MFA support', hint: 'Verify granularity: can you restrict access to individual tag paths?' },
@@ -492,9 +575,7 @@
         ]
       },
       {
-        id: 'integration',
-        title: 'Integration & IT Alignment',
-        persona: 'Visionary Buyer',
+        id: 'integration', title: 'Integration & IT Alignment', persona: 'Visionary Buyer',
         items: [
           { text: 'Native connectors to target cloud platform (AWS, Azure, GCP)', hint: 'Verify your specific cloud and the services within it' },
           { text: 'REST API for data access and platform configuration', hint: 'Required for integration with existing IT tooling and dashboards' },
@@ -504,9 +585,7 @@
         ]
       },
       {
-        id: 'vendor',
-        title: 'Vendor Viability & Support',
-        persona: 'Operational Buyer',
+        id: 'vendor', title: 'Vendor Viability & Support', persona: 'Operational Buyer',
         items: [
           { text: 'Reference customers in your industry vertical with production deployments', hint: 'Pilot references do not count. Ask for 2+ year production deployments.' },
           { text: 'Transparent, predictable pricing at enterprise tag volumes', hint: 'Get a committed commercial model for 10x your pilot tag count' },
@@ -522,8 +601,31 @@
       scores[cat.id] = cat.items.map(function() { return [null, null]; });
     });
 
-    function v1Name() { return document.getElementById('v1-name').value.trim() || 'Vendor A'; }
-    function v2Name() { return document.getElementById('v2-name').value.trim() || 'Vendor B'; }
+    function onVendorSelect(v) {
+      var selectId = v === 0 ? 'v1-select' : 'v2-select';
+      var customId = v === 0 ? 'v1-custom' : 'v2-custom';
+      var sel = document.getElementById(selectId);
+      var custom = document.getElementById(customId);
+      if (sel.value === '__custom__') {
+        custom.classList.add('visible');
+        custom.focus();
+      } else {
+        custom.classList.remove('visible');
+        custom.value = '';
+      }
+      updateVendorNames();
+    }
+
+    function v1Name() {
+      var sel = document.getElementById('v1-select');
+      if (sel.value === '__custom__') return document.getElementById('v1-custom').value.trim() || 'Vendor A';
+      return sel.value || 'Vendor A';
+    }
+    function v2Name() {
+      var sel = document.getElementById('v2-select');
+      if (sel.value === '__custom__') return document.getElementById('v2-custom').value.trim() || 'Vendor B';
+      return sel.value || 'Vendor B';
+    }
 
     function updateVendorNames() {
       document.getElementById('label-v1').textContent = v1Name();
@@ -532,6 +634,7 @@
       document.querySelectorAll('.score-col-label.v2').forEach(function(el){ el.textContent = v2Name(); });
       updateTotals();
       updateGaps();
+      updateDecision();
     }
 
     function setScore(catId, itemIdx, vendor, val) {
@@ -541,6 +644,7 @@
       updateCatBar(catId);
       updateTotals();
       updateGaps();
+      updateDecision();
     }
 
     function renderItem(catId, itemIdx) {
@@ -605,10 +709,24 @@
         var t=catTotals(cat.id);
         var pct1=t.max>0?Math.round(t.t1/t.max*100):0;
         var pct2=t.max>0?Math.round(t.t2/t.max*100):0;
-        var cls1=pct1>=75?'good':pct1>=50?'mid':'poor';
-        var cls2=pct2>=75?'good':pct2>=50?'mid':'poor';
-        var flag1=pct1<50&&t.t1>0?'<div class="gap-flag">Gap</div>':'';
-        var flag2=pct2<50&&t.t2>0?'<div class="gap-flag">Gap</div>':'';
+
+        // Winner gets green, loser gets red, tie gets mid
+        var anyScored = t.t1 > 0 || t.t2 > 0;
+        var cls1, cls2;
+        if (!anyScored) {
+          cls1 = cls2 = 'tied';
+        } else if (pct1 > pct2) {
+          cls1 = 'winner'; cls2 = 'loser';
+        } else if (pct2 > pct1) {
+          cls1 = 'loser'; cls2 = 'winner';
+        } else {
+          cls1 = cls2 = 'tied';
+        }
+
+        // GAP flag: below 50% and any scoring has happened
+        var flag1 = (pct1 < 50 && anyScored) ? '<div class="gap-flag">Gap</div>' : '';
+        var flag2 = (pct2 < 50 && anyScored) ? '<div class="gap-flag">Gap</div>' : '';
+
         rows+='<div class="gap-row">'+
           '<div class="gap-item">'+esc(cat.title)+'</div>'+
           '<div class="gap-score '+cls1+'">'+pct1+'%'+flag1+'</div>'+
@@ -616,6 +734,92 @@
         '</div>';
       });
       body.innerHTML = rows;
+    }
+
+    function updateDecision() {
+      var body = document.getElementById('decision-body');
+      var g1=0, g2=0, gMax=0;
+      CATEGORIES.forEach(function(cat){
+        var t=catTotals(cat.id);
+        g1+=t.t1; g2+=t.t2; gMax+=t.max;
+      });
+
+      if (g1 === 0 && g2 === 0) {
+        body.innerHTML = '<p class="decision-empty">Score at least one category to generate a summary.</p>';
+        return;
+      }
+
+      var pct1 = gMax > 0 ? Math.round(g1/gMax*100) : 0;
+      var pct2 = gMax > 0 ? Math.round(g2/gMax*100) : 0;
+      var n1 = v1Name();
+      var n2 = v2Name();
+
+      // Count category wins
+      var wins1=0, wins2=0;
+      var strongestAdv = null, strongestDiff = 0;
+      var closestContest = null, closestDiff = 999;
+
+      CATEGORIES.forEach(function(cat){
+        var t = catTotals(cat.id);
+        var p1 = t.max>0 ? Math.round(t.t1/t.max*100) : 0;
+        var p2 = t.max>0 ? Math.round(t.t2/t.max*100) : 0;
+        if (p1 > p2) wins1++;
+        if (p2 > p1) wins2++;
+        var diff = Math.abs(p1-p2);
+        if ((t.t1>0||t.t2>0) && diff > strongestDiff) {
+          strongestDiff = diff;
+          strongestAdv = { title: cat.title, p1: p1, p2: p2 };
+        }
+        if ((t.t1>0||t.t2>0) && diff < closestDiff) {
+          closestDiff = diff;
+          closestContest = { title: cat.title, p1: p1, p2: p2 };
+        }
+      });
+
+      var winnerName, loserName, winnerPct, loserPct;
+      if (g1 >= g2) {
+        winnerName = n1; loserName = n2; winnerPct = pct1; loserPct = pct2;
+      } else {
+        winnerName = n2; loserName = n1; winnerPct = pct2; loserPct = pct1;
+      }
+
+      var totalCats = CATEGORIES.length;
+      var winnerWins = g1 >= g2 ? wins1 : wins2;
+
+      var headline = g1 === g2
+        ? esc(n1) + ' and ' + esc(n2) + ' are tied.'
+        : esc(winnerName) + ' leads in ' + winnerWins + ' of ' + totalCats + ' categories.';
+
+      var scoresHtml =
+        '<div class="decision-scores">' +
+          '<div class="decision-score-cell">' +
+            '<div class="decision-score-name">'+esc(n1)+'</div>' +
+            '<div class="decision-score-value '+(g1>=g2?'winner':'loser')+'">'+pct1+'%</div>' +
+            '<div class="decision-score-sub">'+g1+' / '+gMax+' pts</div>' +
+          '</div>' +
+          '<div class="decision-score-cell">' +
+            '<div class="decision-score-name">'+esc(n2)+'</div>' +
+            '<div class="decision-score-value '+(g2>g1?'winner':'loser')+'">'+pct2+'%</div>' +
+            '<div class="decision-score-sub">'+g2+' / '+gMax+' pts</div>' +
+          '</div>' +
+        '</div>';
+
+      var detailParts = [];
+      if (strongestAdv && strongestDiff > 0) {
+        var advWinner = strongestAdv.p1 >= strongestAdv.p2 ? n1 : n2;
+        var advPct    = Math.max(strongestAdv.p1, strongestAdv.p2);
+        var advLoser  = strongestAdv.p1 >= strongestAdv.p2 ? n2 : n1;
+        var advLoserPct = Math.min(strongestAdv.p1, strongestAdv.p2);
+        detailParts.push('<strong>Strongest advantage:</strong> ' + esc(strongestAdv.title) + ' — ' + esc(advWinner) + ' ' + advPct + '% vs. ' + esc(advLoser) + ' ' + advLoserPct + '%');
+      }
+      if (closestContest && closestDiff < strongestDiff) {
+        detailParts.push('<strong>Closest contest:</strong> ' + esc(closestContest.title) + ' — ' + esc(n1) + ' ' + closestContest.p1 + '% vs. ' + esc(n2) + ' ' + closestContest.p2 + '%');
+      }
+
+      body.innerHTML =
+        '<div class="decision-headline">' + headline + '</div>' +
+        scoresHtml +
+        (detailParts.length ? '<div class="decision-detail">' + detailParts.join('<br>') + '</div>' : '');
     }
 
     function buildChecklist() {
@@ -661,6 +865,7 @@
         '</div>';
       }).join('');
       updateGaps();
+      updateDecision();
     }
 
     function toggleCat(id) {
@@ -675,31 +880,220 @@
     function openModal()  { document.getElementById('modal-overlay').classList.add('open'); }
     function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
     function handleOverlayClick(e) { if(e.target===document.getElementById('modal-overlay'))closeModal(); }
-    function submitEmail() {
-      var email=document.getElementById('modal-email').value.trim();
-      if(!email||!email.includes('@')){document.getElementById('modal-email').focus();return;}
 
-    fetch('https://newsletter.industrialiotsoftware.com', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    email: email,
-    group_id: '189858333791880417'
-  })
-})
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        if (data.success) {
-          msgEl.textContent = 'You\u2019re subscribed. Check your inbox for a confirmation.';
+    function submitEmail() {
+      var email = document.getElementById('modal-email').value.trim();
+      var confirmEl = document.getElementById('modal-confirm');
+      if (!email || !email.includes('@')) { document.getElementById('modal-email').focus(); return; }
+      var btn = document.querySelector('#modal-form button');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+      fetch('https://newsletter.industrialiotsoftware.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, group_id: '189858333791880417' })
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (data.message === 'Subscribed') {
+          document.getElementById('modal-form').style.display = 'none';
+          confirmEl.style.display = 'block';
+          confirmEl.textContent = 'You\u2019re subscribed. Your PDF is opening now.';
+          closeModal();
+          generatePDF();
         } else {
-          msgEl.textContent = 'Something went wrong. Please try again.';
+          confirmEl.style.display = 'block';
+          confirmEl.textContent = 'Something went wrong. Please try again.';
+          btn.disabled = false;
+          btn.textContent = 'Get PDF';
         }
       })
-  .catch(function() {
-    msgEl.textContent = 'Could not connect. Please try again.';
-  });
-        document.getElementById('modal-form').style.display='none';
-      document.getElementById('modal-confirm').style.display='block';
+      .catch(function(){
+        confirmEl.style.display = 'block';
+        confirmEl.textContent = 'Could not connect. Please try again.';
+        btn.disabled = false;
+        btn.textContent = 'Get PDF';
+      });
+    }
+
+    function generatePDF() {
+      var script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      script.onload = function() {
+        var doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'letter' });
+        var margin = 48;
+        var pageW = 612;
+        var col = pageW - margin * 2;
+        var y = margin;
+
+        // Header
+        doc.setFillColor(10, 126, 106);
+        doc.rect(0, 0, pageW, 60, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(255, 255, 255);
+        doc.text('INDUSTRIAL IOT SOFTWARE', margin, 26);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(180, 230, 220);
+        doc.text('An independent guide for industrial IoT software buyers', margin, 42);
+        doc.text('industrialiotsoftware.com', pageW - margin, 42, { align: 'right' });
+
+        y = 92;
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(20);
+        doc.setTextColor(30, 30, 28);
+        doc.text('IIoT Platform Evaluation Scorecard', margin, y);
+        y += 28;
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(11);
+        doc.setTextColor(100, 100, 96);
+        doc.text('Generated ' + new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), margin, y);
+        y += 36;
+
+        doc.setDrawColor(220, 220, 216);
+        doc.setLineWidth(0.5);
+        doc.line(margin, y, pageW - margin, y);
+        y += 24;
+
+        // Totals
+        var g1=0, g2=0, gMax=0;
+        CATEGORIES.forEach(function(cat){
+          var t=catTotals(cat.id);
+          g1+=t.t1; g2+=t.t2; gMax+=t.max;
+        });
+        var pct1 = gMax>0 ? Math.round(g1/gMax*100) : 0;
+        var pct2 = gMax>0 ? Math.round(g2/gMax*100) : 0;
+        var n1 = v1Name(), n2 = v2Name();
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(140, 140, 136);
+        doc.text('OVERALL SCORES', margin, y);
+        y += 16;
+
+        var halfCol = (col - 8) / 2;
+        [0,1].forEach(function(v) {
+          var x = margin + v * (halfCol + 8);
+          var name = v===0 ? n1 : n2;
+          var pct  = v===0 ? pct1 : pct2;
+          var pts  = v===0 ? g1 : g2;
+          var isWinner = v===0 ? g1>=g2 : g2>g1;
+          doc.setFillColor(isWinner ? 240 : 248, isWinner ? 248 : 248, isWinner ? 246 : 248);
+          doc.rect(x, y-14, halfCol, 36, 'F');
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(10);
+          doc.setTextColor(isWinner ? 10 : 100, isWinner ? 126 : 100, isWinner ? 106 : 96);
+          doc.text(name.length > 22 ? name.substring(0,22)+'...' : name, x+8, y);
+          doc.setFontSize(16);
+          doc.text(pct+'%', x+8, y+16);
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9);
+          doc.setTextColor(140, 140, 136);
+          doc.text(pts+' / '+gMax+' pts', x+8+28, y+16);
+        });
+        y += 40;
+
+        doc.setDrawColor(220, 220, 216);
+        doc.line(margin, y, pageW - margin, y);
+        y += 24;
+
+        // Category breakdown
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(140, 140, 136);
+        doc.text('CATEGORY BREAKDOWN', margin, y);
+        y += 16;
+
+        CATEGORIES.forEach(function(cat) {
+          var t = catTotals(cat.id);
+          var p1 = t.max>0 ? Math.round(t.t1/t.max*100) : 0;
+          var p2 = t.max>0 ? Math.round(t.t2/t.max*100) : 0;
+          doc.setFillColor(248, 248, 248);
+          doc.rect(margin, y-12, col, 20, 'F');
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9);
+          doc.setTextColor(60, 60, 58);
+          doc.text(cat.title, margin+8, y);
+          var v1Winner = p1 >= p2;
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(9);
+          doc.setTextColor(v1Winner ? 10 : 153, v1Winner ? 126 : 27, v1Winner ? 106 : 27);
+          doc.text(p1+'%', pageW - margin - 80, y, { align: 'right' });
+          doc.setTextColor(!v1Winner ? 10 : 153, !v1Winner ? 126 : 27, !v1Winner ? 106 : 27);
+          doc.text(p2+'%', pageW - margin - 10, y, { align: 'right' });
+          if (p1 < 50) { doc.setFontSize(7); doc.setTextColor(153,27,27); doc.text('GAP', pageW-margin-75, y+8); }
+          if (p2 < 50) { doc.setFontSize(7); doc.setTextColor(153,27,27); doc.text('GAP', pageW-margin-5, y+8, {align:'right'}); }
+          y += 24;
+        });
+
+        y += 8;
+        doc.setDrawColor(220, 220, 216);
+        doc.line(margin, y, pageW - margin, y);
+        y += 24;
+
+        // Decision summary
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(140, 140, 136);
+        doc.text('DECISION SUMMARY', margin, y);
+        y += 16;
+
+        var wins1=0, wins2=0, strongestAdv=null, strongestDiff=0, closestContest=null, closestDiff=999;
+        CATEGORIES.forEach(function(cat){
+          var t=catTotals(cat.id);
+          var p1=t.max>0?Math.round(t.t1/t.max*100):0;
+          var p2=t.max>0?Math.round(t.t2/t.max*100):0;
+          if(p1>p2) wins1++; if(p2>p1) wins2++;
+          var diff=Math.abs(p1-p2);
+          if((t.t1>0||t.t2>0)&&diff>strongestDiff){strongestDiff=diff;strongestAdv={title:cat.title,p1:p1,p2:p2};}
+          if((t.t1>0||t.t2>0)&&diff<closestDiff){closestDiff=diff;closestContest={title:cat.title,p1:p1,p2:p2};}
+        });
+
+        var winnerName = g1>=g2 ? n1 : n2;
+        var winnerWins = g1>=g2 ? wins1 : wins2;
+        var headline = g1===g2 ? n1+' and '+n2+' are tied.' : winnerName+' leads in '+winnerWins+' of '+CATEGORIES.length+' categories.';
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(30, 30, 28);
+        var headLines = doc.splitTextToSize(headline, col);
+        doc.text(headLines, margin, y);
+        y += headLines.length * 14 + 10;
+
+        if (strongestAdv) {
+          var advWinner = strongestAdv.p1>=strongestAdv.p2 ? n1 : n2;
+          var advLoser  = strongestAdv.p1>=strongestAdv.p2 ? n2 : n1;
+          var advText = 'Strongest advantage: '+strongestAdv.title+' — '+advWinner+' '+Math.max(strongestAdv.p1,strongestAdv.p2)+'% vs. '+advLoser+' '+Math.min(strongestAdv.p1,strongestAdv.p2)+'%';
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9);
+          doc.setTextColor(100, 100, 96);
+          var advLines = doc.splitTextToSize(advText, col);
+          doc.text(advLines, margin, y);
+          y += advLines.length * 13 + 6;
+        }
+        if (closestContest && closestDiff < strongestDiff) {
+          var closeText = 'Closest contest: '+closestContest.title+' — '+n1+' '+closestContest.p1+'% vs. '+n2+' '+closestContest.p2+'%';
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9);
+          doc.setTextColor(100, 100, 96);
+          var closeLines = doc.splitTextToSize(closeText, col);
+          doc.text(closeLines, margin, y);
+        }
+
+        // Footer
+        doc.setDrawColor(10, 126, 106);
+        doc.setLineWidth(1);
+        doc.line(margin, 752, pageW - margin, 752);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(140, 140, 136);
+        doc.text('Industrial IoT Software is published by Machines & Words. industrialiotsoftware.com', margin, 768);
+        doc.text('This scorecard was generated by the IIoT Platform Evaluation Checklist.', margin, 780);
+
+        var pdfBlob = doc.output('blob');
+        window.open(URL.createObjectURL(pdfBlob), '_blank');
+      };
+      document.head.appendChild(script);
     }
 
     buildChecklist();

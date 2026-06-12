@@ -1,0 +1,33 @@
+# Tools Build Schedule — industrialiotsoftware.com
+
+All tools follow the same pattern: Space Mono, CSS variables, hairline borders, gate bar with export, email capture to Sensor Free (189858333791880417), Worker at newsletter.industrialiotsoftware.com.
+
+---
+
+## Live
+
+| Tool | Path | Target Query | Export | Status |
+|---|---|---|---|---|
+| ROI & Business Case Calculator | /tools/roi-calculator/ | iiot roi calculator | PDF (email gate) | Live |
+| PLC Bandwidth & Polling Calculator | /tools/plc-bandwidth/ | plc bandwidth calculator | PDF (email gate) | Live |
+| UNS Topic Hierarchy Builder | /tools/uns-builder/ | uns topic hierarchy builder | JSON (immediate) | Live |
+| IIoT Platform Evaluation Checklist | /tools/evaluation-checklist/ | iiot platform evaluation | PDF (email gate, pending) | Live, export pending |
+| Pilot Risk Stress Tester | /tools/pilot-risk/ | iiot pilot risk assessment | PDF (email gate, pending) | Live, export pending |
+
+---
+
+## Planned
+
+| Tool | Target Query | Practitioner Use Case | Priority |
+|---|---|---|---|
+| Edge Gateway Sizing Tool | iiot edge gateway sizing | Spec gateway hardware after UNS design is complete — logical next step after UNS Builder | 1 |
+| OT Network Segmentation Planner | ot network segmentation planner | Map gateway placement against Purdue model levels, identify VLAN boundaries | 2 |
+| Tag Naming Convention Validator | iot tag naming convention | Paste bulk tag list, get back conflicts and ISA-95 violations | 3 |
+
+---
+
+## Notes
+
+- New tools announced via post-export subscribe prompt on UNS Builder ("Edge gateway sizing tool coming next")
+- Monthly cadence target after current export work is complete
+- Each new tool = new indexable page + backlink surface + return visit driver

@@ -325,20 +325,34 @@
     /* ── Post-export subscribe prompt ── */
     .subscribe-prompt {
       display: none;
+      margin-top: 32px;
+      margin-bottom: 24px;
+    }
+    .subscribe-prompt.visible { display: block; }
+    .subscribe-prompt-inner {
+      display: flex;
       border: var(--hairline);
-      border-top: none;
+    }
+    .subscribe-prompt-stripe {
+      width: 4px;
+      flex-shrink: 0;
+      background: var(--accent);
+    }
+    .subscribe-prompt-body {
+      flex: 1;
       background: var(--surface);
       padding: 20px 24px;
     }
-    .subscribe-prompt.visible { display: block; }
     .subscribe-prompt-label {
       font-size: 11px; font-weight: 700;
       letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--faint); margin-bottom: 8px;
+      color: var(--accent); margin-bottom: 8px;
     }
     .subscribe-prompt p {
-      font-size: var(--small); color: var(--mid); line-height: 1.7; margin-bottom: 12px;
+      font-size: var(--small); color: var(--mid);
+      line-height: 1.7; margin-bottom: 12px;
     }
+    .subscribe-prompt p strong { color: var(--charcoal); }
     .subscribe-prompt-form { display: flex; gap: 8px; }
     .subscribe-prompt-form input[type="email"] {
       flex: 1; font-family: 'Space Mono', monospace; font-size: var(--small);
@@ -553,14 +567,19 @@
 
         <!-- Post-export subscribe prompt -->
         <div class="subscribe-prompt" id="subscribe-prompt">
-          <div class="subscribe-prompt-label">Want IIoT buyer briefings?</div>
-          <p>The Independent Sensor covers the industrial IoT software market the way your vendors hope you won't. Biweekly, free.</p>
-          <div class="subscribe-prompt-form" id="subscribe-prompt-form">
-            <input type="email" id="prompt-email" placeholder="your@email.com">
-            <button onclick="submitPromptEmail()">Subscribe free</button>
+          <div class="subscribe-prompt-inner">
+            <div class="subscribe-prompt-stripe"></div>
+            <div class="subscribe-prompt-body">
+              <div class="subscribe-prompt-label">Next tool in this series</div>
+              <p><strong>Edge gateway sizing is next.</strong> Enter your device count, protocol mix, and polling load — get a hardware recommendation with vendor options. Get notified when it launches, plus biweekly analysis of the IIoT software market.</p>
+              <div class="subscribe-prompt-form" id="subscribe-prompt-form">
+                <input type="email" id="prompt-email" placeholder="your@email.com">
+                <button onclick="submitPromptEmail()">Notify me</button>
+              </div>
+              <div class="subscribe-prompt-confirm" id="subscribe-prompt-confirm"></div>
+              <button class="subscribe-prompt-dismiss" onclick="dismissPrompt()">No thanks</button>
+            </div>
           </div>
-          <div class="subscribe-prompt-confirm" id="subscribe-prompt-confirm">You&rsquo;re subscribed.</div>
-          <button class="subscribe-prompt-dismiss" onclick="dismissPrompt()">No thanks</button>
         </div>
 
       </article><!-- /.content -->
@@ -883,7 +902,6 @@
         alert('Save at least one path before exporting.');
         return;
       }
-
       var spec = {
         schema: 'uns-specification',
         version: '1.0',
@@ -901,7 +919,6 @@
         }),
         nodeRegistry: nodeRegistry
       };
-
       var json = JSON.stringify(spec, null, 2);
       var blob = new Blob([json], { type: 'application/json' });
       var url  = URL.createObjectURL(blob);
@@ -914,8 +931,9 @@
       URL.revokeObjectURL(url);
 
       // Show subscribe prompt
-      document.getElementById('subscribe-prompt').classList.add('visible');
-      document.getElementById('subscribe-prompt').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      var prompt = document.getElementById('subscribe-prompt');
+      prompt.classList.add('visible');
+      prompt.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     // ── POST-EXPORT SUBSCRIBE ──
@@ -934,19 +952,24 @@
       .then(function(r){ return r.json(); })
       .then(function(data){
         document.getElementById('subscribe-prompt-form').style.display = 'none';
-        var confirm = document.getElementById('subscribe-prompt-confirm');
-        confirm.style.display = 'block';
-        confirm.textContent = data.message === 'Subscribed'
-          ? 'You\u2019re subscribed.'
-          : 'Something went wrong. Please try again.';
-        if (data.message !== 'Subscribed') { btn.disabled = false; btn.textContent = 'Subscribe free'; }
+        var confirmEl = document.getElementById('subscribe-prompt-confirm');
+        confirmEl.style.display = 'block';
+        if (data.message === 'Subscribed') {
+          confirmEl.textContent = 'You\u2019re subscribed.';
+        } else {
+          confirmEl.textContent = 'Something went wrong. Please try again.';
+          btn.disabled = false;
+          btn.textContent = 'Notify me';
+          document.getElementById('subscribe-prompt-form').style.display = 'flex';
+        }
       })
       .catch(function(){
-        var confirm = document.getElementById('subscribe-prompt-confirm');
-        confirm.style.display = 'block';
-        confirm.textContent = 'Could not connect. Please try again.';
+        var confirmEl = document.getElementById('subscribe-prompt-confirm');
+        confirmEl.style.display = 'block';
+        confirmEl.textContent = 'Could not connect. Please try again.';
         btn.disabled = false;
-        btn.textContent = 'Subscribe free';
+        btn.textContent = 'Notify me';
+        document.getElementById('subscribe-prompt-form').style.display = 'flex';
       });
     }
 
