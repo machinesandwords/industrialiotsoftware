@@ -613,17 +613,17 @@
   <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
     <div class="modal-box">
       <div class="modal-top">
-        <h2>PDF Export is Coming</h2>
+        <h2>Get Your PDF Report</h2>
         <button class="modal-close" onclick="closeModal()">&#215;</button>
       </div>
-      <div class="modal-badge">Premium Export</div>
-      <p>The formatted network sizing report with your configuration, outputs, and segment recommendations is in final production. <strong>Leave your email and you will get access the day it launches.</strong></p>
-      <p>You will also receive monthly buyer briefings, vendor analyses, evaluation frameworks, and market intelligence for operations and controls teams.</p>
+      <div class="modal-badge">Free Export</div>
+      <p>Enter your email to download a formatted network sizing report with your configuration, calculated outputs, and segment recommendations.</p>
+      <p>You will also receive buyer briefings, vendor analyses, and market intelligence for operations and controls teams.</p>
       <div class="modal-form" id="modal-form">
         <input type="email" id="modal-email" placeholder="your@email.com">
-        <button onclick="submitEmail()">Notify Me</button>
+        <button onclick="submitEmail()">Get PDF</button>
       </div>
-      <div class="modal-confirm" id="modal-confirm">You are on the list. We will reach out when the export goes live.</div>
+      <div class="modal-confirm" id="modal-confirm" style="display:none;"></div>
       <p class="modal-fine-print">No spam. Unsubscribe any time. Industrial IoT Software is published by Machines &amp; Words.</p>
     </div>
   </div>
@@ -637,6 +637,23 @@
       '2.8': 'EtherNet/IP (CIP) supports both explicit messaging (polled) and implicit I/O (cyclic data). This estimate applies to explicit messaging. Implicit I/O connections maintain a fixed packet rate regardless of tag count, which can be more predictable for network planning on stable production lines.',
       '3.0': 'PROFINET uses cyclic real-time communication with fixed cycle times. The overhead figure reflects standard RT class traffic. IRT (Isochronous Real-Time) configurations have stricter timing requirements and should be isolated from general IIoT data collection traffic on separate VLANs.',
       '1.8': 'Sparkplug B defines a topic namespace and payload structure on top of MQTT. The lower overhead vs. OPC-UA reflects MQTT transport efficiency. Sparkplug B includes birth/death certificates and state management that add periodic overhead not captured in steady-state calculations.'
+    };
+
+    var PROTOCOL_LABELS = {
+      '2.2': 'Modbus TCP',
+      '3.5': 'Modbus RTU over TCP',
+      '4.0': 'OPC-UA',
+      '1.4': 'MQTT',
+      '2.8': 'EtherNet/IP',
+      '3.0': 'PROFINET',
+      '1.8': 'Sparkplug B over MQTT'
+    };
+
+    var LINK_LABELS = {
+      '0.125': '1 Mbps (cellular / constrained WAN)',
+      '1.25':  '10 Mbps (legacy plant floor Ethernet)',
+      '12.5':  '100 Mbps (modern plant floor switch)',
+      '125':   '1 Gbps (backbone / fiber)'
     };
 
     function val(id) { return parseFloat(document.getElementById(id).value) || 0; }
@@ -656,32 +673,23 @@
       var plcs       = val('f-plcs');
       var tags       = val('f-tags');
       var bytes      = val('f-bytes');
-      var interval   = val('f-interval');        // ms
+      var interval   = val('f-interval');
       var overhead   = parseFloat(document.getElementById('f-protocol').value);
-      var linkMBs    = parseFloat(document.getElementById('f-link').value);  // MB/s
+      var linkMBs    = parseFloat(document.getElementById('f-link').value);
       var outageMins = val('f-outage');
 
-      // Raw data rate: bytes/s then convert to KB/s
       var rawBytesPerSec = (plcs * tags * bytes * overhead) / (interval / 1000);
       var rawKBs         = rawBytesPerSec / 1024;
       var rawMBs         = rawBytesPerSec / (1024 * 1024);
+      var dailyMB        = rawMBs * 86400;
+      var utilPct        = (rawMBs / linkMBs) * 100;
+      var bufferMB       = rawMBs * (outageMins * 60);
 
-      // Daily volume in MB
-      var dailyMB = rawMBs * 86400;
-
-      // Link utilization %
-      var utilPct = (rawMBs / linkMBs) * 100;
-
-      // Edge buffer in MB
-      var bufferMB = rawMBs * (outageMins * 60);
-
-      // ── Update outputs ──
       document.getElementById('out-rate').textContent    = fmtBytes(rawKBs);
       document.getElementById('out-daily').textContent   = fmtMB(dailyMB);
       document.getElementById('out-buffer').textContent  = fmtMB(bufferMB);
       document.getElementById('out-buffer-sub').textContent = 'for ' + outageMins + ' min outage';
 
-      // Utilization with color states
       var utilEl    = document.getElementById('out-util');
       var utilBar   = document.getElementById('bar-util');
       var utilLabel = document.getElementById('bar-util-label');
@@ -700,8 +708,7 @@
         : (utilPct >= 50 ? 'Caution: consider a dedicated segment' : 'of selected link capacity');
       document.getElementById('out-util-sub').textContent = subText;
 
-      // Protocol note
-      var protoKey  = document.getElementById('f-protocol').value;
+      var protoKey = document.getElementById('f-protocol').value;
       document.getElementById('protocol-note-text').textContent = PROTOCOL_NOTES[protoKey] || '';
     }
 
@@ -721,7 +728,6 @@
       calculate();
     });
 
-    // Number inputs + selects
     ['f-plcs','f-tags'].forEach(function(id) {
       document.getElementById(id).addEventListener('input', calculate);
     });
@@ -735,15 +741,203 @@
     function handleOverlayClick(e) {
       if (e.target === document.getElementById('modal-overlay')) closeModal();
     }
+
+    function generatePDF() {
+      var script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      script.onload = function() {
+        var doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'letter' });
+        var margin = 48;
+        var pageW = 612;
+        var col = pageW - margin * 2;
+        var y = margin;
+
+        // Header band
+        doc.setFillColor(10, 126, 106);
+        doc.rect(0, 0, pageW, 60, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(255, 255, 255);
+        doc.text('INDUSTRIAL IOT SOFTWARE', margin, 26);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(180, 230, 220);
+        doc.text('An independent guide for industrial IoT software buyers', margin, 42);
+        doc.text('industrialiotsoftware.com', pageW - margin, 42, { align: 'right' });
+
+        y = 92;
+
+        // Title
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(20);
+        doc.setTextColor(30, 30, 28);
+        doc.text('PLC Bandwidth & Network Sizing Report', margin, y);
+        y += 28;
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(11);
+        doc.setTextColor(100, 100, 96);
+        doc.text('Generated ' + new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), margin, y);
+        y += 36;
+
+        // Divider
+        doc.setDrawColor(220, 220, 216);
+        doc.setLineWidth(0.5);
+        doc.line(margin, y, pageW - margin, y);
+        y += 24;
+
+        // Inputs
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(140, 140, 136);
+        doc.text('YOUR CONFIGURATION', margin, y);
+        y += 16;
+
+        var protoKey = document.getElementById('f-protocol').value;
+        var linkKey  = document.getElementById('f-link').value;
+        var intervalVal = val('f-interval');
+        var intervalStr = intervalVal >= 1000 ? (intervalVal/1000) + ' s' : intervalVal + ' ms';
+        var outageVal = val('f-outage');
+        var outageStr = outageVal >= 60 ? (outageVal/60).toFixed(1) + ' hr' : outageVal + ' min';
+
+        var inputs = [
+          ['Number of PLCs', val('f-plcs').toLocaleString()],
+          ['Tags per PLC (average)', val('f-tags').toLocaleString()],
+          ['Bytes per Tag', val('f-bytes') + ' B'],
+          ['Collection Protocol', PROTOCOL_LABELS[protoKey] || protoKey],
+          ['Polling Interval', intervalStr],
+          ['Network Link Capacity', LINK_LABELS[linkKey] || linkKey],
+          ['Outage Tolerance', outageStr]
+        ];
+
+        doc.setFontSize(10);
+        inputs.forEach(function(row) {
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(100, 100, 96);
+          doc.text(row[0], margin, y);
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(30, 30, 28);
+          doc.text(row[1], pageW - margin, y, { align: 'right' });
+          y += 18;
+        });
+
+        y += 16;
+        doc.setDrawColor(220, 220, 216);
+        doc.line(margin, y, pageW - margin, y);
+        y += 24;
+
+        // Results
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(140, 140, 136);
+        doc.text('CALCULATED RESULTS', margin, y);
+        y += 20;
+
+        var results = [
+          ['Raw Data Rate (with protocol overhead)', document.getElementById('out-rate').textContent],
+          ['Daily Data Volume', document.getElementById('out-daily').textContent],
+          ['Link Utilization', document.getElementById('out-util').textContent],
+          ['Edge Buffer Required', document.getElementById('out-buffer').textContent]
+        ];
+
+        results.forEach(function(row) {
+          doc.setFillColor(240, 248, 246);
+          doc.rect(margin, y - 14, col, 22, 'F');
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(10);
+          doc.setTextColor(100, 100, 96);
+          doc.text(row[0], margin + 10, y);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(12);
+          doc.setTextColor(10, 126, 106);
+          doc.text(row[1], pageW - margin - 10, y, { align: 'right' });
+          y += 28;
+        });
+
+        y += 16;
+        doc.setDrawColor(220, 220, 216);
+        doc.line(margin, y, pageW - margin, y);
+        y += 24;
+
+        // Protocol note
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(140, 140, 136);
+        doc.text('PROTOCOL NOTE — ' + (PROTOCOL_LABELS[protoKey] || '').toUpperCase(), margin, y);
+        y += 16;
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(120, 120, 116);
+        var noteLines = doc.splitTextToSize(PROTOCOL_NOTES[protoKey] || '', col);
+        doc.text(noteLines, margin, y);
+        y += noteLines.length * 13 + 24;
+
+        // Methodology
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(140, 140, 136);
+        doc.text('METHODOLOGY', margin, y);
+        y += 16;
+        var methodText = 'Raw data rate = (PLCs x tags per PLC x bytes per tag x protocol overhead multiplier) / polling interval. Daily volume = raw data rate x 86,400 seconds. Link utilization = raw data rate / link capacity (MB/s). Edge buffer = raw data rate x outage tolerance in seconds. Overhead multipliers account for protocol framing, acknowledgment packets, and connection management traffic under typical operating conditions. Actual utilization will vary based on change-of-value filtering, compression, and network topology.';
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(120, 120, 116);
+        var methLines = doc.splitTextToSize(methodText, col);
+        doc.text(methLines, margin, y);
+
+        // Footer
+        doc.setDrawColor(10, 126, 106);
+        doc.setLineWidth(1);
+        doc.line(margin, 752, pageW - margin, 752);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(140, 140, 136);
+        doc.text('Industrial IoT Software is published by Machines & Words. industrialiotsoftware.com', margin, 768);
+        doc.text('This report was generated by the PLC Bandwidth Calculator and is for internal use only.', margin, 780);
+
+        var pdfBlob = doc.output('blob');
+        var pdfUrl = URL.createObjectURL(pdfBlob);
+        window.open(pdfUrl, '_blank');
+      };
+      document.head.appendChild(script);
+    }
+
     function submitEmail() {
       var email = document.getElementById('modal-email').value.trim();
+      var confirmEl = document.getElementById('modal-confirm');
       if (!email || !email.includes('@')) {
         document.getElementById('modal-email').focus();
         return;
       }
-      // TODO: POST to /newsletter worker with { email, group: 'plc-bandwidth' }
-      document.getElementById('modal-form').style.display   = 'none';
-      document.getElementById('modal-confirm').style.display = 'block';
+      var btn = document.querySelector('#modal-form button');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      fetch('https://newsletter.industrialiotsoftware.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, group_id: '189858333791880417' })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.message === 'Subscribed') {
+          document.getElementById('modal-form').style.display = 'none';
+          confirmEl.style.display = 'block';
+          confirmEl.textContent = 'You\u2019re subscribed. Your PDF is opening now.';
+          closeModal();
+          generatePDF();
+        } else {
+          confirmEl.style.display = 'block';
+          confirmEl.textContent = 'Something went wrong. Please try again.';
+          btn.disabled = false;
+          btn.textContent = 'Get PDF';
+        }
+      })
+      .catch(function() {
+        confirmEl.style.display = 'block';
+        confirmEl.textContent = 'Could not connect. Please try again.';
+        btn.disabled = false;
+        btn.textContent = 'Get PDF';
+      });
     }
 
     calculate();
