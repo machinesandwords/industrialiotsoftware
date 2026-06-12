@@ -604,16 +604,16 @@
   <!-- ── MODAL ── -->
   <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
     <div class="modal-box">
-      <div class="modal-top">
-        <h2>PDF Export is Coming</h2>
+<div class="modal-top">
+        <h2>Get Your PDF Report</h2>
         <button class="modal-close" onclick="closeModal()">&#215;</button>
       </div>
-      <div class="modal-badge">Premium Export</div>
-      <p>The formatted PDF report with your inputs, calculated outputs, methodology notes, and executive framing is in final production. <strong>Leave your email and you will get access the day it launches.</strong></p>
-      <p>You will also receive monthly buyer briefings, vendor analyses, evaluation frameworks, and market intelligence for operations and controls teams.</p>
+      <div class="modal-badge">Free Export</div>
+      <p>Enter your email to download a formatted business case report with your figures, methodology notes, and M&amp;W branding. Ready to drop into a board deck or vendor conversation.</p>
+      <p>You will also receive buyer briefings, vendor analyses, and market intelligence for operations and controls teams.</p>
       <div class="modal-form" id="modal-form">
         <input type="email" id="modal-email" placeholder="your@email.com">
-        <button onclick="submitEmail()">Notify Me</button>
+        <button onclick="submitEmail()">Get PDF</button>
       </div>
       <div class="modal-confirm" id="modal-confirm">You are on the list. We will reach out when the export goes live.</div>
       <p class="modal-fine-print">No spam. Unsubscribe any time. Industrial IoT Software is published by Machines &amp; Words.</p>
@@ -699,37 +699,196 @@
       document.getElementById(id).addEventListener('input', calculate);
     });
 
-    // Modal
+// Modal
     function openModal()  { document.getElementById('modal-overlay').classList.add('open'); }
     function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
     function handleOverlayClick(e) {
       if (e.target === document.getElementById('modal-overlay')) closeModal();
     }
+
+    function generatePDF() {
+      var script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      script.onload = function() {
+        var doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'letter' });
+        var margin = 48;
+        var pageW = 612;
+        var col = pageW - margin * 2;
+        var y = margin;
+
+        // Header band
+        doc.setFillColor(10, 126, 106);
+        doc.rect(0, 0, pageW, 60, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(255, 255, 255);
+        doc.text('INDUSTRIAL IOT SOFTWARE', margin, 26);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(180, 230, 220);
+        doc.text('An independent guide for industrial IoT software buyers', margin, 42);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.text('industrialiotsoftware.com', pageW - margin, 42, { align: 'right' });
+
+        y = 92;
+
+        // Title
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(20);
+        doc.setTextColor(30, 30, 28);
+        doc.text('IIoT ROI & Business Case', margin, y);
+        y += 28;
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(11);
+        doc.setTextColor(100, 100, 96);
+        doc.text('Generated ' + new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), margin, y);
+        y += 36;
+
+        // Divider
+        doc.setDrawColor(220, 220, 216);
+        doc.setLineWidth(0.5);
+        doc.line(margin, y, pageW - margin, y);
+        y += 24;
+
+        // Inputs section
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(140, 140, 136);
+        doc.text('YOUR INPUTS', margin, y);
+        y += 16;
+
+        var inputs = [
+          ['Unplanned Downtime (hrs/yr)', val('f-downtime').toLocaleString()],
+          ['Current OEE', document.getElementById('r-oee-current').textContent],
+          ['OEE Improvement Target', document.getElementById('r-oee-target').textContent],
+          ['Hourly Production Value', '$' + val('f-hourly').toLocaleString()],
+          ['Platform Cost', '$' + val('f-platform').toLocaleString()],
+          ['Implementation Timeline', document.getElementById('r-impl').textContent],
+          ['Annual Operating Cost', '$' + val('f-ops').toLocaleString()]
+        ];
+
+        doc.setFontSize(10);
+        inputs.forEach(function(row) {
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(100, 100, 96);
+          doc.text(row[0], margin, y);
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(30, 30, 28);
+          doc.text(row[1], pageW - margin, y, { align: 'right' });
+          y += 18;
+        });
+
+        y += 16;
+        doc.setDrawColor(220, 220, 216);
+        doc.line(margin, y, pageW - margin, y);
+        y += 24;
+
+        // Results section
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(140, 140, 136);
+        doc.text('CALCULATED RESULTS', margin, y);
+        y += 20;
+
+        var results = [
+          ['Annual Cost Reduction', document.getElementById('out-annual').textContent],
+          ['OEE Impact Value (per year)', document.getElementById('out-oee').textContent],
+          ['Payback Period', document.getElementById('out-payback').textContent],
+          ['3-Year Net Benefit', document.getElementById('out-3yr').textContent]
+        ];
+
+        results.forEach(function(row) {
+          // Light bg band
+          doc.setFillColor(240, 248, 246);
+          doc.rect(margin, y - 14, col, 22, 'F');
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(10);
+          doc.setTextColor(100, 100, 96);
+          doc.text(row[0], margin + 10, y);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(12);
+          doc.setTextColor(10, 126, 106);
+          doc.text(row[1], pageW - margin - 10, y, { align: 'right' });
+          y += 28;
+        });
+
+        y += 16;
+        doc.setDrawColor(220, 220, 216);
+        doc.line(margin, y, pageW - margin, y);
+        y += 24;
+
+        // Methodology
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(140, 140, 136);
+        doc.text('METHODOLOGY', margin, y);
+        y += 16;
+
+        var methodText = 'Annual cost reduction = (downtime hours x hourly production value) + (OEE improvement % x 8,760 production hours x hourly production value). Payback period = platform cost / monthly net savings, starting after implementation completes. 3-year net benefit = (annual savings x 3) minus platform cost minus (annual operating cost x 3), with savings prorated in the implementation year. All figures are estimates. Actual results depend on asset mix, shift patterns, and deployment scope.';
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(120, 120, 116);
+        var lines = doc.splitTextToSize(methodText, col);
+        doc.text(lines, margin, y);
+        y += lines.length * 13 + 24;
+
+        // Footer
+        doc.setDrawColor(10, 126, 106);
+        doc.setLineWidth(1);
+        doc.line(margin, 752, pageW - margin, 752);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(140, 140, 136);
+        doc.text('Industrial IoT Software is published by Machines & Words. industrialiotsoftware.com', margin, 768);
+        doc.text('This report was generated by the IIoT ROI Calculator and is for internal use only.', margin, 780);
+
+        doc.save('iiot-roi-business-case.pdf');
+      };
+      document.head.appendChild(script);
+    }
+
     function submitEmail() {
       var email = document.getElementById('modal-email').value.trim();
+      var confirmEl = document.getElementById('modal-confirm');
       if (!email || !email.includes('@')) {
         document.getElementById('modal-email').focus();
         return;
       }
+      var btn = document.querySelector('#modal-form button');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
       fetch('https://newsletter.industrialiotsoftware.com', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email, group_id: '189858333791880417' })
       })
-      .then(function(r){ return r.json(); })
-      .then(function(data){
-        document.getElementById('modal-confirm').textContent = data.success
-          ? 'You’re on the list. We will reach out when the export goes live.'
-          : 'Something went wrong. Please try again.';
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.message === 'Subscribed') {
+          document.getElementById('modal-form').style.display = 'none';
+          confirmEl.style.display = 'block';
+          confirmEl.textContent = 'You\u2019re subscribed. Your PDF is downloading now.';
+          closeModal();
+          generatePDF();
+        } else {
+          confirmEl.style.display = 'block';
+          confirmEl.textContent = 'Something went wrong. Please try again.';
+          btn.disabled = false;
+          btn.textContent = 'Get PDF';
+        }
       })
-      .catch(function(){
-        document.getElementById('modal-confirm').textContent = 'Could not connect. Please try again.';
+      .catch(function() {
+        confirmEl.style.display = 'block';
+        confirmEl.textContent = 'Could not connect. Please try again.';
+        btn.disabled = false;
+        btn.textContent = 'Get PDF';
       });
-      document.getElementById('modal-form').style.display  = 'none';
-      document.getElementById('modal-confirm').style.display = 'block';
     }
 
     calculate();
+
   </script>
 
   <script src="/nav.js"></script>
