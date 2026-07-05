@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>Industrial IoT Software: An Independent Buyer's Guide</title>
+  <meta name="description" content="Independent buyer's guide to industrial IoT software: the OT-integration vs. fleet-management decision fork, evaluation criteria for each path, vertical considerations, and a platform comparison table.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/guides/industrial-iot-software/">
+  <meta property="og:title" content="Industrial IoT Software: An Independent Buyer's Guide">
+  <meta property="og:description" content="Independent buyer's guide to industrial IoT software: the OT-integration vs. fleet-management decision fork, evaluation criteria for each path, vertical considerations, and a platform comparison table.">
+  <meta property="og:image" content="https://industrialiotsoftware.com/og-image.png">
+  <meta property="og:url" content="https://industrialiotsoftware.com/guides/industrial-iot-software/">
+  <meta property="og:type" content="article">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+  <style>
+    .compare-table td:first-child{width:200px;font-weight:700;font-size:11px;color:var(--mid);letter-spacing:0.02em;}
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Industrial IoT Software: An Independent Buyer's Guide",
+    "description": "Independent buyer's guide to industrial IoT software: the OT-integration vs. fleet-management decision fork, evaluation criteria for each path, vertical considerations, and a platform comparison table.",
+    "url": "https://industrialiotsoftware.com/guides/industrial-iot-software/",
+    "datePublished": "2026-07-05",
+    "dateModified": "2026-07-05",
+    "publisher": { "@type": "Organization", "name": "Industrial IoT Software", "url": "https://industrialiotsoftware.com" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://industrialiotsoftware.com" },
+      { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://industrialiotsoftware.com/guides/" },
+      { "@type": "ListItem", "position": 3, "name": "Industrial IoT Software", "item": "https://industrialiotsoftware.com/guides/industrial-iot-software/" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Does IIoT software replace SCADA?", "acceptedAnswer": { "@type": "Answer", "text": "No. IIoT software typically sits alongside SCADA, pulling data out for analytics and cloud visibility while SCADA continues handling real-time control. Platforms that claim to replace SCADA outright are usually describing a much longer, much riskier migration than the pitch implies." } },
+      { "@type": "Question", "name": "How long does a realistic IIoT software evaluation take?", "acceptedAnswer": { "@type": "Answer", "text": "Plan for 8-12 weeks if it includes a compatibility test against your actual hardware, not just a vendor demo. Shorter than that and you're likely evaluating the sales deck instead of the platform." } },
+      { "@type": "Question", "name": "What's the difference between an IIoT platform and a historian?", "acceptedAnswer": { "@type": "Answer", "text": "A historian stores and retrieves time-series data, full stop. An IIoT platform typically includes connectivity, edge processing, and often analytics on top \u2014 a historian is frequently one component inside a broader IIoT platform, not a competing category." } },
+      { "@type": "Question", "name": "Do I need separate platforms for OT integration and fleet management?", "acceptedAnswer": { "@type": "Answer", "text": "Often, yes, at least in the near term. Few platforms are genuinely strong at both, and forcing one vendor to cover both needs usually means accepting mediocrity in whichever one wasn't their original design center." } }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for industrial IoT software buyers</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation"><div id="sidebar-nav"></div></nav>
+    <main class="main">
+      <article class="content">
+        <div class="breadcrumb"><a href="/">Home</a><span class="breadcrumb-sep">/</span><a href="/guides/">Guides</a><span class="breadcrumb-sep">/</span><span>Industrial IoT Software</span></div>
+        <span class="page-label">Evaluation &mdash; Buyer's Guide</span>
+        <h1>Industrial IoT Software: An Independent Buyer's Guide</h1>
+        <p class="lead">Most industrial IoT software evaluations fail before the first vendor call, because they start with the wrong question. Buyers ask "which platform is best," when the real question is "which of two entirely different problems am I actually solving."</p>
+
+        <p>Problem one: you have an existing OT environment &mdash; PLCs, historians, SCADA systems, legacy assets running proprietary protocols &mdash; and you need software that connects to what's already there without ripping it out. Problem two: you have, or will have, thousands or millions of distributed devices across dispersed infrastructure, and you need to provision, manage, and monitor them at scale. These are not the same evaluation. A platform built to excel at one is frequently mediocre at the other, and vendors rarely volunteer which one they're optimized for.</p>
+
+        <p>Get this fork wrong and you end up running a six-month pilot on a platform that was never going to solve your actual problem &mdash; a mistake that's expensive to make and slow to discover.</p>
+
+        <h2>The category, precisely defined</h2>
+
+        <p>"IIoT software" gets used as a catch-all for five distinct categories, and conflating them is where a lot of evaluations go sideways.</p>
+
+        <p><strong>Connectivity middleware</strong> moves data from field devices and controllers into a usable pipeline &mdash; MQTT brokers, protocol gateways, OPC-UA servers. Pick the wrong one here and you'll spend the next year fighting protocol translation instead of building anything on top of the data.</p>
+
+        <p><strong>Edge data platforms</strong> process and normalize data close to the source, before it hits the cloud or the historian. This is where semantic normalization either happens correctly or doesn't happen at all &mdash; a platform weak here pushes the normalization problem downstream to every application that consumes the data.</p>
+
+        <p><strong>Cloud infrastructure</strong> &mdash; AWS IoT, Azure IoT, and their equivalents &mdash; provides the scalable backend for storage, device management, and analytics, but arrives as raw capability. It requires real engineering to become useful in an industrial context. Buyers underestimate this step constantly.</p>
+
+        <p><strong>Analytics and historian systems</strong> store and analyze time-series data, ranging from traditional historians (PI, Wonderware) to newer time-series-native platforms. The evaluation criteria here hinge on query performance at scale and how well the system handles the messy, gap-filled reality of industrial data.</p>
+
+        <p><strong>Full-stack automation suites</strong> bundle connectivity, edge processing, and analytics into one vendor relationship. That consolidation is the pitch &mdash; it's also the risk. You're betting on one vendor's competence across all three layers instead of picking the best tool per layer.</p>
+
+        <p>Get the category wrong and every subsequent evaluation criterion you apply is answering the wrong question. For the full vendor landscape within each category, see <a href="/landscape/">the market map</a>, or <a href="/landscape/industrial-iot-software-examples/">real examples mapped by category</a>.</p>
+
+        <h2>The two evaluation paths</h2>
+
+        <p><strong>If you're solving for OT integration depth</strong>, the criteria that matter are protocol support, hardware affinity, and deployment architecture &mdash; in that order.</p>
+
+        <p>Protocol support is where vendor claims and field reality diverge hardest. A vendor claiming "full Allen-Bradley support" and a vendor that's actually tested against your specific firmware version, CIP connection limits, and Siemens Optimized Block Access configuration are making very different claims that sound identical in a sales deck. <a href="/guides/protocol-compatibility/">Run the compatibility test before you sign anything.</a></p>
+
+        <p>Hardware affinity determines how much translation layer you need to build yourself. A platform from an automation vendor with deep hardware relationships will connect to their own equipment natively and everything else through a gateway &mdash; fine if your environment is homogeneous, a hidden cost center if it isn't.</p>
+
+        <p>Deployment architecture is where safety and security requirements collide with data access needs. If your environment has safety-critical systems that can't risk a write-path vulnerability, <a href="/guides/unidirectional-data-pipeline/">a hardware-enforced unidirectional pipeline</a> may be a harder requirement than any feature on the vendor's list.</p>
+
+        <p><strong>If you're solving for fleet management at scale</strong>, the criteria shift to device provisioning, connectivity reliability, and visibility tooling.</p>
+
+        <p>Provisioning is the first wall most buyers hit &mdash; how does the platform onboard device 10,001 without someone touching it by hand? Zero-touch provisioning sounds like a checkbox until you're the one manually configuring devices at 2am because the automated flow doesn't handle your specific hardware SKU.</p>
+
+        <p>Connectivity reliability at scale means the platform assumes devices will drop offline constantly &mdash; cellular gaps, power cycling, firmware updates mid-transmission &mdash; and handles reconnection and data buffering without losing records. A platform designed for a controlled factory floor and a platform designed for distributed field devices handle this problem completely differently, and it's rarely obvious from a demo which one you're looking at.</p>
+
+        <p>Visibility tooling is what tells you which of your ten thousand devices are actually healthy, which requires a data model that can represent device state cleanly. This is directly related to how well the platform handles <a href="/guides/unified-namespace/">unified namespace structure</a> &mdash; a fleet without a coherent namespace becomes unmanageable well before it becomes unmonitorable.</p>
+
+        <h2>Vertical considerations</h2>
+
+        <p><strong>Manufacturing</strong> runs into the brownfield problem hardest: decades-old PLCs on proprietary protocols that were never designed to talk to anything outside their own control cabinet. The evaluation question isn't "does this platform support Modbus" &mdash; it's whether it supports <a href="/guides/legacy-plc-telemetry/">the specific extraction architecture your legacy equipment requires</a> without a forklift upgrade. See also <a href="/comparisons/best-industrial-iot-platforms-manufacturing/">the manufacturing-specific platform comparison</a>.</p>
+
+        <p><strong>Energy</strong> carries regulatory and safety-critical constraints that change the deployment architecture question from a preference into a requirement. Data isolation between OT and IT isn't a nice-to-have security posture here &mdash; it's often the only architecture that passes an audit.</p>
+
+        <p><strong>Logistics</strong> deals with connectivity variability that manufacturing rarely sees &mdash; devices moving in and out of coverage, crossing carrier networks, operating in conditions no factory floor replicates. Fleet management criteria dominate here almost exclusively; OT integration depth barely factors in.</p>
+
+        <h2>Comparison table</h2>
+
+        <table class="compare-table">
+          <thead>
+            <tr><th>Criterion</th><th>OT-integration platforms</th><th>Fleet-management platforms</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Protocol coverage</td><td>Deep, often narrow (vendor's own hardware)</td><td>Broad, shallow (generic device classes)</td></tr>
+            <tr><td>Deployment model</td><td>On-prem / hybrid common</td><td>Cloud-native common</td></tr>
+            <tr><td>Provisioning</td><td>Manual or semi-automated</td><td>Zero-touch, automated at scale</td></tr>
+            <tr><td>Data volume pattern</td><td>High-frequency, low device count</td><td>Lower-frequency, high device count</td></tr>
+            <tr><td>Primary failure mode</td><td>Protocol translation gaps</td><td>Connectivity/offline handling gaps</td></tr>
+            <tr><td>Typical buyer</td><td>Plant/OT engineering</td><td>IT/fleet operations</td></tr>
+          </tbody>
+        </table>
+
+        <h2>Pilot to production</h2>
+
+        <p>Picking a platform is the easy half. The harder half is proving it survives contact with the rest of the factory or fleet &mdash; which is a separate evaluation problem with its own failure modes. <a href="/guides/iiot-pilot-structure/">Structure the pilot correctly</a> before you commit budget past the proof-of-concept stage.</p>
+
+        <h2>FAQ</h2>
+
+        <h3>Does IIoT software replace SCADA?</h3>
+        <p>No. IIoT software typically sits alongside SCADA, pulling data out for analytics and cloud visibility while SCADA continues handling real-time control. Platforms that claim to replace SCADA outright are usually describing a much longer, much riskier migration than the pitch implies. For the fuller comparison, see <a href="/comparisons/industrial-iot-software-vs-scada/">industrial IoT software vs. SCADA</a>.</p>
+
+        <h3>How long does a realistic evaluation take?</h3>
+        <p>Plan for 8-12 weeks if it includes a compatibility test against your actual hardware, not just a vendor demo. Shorter than that and you're likely evaluating the sales deck instead of the platform.</p>
+
+        <h3>What's the difference between an IIoT platform and a historian?</h3>
+        <p>A historian stores and retrieves time-series data, full stop. An IIoT platform typically includes connectivity, edge processing, and often analytics on top &mdash; a historian is frequently one component inside a broader IIoT platform, not a competing category.</p>
+
+        <h3>Do I need separate platforms for OT integration and fleet management?</h3>
+        <p>Often, yes &mdash; at least in the near term. Few platforms are genuinely strong at both, and forcing one vendor to cover both needs usually means accepting mediocrity in whichever one wasn't their original design center.</p>
+
+        <hr>
+        <p><em>This site has no vendor relationships, no sponsored content, and no affiliate arrangements with the platforms it covers. When this guide has an opinion, it says so. When the evidence is thin, it says that too.</em></p>
+
+        <p>Related: <a href="/comparisons/best-industrial-iot-platforms-manufacturing/">Best industrial IoT platforms for manufacturing</a> narrows this framework to one vertical. <a href="/comparisons/industrial-iot-software-vs-scada/">Industrial IoT software vs. SCADA</a> covers where the two systems' responsibilities split. <a href="/landscape/industrial-iot-software-examples/">Real examples by category</a> maps specific products onto the taxonomy above.</p>
+
+        <div class="newsletter-block">
+          <span class="page-label">Stay current</span>
+          <p>The Industry Sensor covers the IIoT software market the way your vendors hope you won't. Twice monthly.</p>
+          <div class="newsletter-form">
+            <input type="email" id="nl-email" placeholder="your@email.com" aria-label="Email address">
+            <button type="button" id="nl-submit">Subscribe free</button>
+          </div>
+          <div id="nl-msg" style="display:none;font-size:11px;margin-top:8px;"></div>
+        </div>
+      </article>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="page-label">Industrial IoT Software</span>
+      <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+    </div>
+  </footer>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>

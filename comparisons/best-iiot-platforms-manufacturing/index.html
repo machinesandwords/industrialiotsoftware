@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <title>Best Industrial IoT Platforms for Manufacturing | Industrial IoT Software</title>
+  <meta name="description" content="Independent comparison of industrial IoT platform categories for manufacturing environments, scored against brownfield connectivity, protocol coverage, and deployment criteria.">
+  <link rel="canonical" href="https://industrialiotsoftware.com/comparisons/best-industrial-iot-platforms-manufacturing/">
+  <meta property="og:title" content="Best Industrial IoT Platforms for Manufacturing | Industrial IoT Software">
+  <meta property="og:description" content="Independent comparison of industrial IoT platform categories for manufacturing environments, scored against brownfield connectivity, protocol coverage, and deployment criteria.">
+  <meta property="og:image" content="https://industrialiotsoftware.com/og-image.png">
+  <meta property="og:url" content="https://industrialiotsoftware.com/comparisons/best-industrial-iot-platforms-manufacturing/">
+  <meta property="og:type" content="article">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>:root{--accent:#0A7E6A;--accent-dim:#087558;--accent-pale:#e6f4f1}</style>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/config.js" defer></script>
+  <style>
+    .compare-table td:first-child{width:200px;font-weight:700;font-size:11px;color:var(--mid);letter-spacing:0.02em;}
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Best Industrial IoT Platforms for Manufacturing",
+    "description": "Independent comparison of industrial IoT platform categories for manufacturing environments, scored against brownfield connectivity, protocol coverage, and deployment criteria.",
+    "url": "https://industrialiotsoftware.com/comparisons/best-industrial-iot-platforms-manufacturing/",
+    "datePublished": "2026-07-05",
+    "dateModified": "2026-07-05",
+    "publisher": { "@type": "Organization", "name": "Industrial IoT Software", "url": "https://industrialiotsoftware.com" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://industrialiotsoftware.com" },
+      { "@type": "ListItem", "position": 2, "name": "Comparisons", "item": "https://industrialiotsoftware.com/comparisons/" },
+      { "@type": "ListItem", "position": 3, "name": "Best Industrial IoT Platforms for Manufacturing", "item": "https://industrialiotsoftware.com/comparisons/best-industrial-iot-platforms-manufacturing/" }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-brand">Industrial <span>IoT</span> Software</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-tagline">an independent guide for industrial IoT software buyers</div>
+    <div class="topbar-right"><a href="/subscribe">Subscribe</a></div>
+  </header>
+  <div class="layout">
+    <nav class="sidebar" aria-label="Site navigation"><div id="sidebar-nav"></div></nav>
+    <main class="main">
+      <article class="content">
+        <div class="breadcrumb"><a href="/">Home</a><span class="breadcrumb-sep">/</span><a href="/comparisons/">Comparisons</a><span class="breadcrumb-sep">/</span><span>Best Industrial IoT Platforms for Manufacturing</span></div>
+        <span class="page-label">Manufacturing &mdash; Platform Comparison</span>
+        <h1>Best Industrial IoT Platforms for Manufacturing</h1>
+        <p class="lead">Manufacturing is the vertical where the brownfield problem hits hardest. Nobody's building a greenfield factory from scratch with brand-new PLCs on modern Ethernet &mdash; most evaluations happen against equipment that's ten, twenty, thirty years old, running protocols the vendor's demo environment has never seen. That reality should drive the comparison, and most "best platform" lists ignore it entirely in favor of generic feature checklists.</p>
+
+        <p>This comparison scores platform categories, not individual products, against the criteria that actually separate a manufacturing deployment that works from one that stalls at the pilot stage.</p>
+
+        <h2>The criteria that matter for manufacturing specifically</h2>
+
+        <p><strong>Brownfield protocol coverage.</strong> Not "supports Modbus" in the abstract &mdash; actual tested coverage against legacy Allen-Bradley DH+/DH-485, Siemens S5 AS511, and the firmware-version-specific quirks that break claimed compatibility. See <a href="/guides/legacy-plc-telemetry/">the extraction architecture guide</a> for what this looks like in practice.</p>
+
+        <p><strong>Hardware affinity vs. independence.</strong> Automation-vendor platforms (Rockwell, Siemens, Schneider) connect natively to their own equipment and treat everything else as a second-class integration. Independent platforms treat all hardware as equally foreign, which is worse for homogeneous environments and better for mixed-vendor floors.</p>
+
+        <p><strong>Deployment model.</strong> Manufacturing floors often have connectivity, security, and latency constraints that push toward on-prem or hybrid deployment rather than pure cloud. A platform architected cloud-first sometimes bolts on edge capability as an afterthought.</p>
+
+        <p><strong>Pilot-to-scale path.</strong> A platform that works in a single-line pilot and falls over across twelve lines and three plants is a common failure mode. <a href="/guides/iiot-pilot-structure/">Pilot structure</a> matters as much as platform choice here.</p>
+
+        <h2>Platform category comparison</h2>
+
+        <table class="compare-table">
+          <thead>
+            <tr><th>Category</th><th>Brownfield coverage</th><th>Hardware independence</th><th>Deployment flexibility</th><th>Best fit</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Automation-vendor suites</td><td>Excellent for own hardware, weak elsewhere</td><td>Low</td><td>On-prem/hybrid strong</td><td>Single-vendor floors</td></tr>
+            <tr><td>Independent connectivity middleware</td><td>Broad, protocol-by-protocol</td><td>High</td><td>Flexible</td><td>Mixed-vendor floors</td></tr>
+            <tr><td>Cloud-native IoT platforms</td><td>Requires added gateway layer</td><td>High</td><td>Cloud-first, edge secondary</td><td>Multi-site standardization</td></tr>
+            <tr><td>Edge-first platforms</td><td>Strong, built for on-site normalization</td><td>High</td><td>Edge-first, cloud secondary</td><td>Latency-sensitive or bandwidth-constrained sites</td></tr>
+          </tbody>
+        </table>
+
+        <h2>What this table doesn't tell you</h2>
+
+        <p>Category strength is a starting filter, not a final answer. Two platforms in the same category can differ enormously on the details that actually determine whether your specific PLCs, your specific firmware versions, and your specific network topology work on day one. <a href="/guides/protocol-compatibility/">Test compatibility against your real equipment</a> before any category-level comparison substitutes for that.</p>
+
+        <p>For the full evaluation framework behind this comparison &mdash; including the fleet-management side of the decision, which matters less in single-plant manufacturing but becomes relevant fast once you're standardizing across multiple sites &mdash; see the <a href="/guides/industrial-iot-software/">complete industrial IoT software buyer's guide</a>.</p>
+
+        <hr>
+        <p><em>This site has no vendor relationships, no sponsored content, and no affiliate arrangements with the platforms it covers. When this comparison has an opinion, it says so. When the evidence is thin, it says that too.</em></p>
+
+        <p>Related: the <a href="/guides/industrial-iot-software/">full buyer's guide</a> covers the OT-integration vs. fleet-management decision this comparison sits inside. <a href="/guides/legacy-plc-telemetry/">Legacy PLC telemetry</a> covers brownfield extraction in detail. <a href="/guides/iiot-pilot-structure/">Pilot structure</a> covers proving out whichever platform you shortlist here.</p>
+
+        <div class="newsletter-block">
+          <span class="page-label">Stay current</span>
+          <p>The Industry Sensor covers the IIoT software market the way your vendors hope you won't. Twice monthly.</p>
+          <div class="newsletter-form">
+            <input type="email" id="nl-email" placeholder="your@email.com" aria-label="Email address">
+            <button type="button" id="nl-submit">Subscribe free</button>
+          </div>
+          <div id="nl-msg" style="display:none;font-size:11px;margin-top:8px;"></div>
+        </div>
+      </article>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="page-label">Industrial IoT Software</span>
+      <p>An independent publication. Built by <a href="https://machinesandwords.com">Machines &amp; Words</a>.</p>
+    </div>
+  </footer>
+
+  <script src="/nav.js"></script>
+  <script src="/newsletter.js"></script>
+
+</body>
+</html>

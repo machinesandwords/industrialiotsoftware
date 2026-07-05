@@ -47,7 +47,7 @@
     <div class="nav-section">
       <div class="nav-section-label">Guides</div>
       <a href="/guides/" class="nav-item depth-0">All guides</a>
-      <a href="/guides/iiot-pilot-structure/" class="nav-item depth-1">├ IIoT pilot structure</a>
+      <a href="/guides/industrial-iot-software-guide/" class="nav-item depth-1">├ Industrial IoT software guide</a>
       <a href="/guides/protocol-compatibility/" class="nav-item depth-1">├ Protocol compatibility</a>
       <a href="/guides/" class="nav-item depth-1">└ more</a>
     </div>
